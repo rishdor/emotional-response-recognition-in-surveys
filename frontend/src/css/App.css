@@ -28,6 +28,26 @@
   color: #61dafb;
 }
 
+:root{
+  --main_color: #EEFFFA;
+  --font_color: #000000;
+}
+
+.navbar {
+  background-color: var(--main_color);
+  color: var(--font_color);
+  margin: 0;
+  padding: 10px 7%;
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+}
+
+.link{
+  color: var(--font_color);
+  text-decoration: none;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
