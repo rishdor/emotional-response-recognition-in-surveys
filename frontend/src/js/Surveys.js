@@ -5,6 +5,9 @@ function Surveys() {
     <div className="Surveys">
       <h2>Surveys</h2>
       <p>This is the Surveys page.</p>
+
+      <footer>
+      </footer>
     </div>
   );
 }

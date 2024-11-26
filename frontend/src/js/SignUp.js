@@ -36,6 +36,8 @@ function SignUp() {
           <input type="submit" value="Sign Up" />
         </div>
       </div>
+      <footer>
+      </footer>
     </div>
   );
 }
