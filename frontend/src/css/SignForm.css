@@ -1,0 +1,52 @@
+:root{
+    --button_color: #CEEBC8;
+    --font_color: #000000;
+}
+
+
+.signForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1%;
+}
+
+.formElem{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin: 1% auto;
+    width: 40%;
+}
+
+.formElem label{
+    margin-right: 1%;
+}
+
+.formElem input{
+    width: 60%;
+    padding: 1%;
+    border-radius: 5px;
+    border: 1px solid;
+    height: 50%;
+}
+
+.formElem input[type='checkbox']{
+    width: 20%;
+    padding: 1%;
+    border-radius: 5px;
+    border: 1px solid;
+    height: 50%;
+}
+
+.formElem input[type='submit']{
+    width: 60%;
+    margin: 0 auto;
+    padding: 1%;
+    border-radius: 30px;
+    border: 1px solid var(--button_color);
+    height: 50%;
+    background-color: var(--button_color);
+    color: var(--font_color);
+}

@@ -21,6 +21,7 @@ function App() {
             <li><Link to="/dashboard" class='link'>dashboard</Link></li>
           </ul>
         </nav>
+
         <Routes>
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/signIn" element={<SignIn />} />
@@ -29,6 +30,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/surveys" element={<Surveys />} />
         </Routes>
+
+        <footer>
+        </footer>
       </div>
     </Router>
   );
