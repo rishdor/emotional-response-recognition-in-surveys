@@ -49,16 +49,6 @@
   text-decoration: none;
 }
 
-footer{
-  height: 10vh;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  background-color: var(--footer_color);
-  color: var(--font_color);
-  padding: 10px 0;
-}
-
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -22,6 +22,9 @@ function Home() {
       <div className="Home">
         <h1>FastAPI React Integration</h1>
         <p>{message}</p>
+
+        <footer>
+        </footer>
       </div>
     );
   }
