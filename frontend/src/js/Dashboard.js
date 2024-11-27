@@ -80,10 +80,6 @@ function Dashboard() {
       </div>
       <footer>
       </footer>
-      
-      <Routes>
-        <Route path="/surveys" element={<Surveys />} />
-      </Routes>
     </div>
   );
 }

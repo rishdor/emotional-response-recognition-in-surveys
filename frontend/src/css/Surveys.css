@@ -34,12 +34,12 @@
     text-align: left;
     margin-left: 5%;
   }
-  .survey_cont_surv button{
+  .survey_cont_surv .link{
     width: 50%;
     height: 50%;
     border: none;
     background-color: var(--footer_color);
     color: #FFFFFF;
     border-radius: 30px;
-    margin:auto
+    margin:auto;
   }
