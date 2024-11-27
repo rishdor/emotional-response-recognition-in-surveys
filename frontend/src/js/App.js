@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './Home';
 import About from './About';
+import User from './User';
 import Dashboard from './Dashboard';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
@@ -19,6 +20,7 @@ function App() {
               <li><Link to="/signIn" class='link'>sign in</Link></li>
               <li><Link to="/" class='link'>SmartSurveys</Link></li>
               <li><Link to="/about" class='link'>about</Link></li>
+              <li><Link to="/user" class='link'>user</Link></li>
               <li><Link to="/dashboard" class='link'>dashboard</Link></li>
             </ul>
           </nav>
@@ -28,6 +30,7 @@ function App() {
             <Route path="/signIn" element={<SignIn />} />
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/user" element={<User />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/surveys" element={<Surveys />} />
             <Route path="/surveywindow" element={<SurveyWindow />} />

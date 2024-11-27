@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import '../css/Dashboard.css';
 import '../css/Surveys.css';
-import SurveyWindow from './SurveyWindow';
 
 function Surveys() {
   return (

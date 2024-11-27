@@ -5,6 +5,7 @@
     --not_checked_color: #c8dfd8;
     --highlight_color: #EEFFFA;
     --button_color: #7AB296;
+    --button_hover_color: #5A8A7F;
 }
 .video_container {
   display: flex;
@@ -39,7 +40,7 @@
 }
 
 .video_container button:hover {
-  background-color: #5A8A7F;
+  background-color: var(--button_hover_color);
 }
 
 #right{

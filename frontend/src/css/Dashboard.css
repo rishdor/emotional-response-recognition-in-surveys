@@ -4,6 +4,7 @@
     --devide_line_color: #CEEBC8;
     --element_color: #E5F1F0;
     --footer_color: #7AB296;
+    --button_hover_color: #5A8A7F;
   }
 
 footer{
@@ -100,6 +101,9 @@ h1, h2, h3, h4, h5, h6{
     color: #FFFFFF;
     border-radius: 30px;
   }
+  #view_more:hover{
+    background-color: var(--button_hover_color);
+  }
 
 
   .points{
@@ -189,7 +193,7 @@ h1, h2, h3, h4, h5, h6{
       }
 
       .award input[type='submit']:hover{
-        background-color: var(--footer_color);
+        background-color: var(--button_hover_color);
         color: #FFFFFF;
       }
 

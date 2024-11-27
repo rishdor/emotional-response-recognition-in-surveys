@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import '../css/Dashboard.css';
-import Surveys from './Surveys';
 import starIcon from '../images/icons8-star-64.png';
 import frogIcon from '../images/icons8-frog-96.png';
 import messageIcon from '../images/icons8-mail-64.png';

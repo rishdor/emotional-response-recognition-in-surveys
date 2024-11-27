@@ -1,6 +1,7 @@
 :root{
     --button_color: #CEEBC8;
     --font_color: #000000;
+    --button_hover_color: #5A8A7F;
 }
 
 .signForm{
@@ -16,7 +17,7 @@
     justify-content: space-between;
     flex-direction: row;
     margin: 1% auto;
-    width: 40%;
+    width: 35%;
 }
 
 .formElem label{
@@ -24,28 +25,34 @@
 }
 
 .formElem input{
-    width: 60%;
+    width: 65%;
     padding: 1%;
-    border-radius: 5px;
-    border: 1px solid;
+    border-radius: 10px;
+    border: 1px solid var(--button_hover_color);
     height: 50%;
 }
 
 .formElem input[type='checkbox']{
-    width: 20%;
+    width: 5%;
     padding: 1%;
     border-radius: 5px;
     border: 1px solid;
     height: 50%;
+    margin-left: 10%;
 }
 
 .formElem input[type='submit']{
-    width: 60%;
+    width: 30%;
     margin: 0 auto;
-    padding: 1%;
+    padding: 2%;
     border-radius: 30px;
     border: 1px solid var(--button_color);
     height: 50%;
     background-color: var(--button_color);
-    color: var(--font_color);
+    color: #FFFFFF;
+}
+
+.formElem input[type='submit']:hover{
+    cursor: pointer;
+    background-color: var(--button_hover_color);
 }
