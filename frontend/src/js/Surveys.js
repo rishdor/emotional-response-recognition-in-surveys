@@ -1,6 +1,8 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import '../css/Dashboard.css';
 import '../css/Surveys.css';
+import SurveyWindow from './SurveyWindow';
 
 function Surveys() {
   return (
@@ -26,7 +28,7 @@ function Surveys() {
           <div class='survey_cont_surv'>
             <p class='sur_name'>survey name</p> {/* Replace message with the name of the survey */}
             <p class='deadline'>deadline</p> {/* Replace date with the date */}
-            <button>start</button>
+            <Link to="/surveywindow" className='link'>start</Link>
           </div>
         </div>
       </div>
@@ -43,7 +45,7 @@ function Surveys() {
           <div class='survey_cont_surv'>
             <p class='sur_name'>survey name</p> {/* Replace message with the name of the survey */}
             <p class='deadline'>deadline</p> {/* Replace date with the date */}
-            <button>start</button>
+            <Link to="/surveywindow" className='link'>start</Link>
           </div>
         </div>
       </div>

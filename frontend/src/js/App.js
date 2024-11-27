@@ -7,6 +7,7 @@ import Dashboard from './Dashboard';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Surveys from './Surveys';
+import SurveyWindow from './SurveyWindow';
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
             <ul class='navbar'>
               <li><Link to="/signUp" class='link'>sign up</Link></li>
               <li><Link to="/signIn" class='link'>sign in</Link></li>
-              <li><Link to="/" class='link'>home</Link></li>
+              <li><Link to="/" class='link'>SmartSurveys</Link></li>
               <li><Link to="/about" class='link'>about</Link></li>
               <li><Link to="/dashboard" class='link'>dashboard</Link></li>
             </ul>
@@ -29,6 +30,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/surveys" element={<Surveys />} />
+            <Route path="/surveywindow" element={<SurveyWindow />} />
           </Routes>
         </div>
     </Router>
