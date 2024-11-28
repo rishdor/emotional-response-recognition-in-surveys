@@ -9,7 +9,8 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Surveys from './Surveys';
 import SurveyWindow from './SurveyWindow';
-import Feedback from './Feedback';
+import ThankYou from './ThankYou';
+import SurveyQuestions from './SurveyQuestions';
 
 function App() {
   return (
@@ -36,7 +37,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/surveys" element={<Surveys />} />
             <Route path="/surveywindow" element={<SurveyWindow />} />
-            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/thankyou" element={<ThankYou />} />
+            <Route path='/surveyquestions' element={<SurveyQuestions />} />
           </Routes>
         </div>
     </Router>

@@ -45,6 +45,7 @@
 
         .edit_icon_checkbox:checked ~ .edit_container{
             margin-top: 0;
+            opacity: 1;
         }
 
         .edit_icon_img{
@@ -98,6 +99,7 @@
     width: 45%;
     border-radius: 50px;
     margin-top: -40%;
+    opacity: 0.6;
     transition: margin-top var(--animation_timing);
 }
 
