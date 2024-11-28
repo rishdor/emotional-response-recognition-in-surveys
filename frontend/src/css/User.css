@@ -13,7 +13,7 @@
 
 .user_section{
     width: 40%;
-    margin: 0 auto;
+    margin: 0 auto 5% auto;
     display: flex;
     flex-direction: column;
 }
@@ -53,6 +53,11 @@
             height: 30px;
         }
 
+        .edit_icon_checkbox:checked ~ .edit_container_password{
+            margin-top: 0;
+            opacity: 1;
+        }
+
 
 .data_container{
     display: grid;
@@ -76,7 +81,10 @@
             margin-top: 10px;
         }
 
-    
+        .change_pass_info{
+            margin: 0 auto 4% auto;
+        }
+
         .data{
             display: flex;
             flex-direction: column;
@@ -91,7 +99,9 @@
             margin-bottom: 2%;
         }
 
-.edit_container{
+.edit_container,
+.edit_container_password
+{
     background-color: var(--edit_background_color);
     position: absolute;
     top: 30vh;
@@ -143,7 +153,8 @@
     text-align: center;
 }
 
-    .delete_account input[type="submit"]{
+    .delete_account input[type="submit"],
+    .change_pass_label{
         background-color: var(--delete_color);
         color: #FFFFFF;
         border-radius: 30px;
@@ -152,7 +163,12 @@
         margin-top: 2%;
     }
 
-    .delete_account input[type="submit"]:hover{
+    .change_pass_label{
+        font-size: 90%;
+    }
+
+    .delete_account input[type="submit"]:hover,
+    .change_pass_label:hover{
         cursor: pointer;
         background-color: var(--delete_color_hover);
 }
