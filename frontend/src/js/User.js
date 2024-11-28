@@ -12,20 +12,45 @@ function User() {
         <ul>
             <li><h3>NAVIGATE</h3></li>
             <li><a href="#personal_data">personal data</a></li>
-            <li><a href="#awards">awards</a></li>
-            <li><a href="#messages">messages</a></li>
+            <li><a href="#del_account">delete account</a></li>
         </ul>
       </div>
 
       <div class='user_section'>
         <div class='above_line'>
             <h2 class='section_name' id='personal_data'>personal data</h2>
-            <button class='edit_icon' id='edit_data'><img src={editIcon} alt='edit'></img></button>
+            <div  class='edit_icon'>  {/*EDIT ICON */}
+                <input type='checkbox' id='edit_icon_checkbox' class='edit_icon_checkbox'/>
+                <label for='edit_icon_checkbox' class='edit_icon_label'>
+                    <img src={editIcon} alt='edit' class='edit_icon_img'/>
+                </label>
+                {/* EDIT WINDOW */}
+                <div class='edit_container'>
+                    <div class='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                        <h2 class='edit_personal_data'>edit personal data</h2>
+                        <div class='all_data'>
+                            <div class='data'>
+                                <label for='name_edit'>name:</label>
+                                <input name='name_edit' type='text' placeholder='name'/>  {/* Replace placeholder value with the user's name, will be used to editing*/}
+                            </div>
+                            <div class='data'>
+                                <label for='email_edit'>email:</label>
+                                <input type='email_edit' name='email' placeholder='email'/>  {/* Replace placeholder value with the user's name, will be used to editing*/}
+                            </div>
+                            <div class='data'>
+                                <label for='pass_edit'>password:</label>
+                                <input type='password' name='pass_edit' placeholder='********'/> {/*u know what to do */}
+                            </div>
+                        </div>
+                        <input type='submit' value='save changes'></input>
+                    </div>  
+                </div>  
+            </div>
         </div>
         <hr class='devide_line'></hr>
         <div class='data_container'>
             <div class='user_photo'>
-                <img src={userIcon} alt='user'></img>
+                <img src={userIcon} alt='user'/>
             </div>
             <div class='all_data'>
                 <div class='data'>
@@ -43,33 +68,21 @@ function User() {
             </div>        
         </div>
       </div>
-      <div class='edit_data'> {/* HIDE THIS DIV BY DEFAULT,, SHOW WHEN EDIT ICON CLICKED */}
-            <h2 class='edit_personal_data'>edit personal data</h2>
-            <div class='all_data'>
-                <div class='data'>
-                    <label for='name_edit'>name:</label>
-                    <input name='name_edit' type='text' placeholder='name'/>  {/* Replace placeholder value with the user's name, will be used to editing*/}
-                </div>
-                <div class='data'>
-                    <label for='email_edit'>email:</label>
-                    <input type='email_edit' name='email' placeholder='email'/>  {/* Replace placeholder value with the user's name, will be used to editing*/}
-                </div>
-                <div class='data'>
-                    <label for='pass_edit'>password:</label>
-                    <input type='password' name='pass_edit' placeholder='********'/> {/*u know what to do */}
-                </div>
-            </div>
-            <input type='submit' value='save changes'></input>
-      </div>
+      
 
         <div class='user_section'>
             <div class='above_line'>
-                <h2 class='section_name' id='settings'>settings</h2>
-                <button class='edit_icon' id='edit_awards'><img src={editIcon} alt='edit'></img></button>
+                <h2 class='section_name' id='del_account'>delete account</h2>
             </div>
             <hr class='devide_line'></hr>
-
+            <div class='all_data'>
+                <div class='delete_account'>
+                    <label for='delete_acc'>Once you delete your account, there is no going back. Please be certain.</label>
+                    <input type='submit' id='delete_acc' value='delete account'/>
+                </div>
+            </div>
         </div>
+
     </div>
   );
 }
