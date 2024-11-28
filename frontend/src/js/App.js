@@ -9,6 +9,7 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Surveys from './Surveys';
 import SurveyWindow from './SurveyWindow';
+import Feedback from './Feedback';
 
 function App() {
   return (
@@ -16,8 +17,9 @@ function App() {
       <div className="App">
           <nav>
             <ul class='navbar'>
-              <li><Link to="/signUp" class='link'>sign up</Link></li>
-              <li><Link to="/signIn" class='link'>sign in</Link></li>
+              <li><Link to="/signUp" class='link'>sign up</Link></li> {/*Visible only when user not signed in*/}
+              <li><Link to="/signIn" class='link'>sign in</Link></li> {/*Visible only when user not signed in*/}
+              <li>sign out</li>                                       {/*Visible only when user signed in*/}
               <li><Link to="/" class='link'>SmartSurveys</Link></li>
               <li><Link to="/about" class='link'>about</Link></li>
               <li><Link to="/user" class='link'>user</Link></li>
@@ -34,6 +36,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/surveys" element={<Surveys />} />
             <Route path="/surveywindow" element={<SurveyWindow />} />
+            <Route path="/feedback" element={<Feedback />} />
           </Routes>
         </div>
     </Router>
