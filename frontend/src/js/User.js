@@ -12,6 +12,7 @@ function User() {
         <ul>
             <li><h3>NAVIGATE</h3></li>
             <li><a href="#personal_data">personal data</a></li>
+            <li><a href="#change_password">change password</a></li>
             <li><a href="#del_account">delete account</a></li>
         </ul>
       </div>
@@ -37,10 +38,6 @@ function User() {
                                 <label for='email_edit'>email:</label>
                                 <input type='email_edit' name='email' placeholder='email'/>  {/* Replace placeholder value with the user's name, will be used to editing*/}
                             </div>
-                            <div class='data'>
-                                <label for='pass_edit'>password:</label>
-                                <input type='password' name='pass_edit' placeholder='********'/> {/*u know what to do */}
-                            </div>
                         </div>
                         <input type='submit' value='save changes'></input>
                     </div>  
@@ -61,15 +58,36 @@ function User() {
                     <label for='email'>email:</label>
                     <p name='email'>email</p> {/* Replace email with the user's email */}
                 </div>
-                <div class='data'>
-                    <label for='email'>password:</label>
-                    <p name='email'>********</p> {/* DO NOT REPLACE */}
-                </div>
             </div>        
         </div>
       </div>
-      
 
+      <div class='user_section'>    {/*CHANGE PASSWORD*/}
+            <div class='above_line'>
+                <h2 class='section_name' id='change_password'>change password</h2>
+            </div>
+            <hr class='devide_line'></hr>
+            <div class='all_data'>
+            <p class='change_pass_info'>Do this at least twice a year to keep your data save.</p>
+                <div class='delete_account'>
+                    <input type='checkbox' id='change_pass' class='edit_icon_checkbox'/>
+                    <label for='change_pass' class='change_pass_label'>change password</label>
+                    {/* EDIT WINDOW */}
+                    <div class='edit_container_password'>
+                        <div class='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                            <h2 class='edit_personal_data'>change password</h2>
+                            <div class='all_data'>
+                                <div class='data'>
+                                    <label for='pass_edit'>password:</label>
+                                    <input type='password' name='pass_edit' placeholder='********'/> {/*u know what to do */}
+                                </div>
+                            </div>
+                            <input type='submit' value='save changes'></input>
+                        </div>  
+                    </div>  
+                </div>
+            </div>
+        </div>
         <div class='user_section'>
             <div class='above_line'>
                 <h2 class='section_name' id='del_account'>delete account</h2>
