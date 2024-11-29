@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import '../css/SignForm.css';
-<<<<<<< HEAD
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-=======
 import { Link } from 'react-router-dom';
 import '../css/App.css';
->>>>>>> origin/frontend
 
 function SignIn() {
   const [email, setEmail] = useState('');
