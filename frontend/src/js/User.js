@@ -1,13 +1,27 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../css/User.css';
 import '../css/Dashboard.css';
+import '../css/App.css';
 import editIcon from '../images/icons8-edit-64.png';
 import userIcon from '../images/icons8-user-64.png';
 import CountriesSelect from './CountriesSelect';
 
+
 function User() {
   return (
     <div className="User">
+        <nav>
+            <ul class='navbar'>
+              <li><Link to="/signUp" class='link'>sign up</Link></li> {/*Visible only when user not signed in*/}
+              <li><Link to="/signIn" class='link'>sign in</Link></li> {/*Visible only when user not signed in*/}
+              <li>sign out</li>                                       {/*Visible only when user signed in*/}
+              <li><Link to="/" class='link'>SmartSurveys</Link></li>
+              <li><Link to="/about" class='link'>about</Link></li>
+              <li><Link to="/user" class='link'>user</Link></li>
+              <li><Link to="/dashboard" class='link'>dashboard</Link></li>
+            </ul>
+          </nav>
       <h1>WELCOME NAME</h1> {/* Replace NAME with the user's name */}
       <div class='sidebar'>
         <ul>

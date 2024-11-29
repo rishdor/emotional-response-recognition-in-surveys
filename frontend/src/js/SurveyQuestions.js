@@ -2,10 +2,22 @@ import React from 'react';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
 import { Link } from 'react-router-dom';
+import '../css/App.css';
 
 function SurveyQuestions() {
   return (
     <div className="SurveyQuestions">
+      <nav>
+            <ul class='navbar'>
+              <li><Link to="/signUp" class='link'>sign up</Link></li> {/*Visible only when user not signed in*/}
+              <li><Link to="/signIn" class='link'>sign in</Link></li> {/*Visible only when user not signed in*/}
+              <li>sign out</li>                                       {/*Visible only when user signed in*/}
+              <li><Link to="/" class='link'>SmartSurveys</Link></li>
+              <li><Link to="/about" class='link'>about</Link></li>
+              <li><Link to="/user" class='link'>user</Link></li>
+              <li><Link to="/dashboard" class='link'>dashboard</Link></li>
+            </ul>
+          </nav>
       <div class="question_container">
         <h3>Question 1</h3> {/*Replace with question number */}
         <hr class='question_underline'/>
