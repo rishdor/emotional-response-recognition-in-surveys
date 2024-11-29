@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from database.database import get_db
 from database.crud import get_user, delete_user, create_user, update_user
@@ -19,7 +19,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-
 
 @app.get("/users/{user_id}", tags=["GetUser"])
 def read(user_id: int, db = Depends(get_db)):
@@ -54,9 +53,9 @@ async def read_root() -> dict:
     return {"message": "Hello World!"}
 
 @app.post("/signin", tags=["signin"])
-def sign_in(user_login: UserLogin, db = Depends(get_db)):
+def sign_in(user_login: UserLogin, response: Response,  db = Depends(get_db)):
     try:
-        result = login_user(db=db, user=user_login)
+        result = login_user(db=db, user=user_login, response=response)
         return result
     except HTTPException as e:
         raise e

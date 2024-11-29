@@ -1,6 +1,6 @@
 import '../css/App.css';
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import Home from './Home';
 import About from './About';
 import User from './User';
@@ -12,14 +12,27 @@ import SurveyWindow from './SurveyWindow';
 import Feedback from './Feedback';
 
 function App() {
+  // to be fixed
+  const isLogged = document.cookie.includes("user_session");
+
+  const handleLogout = () => {
+    document.cookie = "user_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    window.location.assign("/");
+  }
   return (
     <Router>
       <div className="App">
           <nav>
             <ul class='navbar'>
-              <li><Link to="/signUp" class='link'>sign up</Link></li> {/*Visible only when user not signed in*/}
-              <li><Link to="/signIn" class='link'>sign in</Link></li> {/*Visible only when user not signed in*/}
-              <li>sign out</li>                                       {/*Visible only when user signed in*/}
+              {!isLogged && (
+              <li><Link to="/signUp" class='link'>sign up</Link></li>
+              )}
+              {!isLogged && (
+              <li><Link to="/signIn" class='link'>sign in</Link></li>
+              )}
+              {isLogged && (
+              <li onClick={handleLogout} style={{ cursor: "pointer" }}>sign out</li> 
+              )}                                   
               <li><Link to="/" class='link'>SmartSurveys</Link></li>
               <li><Link to="/about" class='link'>about</Link></li>
               <li><Link to="/user" class='link'>user</Link></li>
