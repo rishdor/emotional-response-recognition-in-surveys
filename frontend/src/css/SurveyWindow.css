@@ -6,46 +6,58 @@
     --highlight_color: #EEFFFA;
     --button_color: #7AB296;
     --button_hover_color: #5A8A7F;
+    --animation_timing: 0.5s ease-in-out;
 }
 .video_container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin: 2%;
+  margin: 2% auto 0 auto;
 }
 
-.video_container iframe {
-  width: 40vw;
-  height: 50vh;
-  border: none;
-  border-radius: 3px;
+  .video_container iframe {
+    width: 50vw;
+    height: 60vh;
+    border: none;
+    border-radius: 3px;
+  }
+
+
+.go_to_questions_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
 }
 
-.video_container button {
-  background-color: var(--button_color);
-  border: none;
-  border-radius: 100px;
-  height: 70px;
-  width: 70px;
-  margin: auto 5%;
-  color: #FFFFFF;
-  align-items: center;
-}
+  .go_to_questions_container h3{
+    margin: 1% auto;
+  }
 
-.video_container button img {
-    width: 30px;
-    height: 30px;
-    margin: auto;
-}
+    #go_to_questions {
+      display: flex;
+      justify-content: center;
+      background-color: var(--button_color);
+      border: none;
+      border-radius: 100px;
+      height: 70px;
+      width: 70px;
+      margin: auto 5%;
+      color: #FFFFFF;
+    }
 
-.video_container button:hover {
-  background-color: var(--button_hover_color);
-}
+      #go_to_questions img {
+        width: 40px;
+        height: 40px;
+        margin: auto;
+        transform: rotate(180deg);
+      }
 
-#right{
-    transform: rotate(180deg);
-}
+      #go_to_questions:hover {
+        background-color: var(--button_hover_color);
+      }
 
 
 .question_container {
@@ -53,51 +65,101 @@
   flex-direction: column;
   margin: 1% auto;
   background-color: var(--element_color);
-  width: 45%;
+  width: 40%;
   border-radius: 30px;  
 }
 
-.question_container h3{
+  .question_container h3{
     margin: 1% auto 0 auto;
-}
+  }
 
-.question {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  font-size: 100%;
-  padding-bottom: 2%;
-  margin: 0;
-}
-
-.all_answers {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-}
-
-.answer{
-    text-align: left;
-    margin: 1% 10%;
-}
-
-.answer label {
-    display: block;
-    padding: 1% 5%;
-    border:none;
-    background-color: var(--not_checked_color);
+  .question_underline{
+    width: 20%;
+    transition: width var(--animation_timing);
+    height: 5px;
+    background-color: var(--button_hover_color);
+    border: none;
     border-radius: 30px;
-    cursor: pointer;
+    margin-bottom: 0;
+  }
+
+    .question_container:hover > .question_underline{
+      width: 35%;
+    }
+
+  .question {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 100%;
+    padding-bottom: 2%;
+    margin: 0;
+  }
+
+    .singular_choice,
+    .multiple_choice {
+      display: flex;
+      flex-direction: column;
+    }
+
+      .answer{
+        display: flex;
+        flex-direction: row;
+        text-align: left;
+        margin: 1% 5%;
+      }
+
+        .answer label {    
+          padding: 1% 5%;
+          border:none;
+          background-color: var(--not_checked_color);
+          border-radius: 30px;
+          cursor: pointer;
+        }
+
+          .answer label:hover {
+            background-color: var(--highlight_color);
+          }
+
+        .answer input[type="radio"] {
+          display: none;
+        }
+
+          .answer input[type="radio"]:checked + label {
+            background-color: var(--checked_color);
+          }
+
+        .answer input[type="checkbox"] {
+          display: none;
+        }
+
+          .answer input[type="checkbox"]:checked + label {
+            background-color: var(--checked_color);
+          }
+
+.finish{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: auto;
 }
 
-.answer input[type="radio"] {
-    display: none;
-}
+  .finish .link{
+    display: flex;
+    justify-content: center;
+    width: 10%;
+  }
 
-.answer label:hover {
-    background-color: var(--highlight_color);
-}
+    .finish input[type="submit"] {
+      background-color: var(--button_color);
+      border: none;
+      border-radius: 30px;
+      height: 200%;
+      width: 100%;
+      color: #FFFFFF;
+      font-size: 100%;
+    }
 
-.answer input[type="radio"]:checked + label {
-    background-color: var(--checked_color);
-}
+      .finish input[type="submit"]:hover {
+        background-color: var(--button_hover_color);
+      }

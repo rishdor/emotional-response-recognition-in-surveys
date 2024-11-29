@@ -1,6 +1,6 @@
 import '../css/App.css';
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Home from './Home';
 import About from './About';
 import User from './User';
@@ -9,7 +9,8 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Surveys from './Surveys';
 import SurveyWindow from './SurveyWindow';
-import Feedback from './Feedback';
+import ThankYou from './ThankYou';
+import SurveyQuestions from './SurveyQuestions';
 
 function App() {
   // to be fixed
@@ -22,24 +23,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-          <nav>
-            <ul class='navbar'>
-              {!isLogged && (
-              <li><Link to="/signUp" class='link'>sign up</Link></li>
-              )}
-              {!isLogged && (
-              <li><Link to="/signIn" class='link'>sign in</Link></li>
-              )}
-              {isLogged && (
-              <li onClick={handleLogout} style={{ cursor: "pointer" }}>sign out</li> 
-              )}                                   
-              <li><Link to="/" class='link'>SmartSurveys</Link></li>
-              <li><Link to="/about" class='link'>about</Link></li>
-              <li><Link to="/user" class='link'>user</Link></li>
-              <li><Link to="/dashboard" class='link'>dashboard</Link></li>
-            </ul>
-          </nav>
-
           <Routes>
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/signIn" element={<SignIn />} />
@@ -49,7 +32,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/surveys" element={<Surveys />} />
             <Route path="/surveywindow" element={<SurveyWindow />} />
-            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/thankyou" element={<ThankYou />} />
+            <Route path='/surveyquestions' element={<SurveyQuestions />} />
           </Routes>
         </div>
     </Router>
