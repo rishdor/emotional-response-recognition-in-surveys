@@ -3,6 +3,7 @@ import '../css/User.css';
 import '../css/Dashboard.css';
 import editIcon from '../images/icons8-edit-64.png';
 import userIcon from '../images/icons8-user-64.png';
+import CountriesSelect from './CountriesSelect';
 
 function User() {
   return (
@@ -29,17 +30,52 @@ function User() {
                 <div class='edit_container'>
                     <div class='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
                         <h2 class='edit_personal_data'>edit personal data</h2>
-                        <div class='all_data'>
+                        <div class='all_user_data'>
                             <div class='data'>
                                 <label for='name_edit'>name:</label>
-                                <input name='name_edit' type='text' placeholder='name'/>  {/* Replace placeholder value with the user's name, will be used to editing*/}
+                                <input name='name_edit' type='text' placeholder='name'/>  {/* Replace placeholder value with the user's name*/}
                             </div>
                             <div class='data'>
                                 <label for='email_edit'>email:</label>
-                                <input type='email_edit' name='email' placeholder='email'/>  {/* Replace placeholder value with the user's name, will be used to editing*/}
+                                <input type='email_edit' name='email' placeholder='email'/>  {/* Replace placeholder value with the user's email*/}
+                            </div>
+                            <div class='data'>
+                            <label for="country">country:</label>
+                                <CountriesSelect /> {/*idk what to do with this one: has to be discussed, probably same this as with the gender*/}
+                            </div>
+
+                            <div class='data'>
+                                <label for="city">city:</label>
+                                <input type="text" name='city' placeholder='city' />
+                            </div>
+
+                            <div class='data'>
+                                <label for="job_position">job position:</label>
+                                <input type="text" name='job_position' placeholder='job position' />
+                            </div>
+
+                            <div class='data'>
+                                <label for="education_level">education level:</label>
+                                <input type="text" name='education_level' placeholder='education level' />
+                            </div>
+
+                            <div class='data'>
+                                <label for="birth">date of birth:</label>
+                                <input type="date" name='birth' placeholder='date of birth' />
+                            </div>  {/* Replace placeholder value with the user's name, will be used to editing*/}
+
+                            <div class='data'>
+                                <label for="gerder">gender:</label>
+                                <select name="gender" id="gender">  {/* no placeholder, since it won't work. displayed value has to be the one from database*/}
+                                    <option value="">select your gender</option>
+                                    <option value="F">female</option>
+                                    <option value="M">male</option>
+                                    <option value="O">other</option>
+                                    <option value="N">prefer not to say</option>
+                                </select>
                             </div>
                         </div>
-                        <input type='submit' value='save changes'></input>
+                        <input type='submit' value='save changes'></input>  {/* has to uncheck the checkbox edit_icon_checkbox from line 25*/}
                     </div>  
                 </div>  
             </div>
@@ -49,7 +85,7 @@ function User() {
             <div class='user_photo'>
                 <img src={userIcon} alt='user'/>
             </div>
-            <div class='all_data'>
+            <div class='all_user_data'>
                 <div class='data'>
                     <label for='name'>name:</label>
                     <p name='name'>name</p> {/* Replace name with the user's name */}
@@ -57,6 +93,30 @@ function User() {
                 <div class='data'>
                     <label for='email'>email:</label>
                     <p name='email'>email</p> {/* Replace email with the user's email */}
+                </div>
+                <div class='data'>
+                    <label for='counrty'>country:</label>
+                    <p name='counrty'>counrty</p> {/* Replace name with the user's country */}
+                </div>
+                <div class='data'>
+                    <label for='city'>city:</label>
+                    <p name='city'>city</p> {/* Replace name with the user's city */}
+                </div>
+                <div class='data'>
+                    <label for='job position'>job position:</label>
+                    <p name='job position'>job position</p> {/* Replace name with the user's job position */}
+                </div>
+                <div class='data'>
+                    <label for='education_level'>education level:</label>
+                    <p name='education_level'>education level</p> {/* Replace name with the user's education level */}
+                </div>
+                <div class='data'>
+                    <label for='birth'>date of birth:</label>
+                    <p name='birth'>date of birth</p> {/* Replace name with the user's birth date */}
+                </div>
+                <div class='data'>
+                    <label for='gender'>gender:</label>
+                    <p name='gender'>gender</p> {/* Replace name with the user's gender */}
                 </div>
             </div>        
         </div>
@@ -70,8 +130,8 @@ function User() {
             <div class='all_data'>
             <p class='change_pass_info'>Do this at least twice a year to keep your data save.</p>
                 <div class='delete_account'>
-                    <input type='checkbox' id='change_pass' class='edit_icon_checkbox'/>
-                    <label for='change_pass' class='change_pass_label'>change password</label>
+                    <input type='checkbox' id='edit_pass_chechbox' class='edit_pass_checkbox'/>
+                    <label for='edit_pass_chechbox' class='change_pass_label'>change password</label>
                     {/* EDIT WINDOW */}
                     <div class='edit_container_password'>
                         <div class='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
@@ -82,7 +142,7 @@ function User() {
                                     <input type='password' name='pass_edit' placeholder='********'/> {/*u know what to do */}
                                 </div>
                             </div>
-                            <input type='submit' value='save changes'></input>
+                            <input type='submit' value='save changes'></input> {/* has to uncheck the checkbox edit_pass_chechbox from line 132*/}
                         </div>  
                     </div>  
                 </div>
@@ -94,8 +154,8 @@ function User() {
             </div>
             <hr class='devide_line'></hr>
             <div class='all_data'>
+            <p for='delete_acc'>Once you delete your account, there is no going back. Please be certain.</p>
                 <div class='delete_account'>
-                    <label for='delete_acc'>Once you delete your account, there is no going back. Please be certain.</label>
                     <input type='submit' id='delete_acc' value='delete account'/>
                 </div>
             </div>

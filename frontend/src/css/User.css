@@ -12,7 +12,7 @@
   }
 
 .user_section{
-    width: 40%;
+    width: 50%;
     margin: 0 auto 5% auto;
     display: flex;
     flex-direction: column;
@@ -39,7 +39,8 @@
         border-radius: 30px;
     }
 
-        .edit_icon_checkbox{
+        .edit_icon_checkbox,
+        .edit_pass_checkbox{
             display: none;
         }
 
@@ -53,7 +54,7 @@
             height: 30px;
         }
 
-        .edit_icon_checkbox:checked ~ .edit_container_password{
+        .edit_pass_checkbox:checked ~ .edit_container_password{
             margin-top: 0;
             opacity: 1;
         }
@@ -81,6 +82,13 @@
             margin-top: 10px;
         }
 
+        .all_user_data{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 2%;
+            margin-left: 2%;
+        }
+
         .change_pass_info{
             margin: 0 auto 4% auto;
         }
@@ -105,12 +113,13 @@
     background-color: var(--edit_background_color);
     position: absolute;
     top: 30vh;
-    left: 27.5vw;
-    width: 45%;
+    left: 20vw;
+    width: 60%;
     border-radius: 50px;
-    margin-top: -40%;
+    margin-top: -60%;
     opacity: 0.6;
     transition: margin-top var(--animation_timing);
+    position: fixed;
 }
 
 .edit_data{
@@ -120,17 +129,19 @@
     width: 85%;
     display: flex;
     flex-direction: column;
-    margin: 4% auto;;
+    margin: 4% auto;
 }
 
     .edit_personal_data{
         margin: 0;
     }
 
-    .edit_data input{
+    .edit_data input,
+    .edit_data select{
         border-radius: 10px;
         border: none;
         padding: 1% 2%;
+        background-color: #FFFFFF;
     }
     .edit_data label{
         margin-bottom: 2%;
