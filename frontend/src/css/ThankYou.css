@@ -1,0 +1,29 @@
+:root{
+    --light_color: #E5F1F0;
+    --medium_color_one: #CEEBC8;
+    --medium_color_two: #7AB296;
+    --dark_color: #5A8A7F;
+    --animation_timing: 0.5s ease-in-out;
+    
+  }
+
+.thank_container{
+    height: 65vh;
+    width: 60vw;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 0.9fr 1fr;
+    align-items: center;
+}
+
+.thx_img1,
+.thx_img2
+{
+    height: 60vh;
+    margin: auto;
+}
+
+.thx_message{
+    width: 100%;
+    font-style: italic;
+}
