@@ -24,12 +24,22 @@
     margin-right: 1%;
 }
 
+.formElem select{
+    width: 67%;
+    padding: 1%;
+    border-radius: 10px;
+    border: 1px solid var(--button_hover_color);
+    height: 50%;
+    background-color: #FFFFFF;
+}
+
 .formElem input{
     width: 65%;
     padding: 1%;
     border-radius: 10px;
     border: 1px solid var(--button_hover_color);
     height: 50%;
+    background-color: #FFFFFF;
 }
 
 .formElem input[type='checkbox']{
