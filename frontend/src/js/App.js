@@ -1,6 +1,6 @@
 import '../css/App.css';
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate, Outlet } from 'react-router-dom';
 import Home from './Home';
 import About from './About';
 import User from './User';
@@ -13,27 +13,44 @@ import ThankYou from './ThankYou';
 import SurveyQuestions from './SurveyQuestions';
 
 function App() {
-  // to be fixed
-  const isLogged = document.cookie.includes("user_session");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleLogout = () => {
-    document.cookie = "user_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.assign("/");
+  useEffect(() => {
+    const cookieExists = document.cookie.includes("user_session");
+    setIsAuthenticated(cookieExists);
+  }, []);
+
+  const PublicRoute = ({isAuthenticated}) => {
+    if (isAuthenticated) {
+      return <Navigate to="/dashboard" />;
+    }
+    return <Outlet />;
   }
+  const PrivateRoute = ({isAuthenticated }) => {
+    if (!isAuthenticated) {
+      return <Navigate to="/signin" />;
+    }
+    return <Outlet />;
+  };
+
   return (
     <Router>
       <div className="App">
           <Routes>
-            <Route path="/signUp" element={<SignUp />} />
-            <Route path="/signIn" element={<SignIn />} />
-            <Route path="/" element={<Home />} />
+            <Route element={<PublicRoute isAuthenticated={isAuthenticated} />}>
+              <Route path="/signUp" element={<SignUp setIsAuthenticated={setIsAuthenticated} />} />
+              <Route path="/signIn" element={<SignIn setIsAuthenticated={setIsAuthenticated} />} />
+              <Route path="/" element={<Home />} />
+            </Route>
+            <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
+              <Route path="/user" element={<User />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/surveys" element={<Surveys />} />
+              <Route path="/surveywindow" element={<SurveyWindow />} />
+              <Route path="/thankyou" element={<ThankYou />} />
+              <Route path='/surveyquestions' element={<SurveyQuestions />} />
+            </Route>
             <Route path="/about" element={<About />} />
-            <Route path="/user" element={<User />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/surveys" element={<Surveys />} />
-            <Route path="/surveywindow" element={<SurveyWindow />} />
-            <Route path="/thankyou" element={<ThankYou />} />
-            <Route path='/surveyquestions' element={<SurveyQuestions />} />
           </Routes>
         </div>
     </Router>

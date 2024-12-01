@@ -28,7 +28,7 @@ def update_user(db: Session, user_id: int, user_data: UserUpdate):
     db.refresh(db_user)
     return db_user
 
-# Create a user by ID
+# Create a user
 def create_user(db: Session, user: UserCreate):
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
