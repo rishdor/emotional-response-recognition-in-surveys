@@ -18,9 +18,14 @@ yarn-error.log*
 # Virtual environment
 backend/venv
 
+backend/.env
+
 # Python bytecode cache
 backend/api/__pycache__/
 backend/app/api/__pycache__/
+*/__pycache__
+*/*/__pycache__
+*/*/*/__pycache__
 
 #IDE
 .idea/
