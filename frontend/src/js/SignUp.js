@@ -1,64 +1,279 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../css/SignForm.css';
 import CountriesSelect from './CountriesSelect';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../css/App.css';
+import axios from 'axios';
 
-function SignUp() {
+function SignUp({ setIsAuthenticated }) {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    city: '',
+    job_position: '',
+    education_level: '',
+    date_of_birth: '',
+    gender: '',
+    password: '',
+    re_password: '',  })
+  const [country, setCountry] = useState('');
+  const [rodo, setRodo] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const user_data = {
+      ...formData,
+      country,
+    };
+
+    try {
+      await axios.post('http://localhost:8000/signup',
+         user_data,
+        { withCredentials: true});
+        setIsAuthenticated(true)
+        navigate('/dashboard');
+    }
+    catch (error) {
+      console.log(error.response.data.detail);
+    }
+  };
+
+  const [errors, setErrors] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    city: '',
+    job_position: '',
+    education_level: '',
+    date_of_birth: '',
+    gender: '',
+    password: '',
+    re_password: '',
+    rodo: false,
+  });
+
+  const validate = (name, value) => {
+    let error = '';
+    switch(name) {
+      case 'first_name':
+        if (!value.trim()) error = 'This field is required';
+        break;
+
+      case 'last_name':
+        if (!value.trim()) error = 'This field is required';
+        break;
+
+      case 'email':
+        if (!value.trim()) error = 'Email is required';
+        else if (!/\S+@\S+\.\S+/.test(value)) error = 'Please enter a valid email';
+        break;
+
+      case 'country':
+        if (!value.trim()) error = 'This field is required';
+        break;
+
+      case 'city':
+        if (!value.trim()) error = 'This field is required';
+        break;
+
+      case 'job_position':
+        if (!value.trim()) error = 'This field is required';
+        break;
+
+      case 'education_level':
+        if (!value.trim()) error = 'This field is required';
+        break;
+
+      case 'date_of_birth':
+        const dob = new Date(value);
+        const age = new Date().getFullYear() - dob.getFullYear();
+    
+        if (!value.trim()) {
+            error = 'A date of birth is required';
+        } 
+        else if (isNaN(dob.getTime())) {
+            error = 'Invalid date format';
+        } 
+        else if (dob.getFullYear() < 1900 || dob > new Date()) {
+            error = 'Date of birth must be a realistic value';
+        } 
+        else if (age < 18) {
+            error = 'You must be at least 18 years old';
+        }
+        break;
+      
+      case 'gender':
+        if (!value) error = 'Please select a gender';
+        break;
+      
+      case 'password':
+        if (!value.trim()) error = 'Password is required';
+        else if (value.length < 6) error = 'Password must be at least 6 characters';
+        break;
+      
+      case 're_password':
+        if (value !== formData.password) error = 'Passwords do not match';
+        break;
+      
+      case 'rodo':
+        if (!value) error = "You must accept the terms and conditions";
+        break;
+
+      default:
+        break;
+    }
+
+    setErrors(prevErrors => ({
+      ...prevErrors,
+      [name]: error,
+    }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, [name]: value };
+  
+      validate(name, value, updatedData);
+  
+      if (name === 'password' || name === 're_password') {
+        if (updatedData.password !== updatedData.re_password) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            re_password: 'Passwords do not match',
+          }));
+        } else {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            re_password: '',
+          }));
+        }
+      }
+  
+      return updatedData;
+    });
+  };
+  
+  const handleCountryChange = (value) => {
+    setCountry(value);
+    validate('country', value);
+  };
+  
+  const handleRodoChange = (e) => {
+    const value = e.target.checked;
+    setRodo(value);
+    validate('rodo', value); 
+  };
+  
+  const isFormValid = Object.values(errors).every((error) => error === '') &&
+    Object.values(formData).every((value) => value !== '' && value !== false) &&
+    rodo; 
+
   return (
     <div className="SignUp">
       <nav>
             <ul class='navbar'>
               <li><Link to="/signUp" class='link'>sign up</Link></li> {/*Visible only when user not signed in*/}
               <li><Link to="/signIn" class='link'>sign in</Link></li> {/*Visible only when user not signed in*/}
-              <li>sign out</li>                                       {/*Visible only when user signed in*/}
               <li><Link to="/" class='link'>SmartSurveys</Link></li>
               <li><Link to="/about" class='link'>about</Link></li>
-              <li><Link to="/user" class='link'>user</Link></li>
-              <li><Link to="/dashboard" class='link'>dashboard</Link></li>
             </ul>
           </nav>
       <h1>Sign Up</h1>
 
-      <div class='signForm'>
+      {/* Sign-up Form */}
+      <form class='signForm' onSubmit={handleSubmit}>
+
+        {/* First Name */}
         <div class='formElem'>
-          <label for="name">name:</label>
-          <input type="text" name='name' required />
+          <label for="name">first name:</label>
+          <input type="text" 
+          name='first_name'
+          value={formData.first_name}
+          onChange={handleChange} />
         </div>
+        {errors.first_name && <div style={{ color: 'red', fontSize: 12 }}>{errors.first_name}</div>}
         
+        {/* Last Name */}
+        <div class='formElem'>
+          <label for="name">last name:</label>
+          <input type="text"
+          name="last_name"
+          value={formData.last_name}
+          onChange={handleChange} />
+        </div>
+        {errors.last_name && <div style={{ color: 'red', fontSize: 12 }}>{errors.last_name}</div>}
+
+        {/* Email */}
         <div class='formElem'>
           <label for="email">email:</label>
-          <input type="email" name='email' required />
+          <input type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange} 
+          />
         </div>
+        {errors.email && <div style={{ color: 'red', fontSize: 12 }}>{errors.email}</div>}
 
+        {/* Country */}
         <div class='formElem'>
           <label for="country">country:</label>
-          <CountriesSelect /> {/*it was way to long to put it in the same file, but might be put back here */}
+          <CountriesSelect 
+          country={country}
+          setCountry={handleCountryChange}/>
         </div>
+        {errors.country && <div style={{ color: 'red', fontSize: 12 }}>{errors.country}</div>}
 
+        {/* City */}
         <div class='formElem'>
           <label for="city">city:</label>
-          <input type="text" name='city' required />
+          <input type="text"
+          name="city"
+          value={formData.city}
+          onChange={handleChange} />
         </div>
+        {errors.city && <div style={{ color: 'red', fontSize: 12 }}>{errors.city}</div>}
 
+        {/* Job Position */}
         <div class='formElem'>
           <label for="job_position">job position:</label>
-          <input type="text" name='job_position' required />
+          <input type="text"
+          name="job_position"
+          value={formData.job_position}
+          onChange={handleChange} />
         </div>
+        {errors.job_position && <div style={{ color: 'red', fontSize: 12 }}>{errors.job_position}</div>}
 
+        {/* Education Level */}
         <div class='formElem'>
           <label for="education_level">education level:</label>
-          <input type="text" name='education_level' required />
+          <input type="text"
+          name="education_level"
+          value={formData.education_level}
+          onChange={handleChange} />
         </div>
+        {errors.education_level && <div style={{ color: 'red', fontSize: 12 }}>{errors.education_level}</div>}
 
+        {/* Date Of Birth */}
         <div class='formElem'>
           <label for="birth">date of birth:</label>
-          <input type="date" name='birth' required />
+          <input type="date" 
+          name="date_of_birth"
+          value={formData.date_of_birth}
+          onChange={handleChange} />
         </div>
+        {errors.date_of_birth && <div style={{ color: 'red', fontSize: 12 }}>{errors.date_of_birth}</div>}
 
+        {/* Gender */}
         <div class='formElem'>
           <label for="gerder">gender:</label>
-          <select name="gender" id="gender" required>
+          <select name="gender"
+           value={formData.gender}
+           onChange={handleChange} >
             <option value="">select your gender</option>
             <option value="F">female</option>
             <option value="M">male</option>
@@ -66,26 +281,42 @@ function SignUp() {
             <option value="N">prefer not to say</option>
           </select>
         </div>
+        {errors.gender && <div style={{ color: 'red', fontSize: 12 }}>{errors.gender}</div>}
 
+        {/* Password */}
         <div class='formElem'>
           <label for="pass">password:</label>
-          <input type="password" name='pass' required />
+          <input type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}  />
         </div>  
+        {errors.password && <div style={{ color: 'red', fontSize: 12 }}>{errors.password}</div>}
 
+        {/* re-Password */}
         <div class='formElem'>
           <label for="repPass">repeat password:</label>
-          <input type="password" name='repPass' required />
+          <input type="password"
+          name="re_password"
+          value={formData.re_password}
+          onChange={handleChange}  />
         </div>
+        {errors.re_password && <div style={{ color: 'red', fontSize: 12 }}>{errors.re_password}</div>}
 
         <div class='formElem'>
-          <input type="checkbox" name="rodo" required />
+          <input type="checkbox" 
+          name="rodo"
+          checked={formData.rodo}
+          onChange={handleRodoChange}
+           />
           <label for="rodo">*I confirm being informed about the privacy policy</label>
         </div>
+        {errors.rodo && <div style={{ color: 'red', fontSize: 12 }}>{errors.rodo}</div>}
 
         <div class='formElem'>
-          <input type="submit" value="Sign Up" />
+          <button type="submit" disabled={!isFormValid}> Submit </button>
         </div>
-      </div>
+      </form>
       <footer>
       </footer>
     </div>

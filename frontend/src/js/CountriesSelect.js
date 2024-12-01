@@ -1,9 +1,11 @@
 import React from 'react';
 
 
-    const CountriesSelect = () => {
+    const CountriesSelect = ({country, setCountry}) => {
     return (
-        <select name="countries" id="countries_select" required>
+        <select name="countries" 
+        value={country}
+        onChange={(e) => setCountry(e.target.value)} >
   <option value="">select your country</option>
   <option value="afghanistan">Afghanistan</option>
   <option value="albania">Albania</option>
