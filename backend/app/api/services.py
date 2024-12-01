@@ -5,6 +5,21 @@ from database.schemas import UserLogin, UserCreate
 from database.crud import create_user
 import secrets
 from datetime import datetime, timedelta, timezone
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(plain_password: str) -> str:
+    """
+    Hashes a plaintext password
+    """
+    return pwd_context.hash(plain_password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verifies a plaintext password against a hashed password in the db
+    """
+    return pwd_context.verify(plain_password, hashed_password)
 
 def login_user(db: Session, user: UserLogin, response: Response):
     user_db = db.query(User).filter(User.email == user.email).first()
@@ -15,7 +30,7 @@ def login_user(db: Session, user: UserLogin, response: Response):
             detail="Invalid credentials",
         )
     
-    if user.password!= user_db.password_hash:
+    if not verify_password(user.password, user_db.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials",
@@ -32,9 +47,12 @@ def login_user(db: Session, user: UserLogin, response: Response):
         samesite="Strict",  
     )
 
-    return {"message":"Login successful", "user": user.email}
+    return {"message": "Login successful", "user": user.email}
 
 def signup_user(db: Session, user: UserCreate, response: Response):
+    hashed_password = hash_password(user.password)
+    user.password_hash = hashed_password
+    
     new_user = create_user(db, user)
 
     if not new_user:
