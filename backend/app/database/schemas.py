@@ -15,7 +15,7 @@ class UserCreate(BaseModel):
     gender: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserUpdate(BaseModel):
     email: Optional[str] = None
@@ -30,8 +30,11 @@ class UserUpdate(BaseModel):
     gender: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
     
 class UserLogin(BaseModel):
     email: str
     password: str
+
+    class Config:
+        from_attributes = True

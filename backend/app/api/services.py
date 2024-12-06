@@ -51,7 +51,7 @@ def login_user(db: Session, user: UserLogin, response: Response):
 
 def signup_user(db: Session, user: UserCreate, response: Response):
     hashed_password = hash_password(user.password)
-    user.password_hash = hashed_password
+    user.password = hashed_password
     
     new_user = create_user(db, user)
 
