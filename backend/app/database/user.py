@@ -1,6 +1,7 @@
 from .database import Base
 from sqlalchemy import Column, Integer, Date, String
 from sqlalchemy import func
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -18,3 +19,5 @@ class User(Base):
     gender = Column(String)
     created_at = Column(Date, default=func.now())
     updated_at = Column(Date, default=func.now(), onupdate=func.now())
+    points = relationship("UserPoints", back_populates="user", uselist=False)  # One-to-one relationship with UserPoints
+
