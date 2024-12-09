@@ -19,7 +19,7 @@ function SurveyQuestions() {
               <li><Link to="/dashboard" class='link'>dashboard</Link></li>
             </ul>
           </nav>
-      <div class="question_container">
+      <template class="question_container">
         <h3>Question 1</h3> {/*Replace with question number */}
         <hr class='question_underline'/>
         <div class="question">
@@ -35,7 +35,7 @@ function SurveyQuestions() {
                 </div>
             </div>
         </div>
-      </div>
+      </template>
       <div class="question_container">
         <h3>Question 2</h3> {/*Replace with question number */}
         <hr class='question_underline'/>

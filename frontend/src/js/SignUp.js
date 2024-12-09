@@ -251,10 +251,17 @@ function SignUp({ setIsAuthenticated }) {
         {/* Education Level */}
         <div class='formElem'>
           <label for="education_level">education level:</label>
-          <input type="text"
-          name="education_level"
+          <select name="education"
           value={formData.education_level}
-          onChange={handleChange} />
+          onChange={handleChange}>
+            <option value="">select your education level</option>
+            <option value="highschool">High School</option>
+            <option value="associates">Associate's Degree</option>
+            <option value="bachelors">Bachelor's Degree</option>
+            <option value="masters">Master's Degree</option>
+            <option value="doctorate">Doctorate</option>
+            <option value="other">Other</option>
+          </select>
         </div>
         {errors.education_level && <div style={{ color: 'red', fontSize: 12 }}>{errors.education_level}</div>}
 
