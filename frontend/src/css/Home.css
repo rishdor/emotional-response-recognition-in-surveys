@@ -5,29 +5,30 @@
     --element_color: #E5F1F0;
     --footer_color: #7AB296;
     --button_hover_color: #5A8A7F;
+    --half_circle_size: 300px;
+    --half_circle_size_2: 400px;
   }
 
 
 .hero{
     background-color: var(--main_color);
     display: flex;
-    height: 94vh;
+    height: 95vh;
 }
 
 .hero h1{
-    border: 1px solid red;
     width: 60%;
     margin:10% 0 10% 20%;
 }
 
 .left_side{
     width: 50%;
-    
+    display: flex;
+    flex-direction: column;
 }
 
   .hero_check_list{
     width: 60%;
-    border: 1px solid green;
     margin-left: 30%;
   }
 
@@ -53,11 +54,24 @@
         margin-top: -40%;
     }
 
-  .quarter_circle{
-    width: 300px;
-    height: 300px;
-    background-color: var(--footer_color);
-    border: none;
-    border-radius: 0 300px 0 0;
-    margin: 0;
+    @media only screen and (max-width: 1920px){
+      .quarter_circle{
+        width: var(--half_circle_size);
+        height: var(--half_circle_size);
+        background-color: var(--footer_color);
+        border: none;
+        border-radius: 0 300px 0 0;
+        margin: calc(40% - var(--half_circle_size)) 0 0 0;
+      }
+    }
+
+  @media only screen and (min-width: 1920px){
+    .quarter_circle{
+      width: var(--half_circle_size_2);
+      height: var(--half_circle_size_2);
+      background-color: var(--devide_line_color);
+      border: none;
+      border-radius: 0 400px 0 0;
+      margin: calc(50% - var(--half_circle_size_2)) 0 0 0;
+    }
   }
