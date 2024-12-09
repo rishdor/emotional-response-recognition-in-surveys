@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// import '../css/Home.css';
+import '../css/Home.css';
 import '../css/App.css';
+import checkIcon from '../images/icons8-checkmark-50.png';
+import heroPhoto from '../images/photos/portrait-stylish-young-woman-brunette-girl-with-laptop-sitting-outdoors-using-computer.jpg'
 
 function Home() {
     return (
@@ -14,7 +16,30 @@ function Home() {
               <li><Link to="/about" class='link'>about</Link></li>
             </ul>
           </nav>
-        <h1>FastAPI React Integration</h1>
+        <div class='hero'>
+          <div class='left_side'>
+            <h1>SURVEYS OF TOMORROW</h1>
+            <div class='hero_check_list'>
+              <div class='hero_elem'>
+                <img src={checkIcon}/>
+                <p>fill in surveys just with your mimicry</p>
+              </div>
+              <div class='hero_elem'>
+                <img src={checkIcon}/>
+                <p>exchange survey points for awards</p>
+              </div>
+              <div class='hero_elem'>
+                <img src={checkIcon}/>
+                <p>keep track of your surveys</p>
+              </div>
+            </div>
+            <hr class='quarter_circle'/>
+          </div>
+          <div class='hero_photo_container'>
+              <img src={heroPhoto} class='hero_photo'/>
+          </div>
+          
+        </div>
         <footer>
         </footer>
       </div>
