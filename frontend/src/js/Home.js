@@ -22,7 +22,7 @@ function Home() {
             <div class='hero_check_list'>
               <div class='hero_elem'>
                 <img src={checkIcon}/>
-                <p>fill in surveys just with your mimicry</p>
+                <p>fill in surveys with your mimicry</p>
               </div>
               <div class='hero_elem'>
                 <img src={checkIcon}/>
@@ -38,7 +38,10 @@ function Home() {
           <div class='hero_photo_container'>
               <img src={heroPhoto} class='hero_photo'/>
           </div>
-          
+        </div>
+        <div>
+          <h2>ABOUT US</h2>
+          <p>SmartSurveys is a platform that allows you to fill in surveys just with your mimicry. You can exchange survey points for awards, keep track of your surveys and much more. Sign up now and start earning!</p>
         </div>
         <footer>
         </footer>
