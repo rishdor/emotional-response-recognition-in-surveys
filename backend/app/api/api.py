@@ -1,7 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import NoResultFound
 from database.database import get_db
-from database.crud import get_user, delete_user, update_user
+from database.crud import (get_user, delete_user, update_user, 
+                           update_user_points, get_user_points_by_id)
 from database.schemas import UserCreate, UserUpdate, UserLogin
 from .services import login_user, signup_user
 
@@ -20,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-@app.get("/users/{user_id}", tags=["GetUser"])
+@app.get("/users/{user_id}", tags=["GetUsersName"])
 def read(user_id: int, db = Depends(get_db)):
     user = get_user(db=db, user_id=user_id)
     if user is None:
@@ -32,14 +34,14 @@ def delete(user_id: int, db = Depends(get_db)):
     user = delete_user(db=db, user_id=user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return {"status": "success", "message": "User successfully deleted"}
 
 @app.put("/update_user/{user_id}", tags=["UpdateUser"])
-async def update(user_id: int, user_update: UserUpdate, db = Depends(get_db)):
+def update(user_id: int, user_update: UserUpdate, db = Depends(get_db)):
     user = update_user(db=db, user_id=user_id, user_data=user_update)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return {"status": "success", "message": "User successfully updated"}
     
 @app.post("/signup", tags=["SignUp"])
 def create(user: UserCreate, response: Response, db = Depends(get_db)):
@@ -49,10 +51,6 @@ def create(user: UserCreate, response: Response, db = Depends(get_db)):
     except HTTPException as e:
         raise e
 
-@app.get("/", tags=["test"])
-async def read_root() -> dict:
-    return {"message": "Hello World!"}
-
 @app.post("/signin", tags=["SignIn"])
 def sign_in(user_login: UserLogin, response: Response,  db = Depends(get_db)):
     try:
@@ -60,3 +58,20 @@ def sign_in(user_login: UserLogin, response: Response,  db = Depends(get_db)):
         return result
     except HTTPException as e:
         raise e
+    
+@app.get('/user/{user_id}/points', tags=["getUserPoints"])
+def get_user_points(user_id: int, db = Depends(get_db)):
+    try:
+        user_points = get_user_points_by_id(db=db, user_id=user_id)
+        return {"points": user_points.points} 
+
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail=f"User with id {user_id} not found.")
+    
+@app.get('/user/{user_id}/update_points', tags=["updateUserPoints"])
+def update_user_ponits(user_id: int, points: int, db = Depends(get_db)):
+    user_points = update_user_points(user_id=user_id,
+                                           points=points, db=db)
+    if user_points is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"status": "success", "message": "Points successfully updated."}
