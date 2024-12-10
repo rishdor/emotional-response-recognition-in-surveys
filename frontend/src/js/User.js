@@ -43,7 +43,7 @@ function User() {
                 </label>
                 {/* EDIT WINDOW */}
                 <div class='edit_container'>
-                    <div class='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                    <form class='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
                         <h2 class='edit_personal_data'>edit personal data</h2>
                         <div class='all_user_data'>
                             <div class='data'>
@@ -71,7 +71,15 @@ function User() {
 
                             <div class='data'>
                                 <label for="education_level">education level:</label>
-                                <input type="text" name='education_level' placeholder='education level' />
+                                <select name="education" id="education">
+                                    <option value="">select your education level</option>
+                                    <option value="highschool">High School</option>
+                                    <option value="associates">Associate's Degree</option>
+                                    <option value="bachelors">Bachelor's Degree</option>
+                                    <option value="masters">Master's Degree</option>
+                                    <option value="doctorate">Doctorate</option>
+                                    <option value="other">Other</option>
+                                </select>
                             </div>
 
                             <div class='data'>
@@ -91,7 +99,7 @@ function User() {
                             </div>
                         </div>
                         <input type='submit' value='save changes'></input>  {/* has to uncheck the checkbox edit_icon_checkbox from line 25*/}
-                    </div>  
+                    </form>  
                 </div>  
             </div>
         </div>
@@ -153,8 +161,16 @@ function User() {
                             <h2 class='edit_personal_data'>change password</h2>
                             <div class='all_data'>
                                 <div class='data'>
-                                    <label for='pass_edit'>password:</label>
-                                    <input type='password' name='pass_edit' placeholder='********'/> {/*u know what to do */}
+                                    <label for='pass_edit1'> old password:</label>
+                                    <input type='password' name='pass_edit1' placeholder='********'/> {/*u know what to do */}
+                                </div>
+                                <div class='data'>
+                                    <label for='pass_edit2'>new password:</label>
+                                    <input type='password' name='pass_edit2'/> {/*u know what to do */}
+                                </div>
+                                <div class='data'>
+                                    <label for='pass_edit3'>repeat new password:</label>
+                                    <input type='password' name='pass_edit3'/> {/*u know what to do */}
                                 </div>
                             </div>
                             <input type='submit' value='save changes'></input> {/* has to uncheck the checkbox edit_pass_chechbox from line 132*/}
