@@ -5,6 +5,7 @@ import '../css/App.css';
 import checkIcon from '../images/icons8-checkmark-50.png';
 import heroPhoto from '../images/photos/portrait-stylish-young-woman-brunette-girl-with-laptop-sitting-outdoors-using-computer.jpg'
 
+
 function Home() {
     return (
       <div className="Home">
@@ -21,22 +22,22 @@ function Home() {
             <h1>SURVEYS OF TOMORROW</h1>
             <div class='hero_check_list'>
               <div class='hero_elem'>
-                <img src={checkIcon}/>
+                <img src={checkIcon} alt="check"/>
                 <p>fill in surveys with your mimicry</p>
               </div>
               <div class='hero_elem'>
-                <img src={checkIcon}/>
+                <img src={checkIcon} alt="check"/>
                 <p>exchange survey points for awards</p>
               </div>
               <div class='hero_elem'>
-                <img src={checkIcon}/>
+                <img src={checkIcon} alt="check"/>
                 <p>keep track of your surveys</p>
               </div>
             </div>
             <hr class='quarter_circle'/>
           </div>
           <div class='hero_photo_container'>
-              <img src={heroPhoto} class='hero_photo'/>
+              <img src={heroPhoto} class='hero_photo' alt="woman with laptop"/>
           </div>
         </div>
         <div>
