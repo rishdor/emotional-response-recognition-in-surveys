@@ -29,3 +29,6 @@ backend/app/api/__pycache__/
 
 #IDE
 .idea/
+
+.vscode/
+venv/
