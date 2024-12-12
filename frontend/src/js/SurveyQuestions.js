@@ -1,10 +1,11 @@
 import React from 'react';
+import Singular from './Questions/Singular';
+import Multiple from './Questions/Multiple';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
 import { Link } from 'react-router-dom';
 import '../css/App.css';
-import Singular from './Questions/Singular';
-import Multiple from './Questions/Multiple';
+
 
 function SurveyQuestions() {
   const handleLogout = () => {
@@ -20,20 +21,34 @@ function SurveyQuestions() {
               <li><Link to="/user" class='link'>user</Link></li>
               <li><Link to="/dashboard" class='link'>dashboard</Link></li>
             </ul>
-          </nav>
+      </nav>
       
-      <Singular/>
+      <div class="question_container">
+        <h3>Question 1</h3> {/*Replace with question number */}
+        <hr class='question_underline'/>
+        <div class="question">
+            <p>question</p> {/*Replace with question */}
+            <template>
+              <Singular/> 
+            </template>   
+            <template>
+              <Multiple/>
+            </template>        
+        </div>
+      </div>
 
-      <Multiple/>
+      
+      <div class='finish'>
+        <input type="submit" value="next question" />
+      </div>
 
       <div class='finish'>
         <Link to="/thankyou" class='link'><input type="submit" value="finish survey" /></Link>
       </div>
-      <div class='next_question'>
-        <input type="submit" value="next question" />
-      </div>
+      
     </div>
   );
 }
 
 export default SurveyQuestions;
+
