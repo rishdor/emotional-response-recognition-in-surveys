@@ -4,7 +4,7 @@ import '../css/Dashboard.css';
 import '../css/App.css';
 import starIcon from '../images/icons8-star-64.png';
 import frogIcon from '../images/icons8-frog-96.png';
-import messageIcon from '../images/icons8-mail-64.png';
+import bulbIcon from '../images/icons8-light-bulb-48.png';
 
 
 function Dashboard() {
@@ -31,6 +31,26 @@ function Dashboard() {
             <li><a href="#messages">messages</a></li>
         </ul>
       </div>
+
+      <div class='section'>
+        <h2 class='section_name' id='messages'>Notifications</h2>
+        <hr class='devide_line'/>
+
+        <div class='all_messages'>
+          <div class='message_headers'>
+            <p>Notification</p>
+            <p>Date</p>
+          </div>
+
+          <div class='message_container'>
+            <img src={bulbIcon} alt='mail'/>
+            <p>message</p> {/* Replace message with the message */}
+            <p>date</p> {/* Replace date with the date */}
+          </div>
+          
+        </div>
+      </div>
+      
 
       <div class='section'>
         <h2 class='section_name' id='surveys'>surveys</h2>
@@ -72,24 +92,6 @@ function Dashboard() {
         </div>
       </div>
 
-      <div class='section'>
-        <h2 class='section_name' id='messages'>messages</h2>
-        <hr class='devide_line'/>
-
-        <div class='all_messages'>
-          <div class='message_headers'>
-            <p>message</p>
-            <p>date</p>
-          </div>
-
-          <div class='message_container'>
-            <img src={messageIcon} alt='mail'/>
-            <p>message</p> {/* Replace message with the message */}
-            <p>date</p> {/* Replace date with the date */}
-          </div>
-          
-        </div>
-      </div>
       <footer>
       </footer>
     </div>
