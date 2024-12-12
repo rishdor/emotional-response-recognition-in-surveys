@@ -1,6 +1,4 @@
 import React from 'react';
-import Singular from './Questions/Singular';
-import Multiple from './Questions/Multiple';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
 import { Link } from 'react-router-dom';
@@ -22,24 +20,37 @@ function SurveyQuestions() {
               <li><Link to="/dashboard" class='link'>dashboard</Link></li>
             </ul>
       </nav>
+        
+      <div class="question_container">
+          <h3>Question 1</h3> {/*Replace with question number */}
+          <hr class='question_underline'/>
+          <div class="question">
+              <p>question</p> {/*Replace with question */}
+              <div class="singular_choice">
+                  <div class="answer">
+                      <input type="radio" id="answer_radioA" name="answer_radio" value="A"/>  {/*Replace value with answer value */}
+                      <label for="answer_radioA">A answer</label>   {/*Replace with answer */}
+                  </div>
+              </div>
+          </div>
+      </div>
       
       <div class="question_container">
-        <h3>Question 1</h3> {/*Replace with question number */}
-        <hr class='question_underline'/>
-        <div class="question">
-            <p>question</p> {/*Replace with question */}
-            <template>
-              <Singular/> 
-            </template>   
-            <template>
-              <Multiple/>
-            </template>        
-        </div>
+          <h3>Question 1</h3> {/*Replace with question number */}
+          <hr class='question_underline'/>
+          <div class="question">
+              <p>question</p> {/*Replace with question */}
+              <div class="multiple_choice">
+                  <div class="answer">
+                      <input type="checkbox" id="answer_checkboxA" name="answer_checkbox" value="A"/>   {/*Replace value with answer value */}
+                      <label for="answer_checkboxA">A answer</label>   {/*Replace with answer */}
+                  </div>
+              </div>
+          </div>
       </div>
 
-      
       <div class='finish'>
-        <input type="submit" value="next question" />
+        <input type="submit" value="next question"/>
       </div>
 
       <div class='finish'>
