@@ -13,7 +13,7 @@
 .hero{
     background-color: var(--main_color);
     display: flex;
-    height: 95vh;
+    height: 100%;
 }
 
 .hero h1{
@@ -50,8 +50,8 @@
 
     .hero_photo{
         width: 100%;
-        border-radius: 800px 0 0 600px;
-        margin-top: -40%;
+        border-radius: 700px 0 0 700px;
+        margin-top: 0;
     }
 
     @media only screen and (max-width: 1920px){
@@ -72,6 +72,7 @@
       background-color: var(--devide_line_color);
       border: none;
       border-radius: 0 400px 0 0;
-      margin: calc(50% - var(--half_circle_size_2)) 0 0 0;
+      /*margin: calc(50% - var(--half_circle_size_2)) 0 0 0;*/
+      position: absolute;
     }
   }

@@ -54,6 +54,7 @@ h1, h2, h3, h4, h5, h6{
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    margin-bottom: 2%;
 }
 
   .section_name{
@@ -202,7 +203,7 @@ h1, h2, h3, h4, h5, h6{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 10% auto;
+    margin: 0 auto 0 auto;
     width: 100%;
   }
   
