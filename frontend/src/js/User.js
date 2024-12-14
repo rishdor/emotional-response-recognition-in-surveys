@@ -169,7 +169,7 @@ function User() {
                             <div class='all_data'>
                                 <div class='data'>
                                     <label for='pass_edit1'> old password:</label>
-                                    <input type='password' name='pass_edit1' placeholder='********'/> {/*u know what to do */}
+                                    <input type='password' name='pass_edit1'/> {/*u know what to do */}
                                 </div>
                                 <div class='data'>
                                     <label for='pass_edit2'>new password:</label>
