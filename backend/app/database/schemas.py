@@ -38,3 +38,9 @@ class UserLogin(BaseModel):
 
     class Config:
         from_attributes = True
+
+class EmailCheckRequest(BaseModel):
+    email: str
+
+    class Config:
+        from_attributes = True

@@ -4,8 +4,8 @@ from sqlalchemy.exc import NoResultFound
 from database.database import get_db
 from database.crud import (get_user, delete_user, update_user, 
                            update_user_points, get_user_points_by_id)
-from database.schemas import UserCreate, UserUpdate, UserLogin
-from .services import login_user, signup_user
+from database.schemas import UserCreate, UserUpdate, UserLogin, EmailCheckRequest
+from .services import login_user, signup_user, verify_token, check_email_exists
 
 app = FastAPI()
 
@@ -75,3 +75,16 @@ def update_user_ponits(user_id: int, points: int, db = Depends(get_db)):
     if user_points is None:
         raise HTTPException(status_code=404, detail="User not found")
     return {"status": "success", "message": "Points successfully updated."}
+
+@app.get('/verify', tags=["verifyUser"])
+async def verify_user(verified_token: dict = Depends(verify_token)):
+    return {"message": "User is authenticated", "user_id": verified_token["sub"]}
+
+@app.post('/logout', tags=["logoutUser"])
+async def logout_user(response: Response):
+    response.delete_cookie(key="access_token")
+    return {"message": "Successfully logged out"}
+
+@app.post("/check-email", tags=["checkEmail"])
+async def check_email(email_request: EmailCheckRequest, db = Depends(get_db)):
+    return check_email_exists(db, email_request)
