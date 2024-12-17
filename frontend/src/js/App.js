@@ -14,11 +14,64 @@ import SurveyQuestions from './SurveyQuestions';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleLoginSuccess = async () => {
+    console.log("ASD");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:8000/verify', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsAuthenticated(true);
+        setUserId(data.user_id);
+      } else {
+        setIsAuthenticated(false);
+        setUserId(null);
+      }
+    } catch (error) {
+      console.error('Error verifying user:', error);
+      setIsAuthenticated(false);
+      setUserId(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const cookieExists = document.cookie.includes("user_session");
-    setIsAuthenticated(cookieExists);
+    const checkAuthStatus = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/verify", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setIsAuthenticated(true);
+          setUserId(data.user_id);
+        } else {
+          setIsAuthenticated(false);
+          setUserId(null);
+        }
+      } catch (error) {
+        console.error("Error verifying user:", error);
+        setIsAuthenticated(false);
+        setUserId(null);
+      } finally {
+        setIsLoading(false)
+      }
+    };
+
+    checkAuthStatus();
   }, []);
+
 
   const PublicRoute = ({isAuthenticated}) => {
     if (isAuthenticated) {
@@ -33,18 +86,22 @@ function App() {
     return <Outlet />;
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Router>
       <div className="App">
           <Routes>
             <Route element={<PublicRoute isAuthenticated={isAuthenticated} />}>
-              <Route path="/signUp" element={<SignUp setIsAuthenticated={setIsAuthenticated} />} />
-              <Route path="/signIn" element={<SignIn setIsAuthenticated={setIsAuthenticated} />} />
+              <Route path="/signUp" element={<SignUp onAuthenticationSuccess={handleLoginSuccess} />} />
+              <Route path="/signin"element={<SignIn onAuthenticationSuccess={handleLoginSuccess} />}/>
               <Route path="/" element={<Home />} />
             </Route>
             <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
               <Route path="/user" element={<User />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard userId={userId}/>} />
               <Route path="/surveys" element={<Surveys />} />
               <Route path="/surveywindow" element={<SurveyWindow />} />
               <Route path="/thankyou" element={<ThankYou />} />

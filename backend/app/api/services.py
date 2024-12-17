@@ -1,12 +1,14 @@
 from sqlalchemy.orm import Session
 from database.user import User
-from fastapi import HTTPException, status, Response
-from database.schemas import UserLogin, UserCreate
+from fastapi import HTTPException, status, Response, Request
+from database.schemas import UserLogin, UserCreate, EmailCheckRequest
 from database.crud import create_user
-import secrets
 from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
+import jwt
 
+SECRET_KEY = "secret_key"
+ALGORITHM = "HS256"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(plain_password: str) -> str:
@@ -36,23 +38,28 @@ def login_user(db: Session, user: UserLogin, response: Response):
             detail="Invalid credentials",
         )
     
-    session_token = secrets.token_hex(16)
+    payload = {
+        "sub": str(user_db.user_id),
+        "exp": datetime.utcnow().replace(tzinfo=timezone.utc) + timedelta(hours=1),
+    }
     
-    expires_at = datetime.utcnow().replace(tzinfo=timezone.utc) + timedelta(minutes=30) 
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    
     response.set_cookie(
-        key="user_session",
-        value=session_token,
-        expires=expires_at,
-        httponly=False,       
-        samesite="Strict",  
+        key="access_token",
+        value=token,
+        expires=payload["exp"],
+        httponly=True,
+        secure=True,
+        samesite="Strict", 
     )
 
-    return {"message": "Login successful", "user": user.email}
+    return {"message": "Login successful"}
 
 def signup_user(db: Session, user: UserCreate, response: Response):
     hashed_password = hash_password(user.password)
     user.password = hashed_password
-    
+
     new_user = create_user(db, user)
 
     if not new_user:
@@ -60,17 +67,44 @@ def signup_user(db: Session, user: UserCreate, response: Response):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Error creating user"
         )
-    
-    session_token = secrets.token_hex(16)
 
-    expires_at = datetime.utcnow().replace(tzinfo=timezone.utc) + timedelta(minutes=30)
+    payload = {
+        "sub": str(new_user.user_id),
+        "exp": datetime.utcnow().replace(tzinfo=timezone.utc) + timedelta(hours=1),
+    }
+
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
     response.set_cookie(
-        key="user_session",
-        value=session_token,
-        expires=expires_at,
-        httponly=False, 
-        samesite="Strict",  
+        key="access_token",
+        value=token,
+        expires=payload["exp"],
+        httponly=True,
+        secure=True,
+        samesite="Strict",
     )
 
-    return {"message": "User created successfully", "user": user.email}
+    return {"message": "User created successfully"}
+
+def verify_token(request: Request):
+    token = request.cookies.get("access_token")
+    if token is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return decoded
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired")
+    except jwt.DecodeError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+def check_email_exists(db: Session, email_request: EmailCheckRequest):
+    user_db = db.query(User).filter(User.email == email_request.email).first()
+
+    if user_db:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already exists"
+        )
+    return {"message": "Email is available"}

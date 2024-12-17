@@ -1,34 +1,37 @@
 import React, { useState } from 'react';
 import '../css/SignForm.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import '../css/App.css';
 
-function SignIn( {setIsAuthenticated }) {
+const SignIn = ({ onAuthenticationSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    setIsLoading(true);
+
     try {
-      await axios.post('http://localhost:8000/signin',
-        {
-          email,
-          password
-        },
-        {
-          withCredentials: true
-        }
+      const response = await axios.post(
+        'http://localhost:8000/signin',
+        { email, password },
+        { withCredentials: true }
       );
-      setIsAuthenticated(true)
-      navigate('/dashboard');
+
+      if (response.status === 200) {
+        onAuthenticationSuccess();
+      } else {
+        console.error("Login failed:", response);
+      }
     } catch (error) {
-      setMessage('Login failed: ' + error.response.data.detail);
+      console.error('Login failed:', error);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
+
 
   return (
     <div className="SignIn">
@@ -63,12 +66,11 @@ function SignIn( {setIsAuthenticated }) {
           </div>  
 
           <div class='formElem'>
-            <input type="submit" value="Sign In" />
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? 'Signing In...' : 'Sign In'}
+            </button>
           </div>
-        </form>
-
-        <p>{message}</p> 
-
+        </form> 
         <footer>
         </footer>
       </div>

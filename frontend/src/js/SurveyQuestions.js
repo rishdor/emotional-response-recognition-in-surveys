@@ -6,15 +6,22 @@ import '../css/App.css';
 
 
 function SurveyQuestions() {
-  const handleLogout = () => {
-    document.cookie = "user_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.assign("/");
-  }
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:8000/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      window.location.assign("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
   return (
     <div className="SurveyQuestions">
       <nav>
             <ul class='navbar'>
-              <li onClick={handleLogout} style={{ cursor: "pointer" }}>sign out</li>
+              <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li>
               <li><Link to="/about" class='link'>about</Link></li>
               <li><Link to="/user" class='link'>user</Link></li>
               <li><Link to="/dashboard" class='link'>dashboard</Link></li>
