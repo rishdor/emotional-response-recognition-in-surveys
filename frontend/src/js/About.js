@@ -1,13 +1,42 @@
-import React from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/App.css';
 
 function About() {
-  const isLogged = document.cookie.includes("user_session");
-  const handleLogout = () => {
-    document.cookie = "user_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.assign("/");
-  }
+  const [isLogged, setIsLogged] = useState(false);
+
+  const checkAuthStatus = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/verify", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setIsLogged(true);
+      } else {
+        setIsLogged(false);
+      }
+    } catch (error) {
+      console.log("Authentication error:", error);
+      setIsLogged(false);
+    }
+  };
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+  
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:8000/logout", {
+        method: "POST",
+        credentials: "include", 
+      });
+      window.location.assign("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
   return (
     <div className="About">
       <nav>
@@ -19,7 +48,7 @@ function About() {
               <li><Link to="/signIn" class='link'>sign in</Link></li>
               )}
               {isLogged && (
-              <li onClick={handleLogout} style={{ cursor: "pointer" }}>sign out</li> 
+              <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li> 
               )}
               {!isLogged &&(
               <li><Link to="/" class='link'>SmartSurveys</Link></li>

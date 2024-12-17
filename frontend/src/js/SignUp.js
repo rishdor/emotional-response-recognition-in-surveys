@@ -5,7 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../css/App.css';
 import axios from 'axios';
 
-function SignUp({ setIsAuthenticated }) {
+function SignUp({ onAuthenticationSuccess }) {
+  let debounceTimeout;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     first_name: '',
@@ -13,12 +14,12 @@ function SignUp({ setIsAuthenticated }) {
     email: '',
     city: '',
     job_position: '',
-    education_level: '',
     date_of_birth: '',
     gender: '',
     password: '',
     re_password: '',  })
   const [country, setCountry] = useState('');
+  const [education_level, setEducationLevel] = useState('');
   const [rodo, setRodo] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -27,13 +28,14 @@ function SignUp({ setIsAuthenticated }) {
     const user_data = {
       ...formData,
       country,
+      education_level,
     };
 
     try {
       await axios.post('http://localhost:8000/signup',
          user_data,
         { withCredentials: true});
-        setIsAuthenticated(true)
+        onAuthenticationSuccess();
         navigate('/dashboard');
     }
     catch (error) {
@@ -55,7 +57,39 @@ function SignUp({ setIsAuthenticated }) {
     rodo: false,
   });
 
-  const validate = (name, value) => {
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await fetch('http://localhost:8000/check-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        return '';
+      } else {
+        const data = await response.json();
+        return data.detail;
+      }
+    } catch (error) {
+      return 'Error checking email';
+    }
+  }
+
+  const debounceCheckEmailExists = (email) => {
+    return new Promise((resolve) => {
+      clearTimeout(debounceTimeout);
+
+      debounceTimeout = setTimeout(async () => {
+        const error = await checkEmailExists(email);
+        resolve(error);
+      }, 500); 
+    });
+  };
+  
+  const validate = async (name, value) => {
     let error = '';
     switch(name) {
       case 'first_name':
@@ -69,6 +103,7 @@ function SignUp({ setIsAuthenticated }) {
       case 'email':
         if (!value.trim()) error = 'Email is required';
         else if (!/\S+@\S+\.\S+/.test(value)) error = 'Please enter a valid email';
+        else error = await debounceCheckEmailExists(value);
         break;
 
       case 'country':
@@ -139,7 +174,7 @@ function SignUp({ setIsAuthenticated }) {
       const updatedData = { ...prevData, [name]: value };
   
       validate(name, value, updatedData);
-  
+      
       if (name === 'password' || name === 're_password') {
         if (updatedData.password !== updatedData.re_password) {
           setErrors((prevErrors) => ({
@@ -168,6 +203,12 @@ function SignUp({ setIsAuthenticated }) {
     setRodo(value);
     validate('rodo', value); 
   };
+
+  const handleEducationLevelChange = (e) => {
+    const value = e.target.value;
+    setEducationLevel(value);
+    validate('education_level', value);
+  }
   
   const isFormValid = Object.values(errors).every((error) => error === '') &&
     Object.values(formData).every((value) => value !== '' && value !== false) &&
@@ -252,8 +293,8 @@ function SignUp({ setIsAuthenticated }) {
         <div class='formElem'>
           <label for="education_level">education level:</label>
           <select name="education"
-          value={formData.education_level}
-          onChange={handleChange}>
+          education_level={education_level}
+          onChange={handleEducationLevelChange}>
             <option value="">select your education level</option>
             <option value="highschool">High School</option>
             <option value="associates">Associate's Degree</option>

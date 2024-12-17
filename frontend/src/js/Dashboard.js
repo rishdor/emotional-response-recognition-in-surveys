@@ -1,4 +1,4 @@
-import React from 'react';
+import { React, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Dashboard.css';
 import '../css/App.css';
@@ -7,22 +7,83 @@ import frogIcon from '../images/icons8-frog-96.png';
 import bulbIcon from '../images/icons8-light-bulb-48.png';
 
 
-function Dashboard() {
-  const handleLogout = () => {
-    document.cookie = "user_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.assign("/");
-  }
+const Dashboard = ({ userId }) => {
+  const [user, setUser] = useState(null);
+  const [points, setPoints] = useState(null);
+  //const [isLoading, setIsLoading] = useState(true);
+
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:8000/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      window.location.assign("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.toUpperCase());
+        } else {
+          throw new Error("Error fetching user data");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    const fetchUserPoints = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/user/${userId}/points`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setPoints(data.points);
+        } else {
+          throw new Error("Error fetching points");
+        }
+      } catch (error) {
+        console.error("Error fetching points:", error);
+      }
+    };
+
+    if (userId) {
+      fetchUser();
+      fetchUserPoints();
+    }
+  }, [userId]);
+
+ 
+
   return (
     <div className="Dashboard">
       <nav>
             <ul class='navbar'>
-              <li onClick={handleLogout} style={{ cursor: "pointer" }}>sign out</li> 
+              <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li> 
               <li><Link to="/about" class='link'>about</Link></li>
               <li><Link to="/user" class='link'>user</Link></li>
               <li><Link to="/dashboard" class='link'>dashboard</Link></li>
             </ul>
         </nav>
-      <h1>WELCOME NAME</h1> {/* Replace NAME with the user's name */}
+      <h1>WELCOME {user}</h1> 
       <div class='sidebar'>
         <ul>
             <li><h3>NAVIGATE</h3></li>
@@ -73,7 +134,7 @@ function Dashboard() {
         <hr class='devide_line'/>
         <div class='points'>
             <p>you have</p>
-            <p>1000</p> {/* Replace 1000 with the user's points */}
+            <p> { points } </p> {/* Replace 1000 with the user's points */}
             <img src={starIcon} alt='star'/>
         </div>
 
