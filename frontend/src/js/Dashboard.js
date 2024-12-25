@@ -77,19 +77,19 @@ const Dashboard = ({ userId }) => {
     <div className="Dashboard">
       <nav>
             <ul class='navbar'>
-              <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li> 
-              <li><Link to="/about" class='link'>about</Link></li>
-              <li><Link to="/user" class='link'>user</Link></li>
-              <li><Link to="/dashboard" class='link'>dashboard</Link></li>
+              <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+              <li><Link to="/about" class='link'>About</Link></li>
+              <li><Link to="/user" class='link'>User</Link></li>
+              <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
             </ul>
         </nav>
       <h1>WELCOME {user}</h1> 
       <div class='sidebar'>
         <ul>
             <li><h3>NAVIGATE</h3></li>
-            <li><a href="#surveys">surveys</a></li>
-            <li><a href="#awards">awards</a></li>
-            <li><a href="#messages">messages</a></li>
+            <li><a href="#surveys">Surveys</a></li>
+            <li><a href="#awards">Awards</a></li>
+            <li><a href="#messages">Messages</a></li>
         </ul>
       </div>
 
@@ -114,26 +114,26 @@ const Dashboard = ({ userId }) => {
       
 
       <div class='section'>
-        <h2 class='section_name' id='surveys'>surveys</h2>
+        <h2 class='section_name' id='surveys'>Surveys</h2>
         <hr class='devide_line'/>
         <div class='survey_container'>
             <div class='inner_surveys'>
-                <h3>new</h3>
+                <h3>New</h3>
                 <p>survey name</p> {/* Replace survey name with the name of the survey  and dislpay 3 most recect*/}
             </div>
             <div class='inner_surveys'>
-                <h3>in progress</h3>
+                <h3>In progress</h3>
                 <p>survey name</p> {/* Replace survey name with the name of the survey  and dislpay 3 with shortest deadline*/}
             </div>
         </div>
-        <Link to="/surveys" class='link' id='view_more'>view more</Link>
+        <Link to="/surveys" class='link view_more' id='view_more'>View more</Link>
       </div>
 
       <div class='section'>
-        <h2 class='section_name' id='awards'>awards</h2>
+        <h2 class='section_name' id='awards'>Awards</h2>
         <hr class='devide_line'/>
         <div class='points'>
-            <p>you have</p>
+            <p>You have</p>
             <p> { points } </p> {/* Replace 1000 with the user's points */}
             <img src={starIcon} alt='star'/>
         </div>
@@ -147,7 +147,7 @@ const Dashboard = ({ userId }) => {
             <div class='award'>
               <img src={frogIcon} alt='frog'/>
               <p>500 frogpoints</p> {/* Replace 500 frogpointswith the award*/}
-              <input type="submit" value="redeem" />
+              <input type="submit" value="Redeem" />
             </div>
           </div>
         </div>

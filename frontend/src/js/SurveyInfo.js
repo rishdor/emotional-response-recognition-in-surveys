@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../css/App.css';
 import '../css/SurveyInfo.css';
-import '../css/SurveyQuestions.css';
+import '../css/SurveyWindow.css';
+import '../css/Dashboard.css';
 
 function SurveyInfo() {
   const isLogged = document.cookie.includes("user_session");
@@ -36,9 +37,14 @@ function SurveyInfo() {
             </ul>
           </nav>
           <div  class='survey_info_main_cointainer'>
-              <h2>survey name</h2> {/* Replace survey name with the name of the survey */}
+              <h2>survey title</h2> {/* from db*/}
               <hr class='question_underline'></hr>
-
+              <p class='surv_deadline'>deadline</p> {/* from db*/}
+              <p>issuer</p> {/* from db*/}
+              <p>survey description</p> {/* from db*/}
+              <div class='finish survey_info_button'>
+                  <Link to="/surveywindow" class='link'><input type="submit" value="start survey" /></Link>
+              </div>
           </div>
     </div>
   );
