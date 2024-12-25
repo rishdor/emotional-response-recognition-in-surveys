@@ -60,6 +60,7 @@ h1, h2, h3, h4, h5, h6{
   .section_name{
     text-align: left;
     font-size: 110%;
+    margin: 0 0 1% 0;
   }
 
   .devide_line{
@@ -95,14 +96,14 @@ h1, h2, h3, h4, h5, h6{
         margin-left: 5%;
       }
   
-  #view_more{
+  .view_more{
     margin: 2% auto;
     padding: 1% 5%;
     background-color: var(--footer_color);
     color: #FFFFFF;
     border-radius: 30px;
   }
-  #view_more:hover{
+  .view_more:hover{
     background-color: var(--button_hover_color);
   }
 
