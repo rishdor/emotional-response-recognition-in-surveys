@@ -1,8 +1,11 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import NoResultFound
 from .user import User
 from .user_points import UserPoints
 from .schemas import UserCreate, UserUpdate
-from sqlalchemy.exc import NoResultFound
+from .surveys import Survey, PreferencesUserPreferences, PreferencesSurveyRequirements, UserSurveyCompletion, SurveyProgress
+from sqlalchemy.sql import literal
+from .reward import Reward
 
 # Get user's name by ID
 def get_user(db: Session, user_id: int):
@@ -38,8 +41,8 @@ def create_user(db: Session, user: UserCreate):
 
     db_user = User(
         email=user.email,
-        first_name = user.first_name,
-        last_name = user.last_name,
+        first_name=user.first_name,
+        last_name=user.last_name,
         password_hash=user.password,
         city=user.city,
         country=user.country,
@@ -53,7 +56,7 @@ def create_user(db: Session, user: UserCreate):
     db.refresh(db_user)
 
     db_user_points = UserPoints(
-        user_id = db_user.user_id
+        user_id=db_user.user_id
     )
 
     db.add(db_user_points)
@@ -68,10 +71,83 @@ def update_user_points(db: Session, user_id: int, points: int):
     db_user.points = points
     db.commit()
     return db_user
-    
+
 def get_user_points_by_id(db: Session, user_id: id):
     try:
         user_points = db.query(UserPoints).filter(UserPoints.user_id == user_id).one()
         return user_points
     except NoResultFound:
         raise NoResultFound(f"No points record found for user with id {user_id}")
+
+# Match surveys to user preferences
+def match_surveys_to_user(db: Session, user_id: int):
+    active_surveys = db.query(Survey).filter(Survey.is_active == True).all()
+
+    # user_preferences = db.query(PreferencesUserPreferences).filter(
+    #     PreferencesUserPreferences.user_id == user_id
+    # ).all()
+
+    # if not user_preferences:
+    #     return {"error": "No preferences found for the user."}
+
+    # # Create a dictionary for user preferences {type_id: value_id}
+    # user_preferences_dict = {pref.type_id: pref.value_id for pref in user_preferences}
+
+    # matched_surveys = []
+    # for survey in active_surveys:
+    #     survey_requirements = db.query(PreferencesSurveyRequirements).filter(
+    #         PreferencesSurveyRequirements.survey_id == survey.survey_id
+    #     ).all()
+        
+    #     match = True
+    #     for requirement in survey_requirements:
+    #         if user_preferences_dict.get(requirement.type_id) != requirement.value_id:
+    #             match = False
+    #             break
+        
+    #     if match:
+    #         matched_surveys.append(survey)
+    
+    # # Update UserSurveyCompletion table for matched surveys
+    # for survey in matched_surveys:
+    #     existing_entry = db.query(UserSurveyCompletion).filter(
+    #         UserSurveyCompletion.user_id == user_id,
+    #         UserSurveyCompletion.survey_id == survey.survey_id
+    #     ).first()
+
+    #     if not existing_entry:
+    #         new_completion = UserSurveyCompletion(
+    #             user_id=user_id,
+    #             survey_id=survey.survey_id,
+    #             survey_state='not_started'
+    #         )
+    #         db.add(new_completion)
+
+    # db.commit()
+    # return {"matched_surveys": [survey.survey_id for survey in matched_surveys]}
+    for survey in active_surveys:
+        existing_entry = db.query(UserSurveyCompletion).filter(
+            UserSurveyCompletion.user_id == user_id,
+            UserSurveyCompletion.survey_id == survey.survey_id
+        ).first()
+
+        if not existing_entry:
+            new_completion = UserSurveyCompletion(
+                user_id=user_id,
+                survey_id=survey.survey_id,
+                survey_state=SurveyProgress.not_started
+            )
+            db.add(new_completion)
+
+    db.commit()
+    return {"message": "All active surveys have been added to the user."}
+
+def get_surveys_by_user_id(db: Session, user_id: int):
+    match_surveys_to_user(db, user_id)
+    user_surveys = db.query(UserSurveyCompletion).filter(UserSurveyCompletion.user_id == user_id).all()
+    return user_surveys
+
+
+def get_rewards(db: Session):
+    rewards = db.query(Reward).all()
+    return rewards
