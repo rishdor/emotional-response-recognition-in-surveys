@@ -20,6 +20,18 @@ function SurveyWindow() {
     }
   };
 
+  const formatDateWithRemainingDays = (deadline) => {
+    const deadlineDate = new Date(deadline);
+    const today = new Date();
+    const timeDiff = deadlineDate - today;
+    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const formattedDate = deadlineDate.toLocaleDateString('en-US', options);
+
+    return `${formattedDate} (${daysLeft} days left)`;
+  };
+
   return (
     <div className="SurveyWindow">
       <nav>
@@ -34,7 +46,7 @@ function SurveyWindow() {
         <div className="survey_details">
           <h2>{survey.title}</h2>
           <p><strong>Description:</strong> {survey.description}</p>
-          <p><strong>Deadline:</strong> {new Date(survey.deadline).toLocaleDateString()}</p>
+          <p><strong>Deadline:</strong> {formatDateWithRemainingDays(survey.deadline)}</p>
           <p><strong>Issuer:</strong> {survey.issuer}</p>
         </div>
       ) : (
