@@ -48,6 +48,7 @@ function SurveyWindow() {
           <p><strong>Description:</strong> {survey.description}</p>
           <p><strong>Deadline:</strong> {formatDateWithRemainingDays(survey.deadline)}</p>
           <p><strong>Issuer:</strong> {survey.issuer}</p>
+          <p><strong>Points:</strong> {survey.points_awarded}</p>
         </div>
       ) : (
         <p>No survey details available.</p>

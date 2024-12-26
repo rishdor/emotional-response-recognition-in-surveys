@@ -22,6 +22,7 @@ class Survey(Base):
     deadline = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow)
     issuer = Column(String)
+    points_awarded = Column(Integer, default=100)
     survey_completions = relationship("UserSurveyCompletion", back_populates="survey")  
 
 class PreferencesTypes(Base):

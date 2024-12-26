@@ -159,7 +159,8 @@ def get_surveys_by_user_id(db: Session, user_id: int):
                 "title": survey.title,
                 "deadline": survey.deadline,
                 "description": survey.description,
-                "issuer": survey.issuer
+                "issuer": survey.issuer,
+                "points_awarded": survey.points_awarded
             })
     
     return {"surveys": surveys}
