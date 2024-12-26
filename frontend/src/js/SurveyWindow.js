@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import arrowIcon from '../images/icons8-arrow-left-96.png';
 import '../css/App.css';
 
 function SurveyWindow() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { survey } = location.state || {};
 
   const logout = async () => {
@@ -31,6 +32,13 @@ function SurveyWindow() {
 
     return `${formattedDate} (${daysLeft} days left)`;
   };
+
+  const handleStartClick = () => {
+    console.log("Navigating to survey questions with survey:", survey);
+    navigate('/surveyquestions', { state: { survey } });
+  };
+
+  console.log("Survey object in SurveyWindow:", survey);
 
   return (
     <div className="SurveyWindow">
@@ -62,9 +70,9 @@ function SurveyWindow() {
       </div>
       <div className="go_to_questions_container">
         <h3>go to the questions</h3>
-        <Link to="/surveyquestions" className="link" id="go_to_questions">
+        <button onClick={handleStartClick} className="link" id="go_to_questions">
           <img src={arrowIcon} alt="mail" />
-        </Link>
+        </button>
       </div>
     </div>
   );

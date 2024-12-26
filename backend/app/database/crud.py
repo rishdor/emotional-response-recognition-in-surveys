@@ -4,6 +4,7 @@ from .user import User
 from .user_points import UserPoints
 from .schemas import UserCreate, UserUpdate
 from .surveys import Survey, PreferencesUserPreferences, PreferencesSurveyRequirements, UserSurveyCompletion, SurveyProgress
+from .survey_questions import Question, Answer
 from sqlalchemy.sql import literal
 from .reward import Reward
 
@@ -169,3 +170,9 @@ def get_surveys_by_user_id(db: Session, user_id: int):
 def get_rewards(db: Session):
     rewards = db.query(Reward).all()
     return rewards
+
+def get_questions_by_survey_id(db: Session, survey_id: int):
+    return db.query(Question).filter(Question.survey_id == survey_id).all()
+
+def get_answers_by_question_id(db: Session, question_id: int):
+    return db.query(Answer).filter(Answer.question_id == question_id).all()

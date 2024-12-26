@@ -1,11 +1,15 @@
 from fastapi import FastAPI, Depends, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import Session
+from typing import List
 from database.database import get_db
 from database.crud import (get_user, delete_user, update_user, 
                            update_user_points, get_user_points_by_id,
-                           get_surveys_by_user_id, get_rewards)
+                           get_surveys_by_user_id, get_rewards,
+                           get_questions_by_survey_id, get_answers_by_question_id)
 from database.schemas import UserCreate, UserUpdate, UserLogin, EmailCheckRequest
+
 from .services import login_user, signup_user, verify_token, check_email_exists
 
 app = FastAPI()
@@ -101,7 +105,23 @@ def get_user_surveys(user_id: int, db = Depends(get_db)):
 @app.get('/user/{user_id}/rewards', tags=["GetRewards"])
 def get_all_rewards(user_id: int, db = Depends(get_db)):
     try:
-        awards = get_rewards(db=db)
-        return {"rewards": awards}
+        rewards = get_rewards(db=db)
+        return {"rewards": rewards}
     except NoResultFound:
         raise HTTPException(status_code=404, detail=f"Awards for user {user_id} not found.")
+
+@app.get("/surveys/{survey_id}/questions", tags=["GetSurveyQuestions"])
+def get_survey_questions(survey_id: int, db = Depends(get_db)):
+    try:
+        questions = get_questions_by_survey_id(db=db, survey_id=survey_id)
+        return questions
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail=f"Questions for survey {survey_id} not found.")
+
+@app.get("/questions/{question_id}/answers", tags=["GetQuestionAnswers"])
+def get_question_answers(question_id: int, db = Depends(get_db)):
+    try:
+        answers = get_answers_by_question_id(db=db, question_id=question_id)
+        return answers
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail=f"Answers for question {question_id} not found.")

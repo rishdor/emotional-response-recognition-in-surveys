@@ -83,6 +83,7 @@ const Dashboard = ({ userId }) => {
   }, [userId]);
 
   const handleSurveyClick = (survey) => {
+    console.log("Navigating to survey window with survey:", survey);
     navigate('/surveywindow', { state: { survey } });
   };
 
