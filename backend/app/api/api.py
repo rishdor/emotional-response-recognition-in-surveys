@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import NoResultFound
 from database.database import get_db
 from database.crud import (get_user, delete_user, update_user, 
-                           update_user_points, get_user_points_by_id)
+                           update_user_points, get_user_points_by_id,
+                           get_surveys_by_user_id, get_rewards)
 from database.schemas import UserCreate, UserUpdate, UserLogin, EmailCheckRequest
 from .services import login_user, signup_user, verify_token, check_email_exists
 
@@ -88,3 +89,19 @@ async def logout_user(response: Response):
 @app.post("/check-email", tags=["checkEmail"])
 async def check_email(email_request: EmailCheckRequest, db = Depends(get_db)):
     return check_email_exists(db, email_request)
+
+@app.get('/user/{user_id}/surveys', tags=["GetSurveys"])
+def get_user_surveys(user_id: int, db = Depends(get_db)):
+    try:
+        surveys = get_surveys_by_user_id(db=db, user_id=user_id)
+        return {"surveys": surveys}
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail=f"Surveys for user {user_id} not found.")
+    
+@app.get('/user/{user_id}/rewards', tags=["GetRewards"])
+def get_all_rewards(user_id: int, db = Depends(get_db)):
+    try:
+        awards = get_rewards(db=db)
+        return {"rewards": awards}
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail=f"Awards for user {user_id} not found.")
