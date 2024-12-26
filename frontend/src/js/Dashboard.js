@@ -86,6 +86,18 @@ const Dashboard = ({ userId }) => {
     navigate('/surveywindow', { state: { survey } });
   };
 
+  const formatDateWithRemainingDays = (deadline) => {
+    const deadlineDate = new Date(deadline);
+    const today = new Date();
+    const timeDiff = deadlineDate - today;
+    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const formattedDate = deadlineDate.toLocaleDateString('en-US', options);
+
+    return `${formattedDate} (${daysLeft} days left)`;
+  };
+
   return (
     <div className="Dashboard">
       <nav>
@@ -134,7 +146,7 @@ const Dashboard = ({ userId }) => {
               surveys.new.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
                   <p>{survey.title}</p>
-                  <p>{new Date(survey.deadline).toLocaleDateString()}</p>
+                  <p>{formatDateWithRemainingDays(survey.deadline)}</p>
                 </div>
               ))
             ) : (
@@ -147,7 +159,7 @@ const Dashboard = ({ userId }) => {
               surveys.inProgress.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
                   <p>{survey.title}</p>
-                  <p>{new Date(survey.deadline).toLocaleDateString()}</p>
+                  <p>{formatDateWithRemainingDays(survey.deadline)}</p>
                 </div>
               ))
             ) : (
