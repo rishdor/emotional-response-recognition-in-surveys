@@ -8,8 +8,9 @@ import enum
 
 class SurveyProgress(enum.Enum):
     not_started = 'not_started'
-    in_progress = 'in_progress'
+    started = 'started'
     completed = 'completed'
+    abandoned = 'abandoned'
 
 
 class Survey(Base):
