@@ -145,7 +145,22 @@ def match_surveys_to_user(db: Session, user_id: int):
 def get_surveys_by_user_id(db: Session, user_id: int):
     match_surveys_to_user(db, user_id)
     user_surveys = db.query(UserSurveyCompletion).filter(UserSurveyCompletion.user_id == user_id).all()
-    return user_surveys
+    
+    surveys = []
+    for user_survey in user_surveys:
+        survey = db.query(Survey).filter(Survey.survey_id == user_survey.survey_id).first()
+        if survey:
+            surveys.append({
+                "completion_id": user_survey.completion_id,
+                "completed_at": user_survey.completed_at,
+                "survey_state": user_survey.survey_state,
+                "user_id": user_survey.user_id,
+                "survey_id": user_survey.survey_id,
+                "title": survey.title,
+                "deadline": survey.deadline
+            })
+    
+    return {"surveys": surveys}
 
 
 def get_rewards(db: Session):
