@@ -167,7 +167,7 @@ const Dashboard = ({ userId }) => {
             )}
           </div>
         </div>
-        <Link to="/surveys" className="link" id="view_more">view more</Link>
+        <Link to={`/surveys?userId=${userId}`} className="link" id="view_more">view more</Link>
       </div>
 
       <div className="section">
