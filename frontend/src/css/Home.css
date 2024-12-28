@@ -5,15 +5,17 @@
     --element_color: #E5F1F0;
     --footer_color: #7AB296;
     --button_hover_color: #5A8A7F;
-    --half_circle_size: 300px;
-    --half_circle_size_2: 400px;
+    --be_a_square: 30vh;
+    --button_hero_color: #994f42;
+    --button_hero_hover_color: #683021;
   }
 
 
 .hero{
     background-color: var(--main_color);
     display: flex;
-    height: 100%;
+    height: 90vh;
+    overflow: hidden;
 }
 
 .hero h1{
@@ -43,36 +45,67 @@
         margin-right: 5%;
     }
 
+    .hero_button{
+        background-color: var(--button_hero_color);
+        border: none;
+        border-radius: 100px 10px;
+        height: 70px;
+        width: 200px;
+        margin-top: 5%;
+        text-align: center;
+        align-content: center;
+        margin-top: 15%;
+    }
+
+      .hero_button .link{
+        color: #FFFFFF;
+        font-weight: 600;
+        font-size: 140%;
+      }
+
+      .hero_button:hover{
+        background-color: var(--button_hero_hover_color);
+      }
+
+    .arrow_top{
+      margin-left: 20%;
+      rotate: 225deg;
+    }
+
+    .arrow_bottom{
+      margin-top: 30%;
+      rotate: 45deg;
+    }
+
+
   .hero_photo_container{
     width: 50%;
-    overflow: hidden;
+    align-items: right;
   }
 
     .hero_photo{
         width: 100%;
-        border-radius: 700px 0 0 700px;
-        margin-top: 0;
+        border-radius: 1000px 0 0 1000px;
+        margin-top: -17%;
     }
 
-    @media only screen and (max-width: 1920px){
-      .quarter_circle{
-        width: var(--half_circle_size);
-        height: var(--half_circle_size);
-        background-color: var(--footer_color);
-        border: none;
-        border-radius: 0 300px 0 0;
-        margin: calc(40% - var(--half_circle_size)) 0 0 0;
-      }
-    }
-
-  @media only screen and (min-width: 1920px){
-    .quarter_circle{
-      width: var(--half_circle_size_2);
-      height: var(--half_circle_size_2);
-      background-color: var(--devide_line_color);
-      border: none;
-      border-radius: 0 400px 0 0;
-      /*margin: calc(50% - var(--half_circle_size_2)) 0 0 0;*/
-      position: absolute;
-    }
+  .quarter_circle_container{
+      height: 100%;
+      display: flex;
   }
+
+    .quarter_circle{
+      width: var(--be_a_square);
+      height: var(--be_a_square);
+      background-color: var(--footer_color);
+      border: none;
+      border-radius: 0 500px 0 0;
+      margin-left: 0;
+      margin-bottom: 0;
+      display: inline-block;
+      align-self: flex-end;
+    }
+
+.under_hero{
+  margin-bottom: 5%;
+}
