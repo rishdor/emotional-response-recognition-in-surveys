@@ -29,6 +29,12 @@ h1, h2, h3, h4, h5, h6{
     border-radius: 0 500px 500px 0;
   }
 
+    @media screen and (min-width: 1920px){
+      .sidebar{
+        height: 40vh;
+      }
+    }
+
     .sidebar ul{
         list-style-type: none;
         padding: 0;

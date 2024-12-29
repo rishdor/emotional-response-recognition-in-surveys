@@ -28,6 +28,9 @@ function SurveyQuestions() {
             </ul>
       </nav>
         
+      <div class='stop_button_container'>
+        <Link to="/surveys" class='link'><button class='stop_button'>Stop survey</button></Link>
+      </div>
       <div class="question_container">
           <h3>Question 1</h3> {/*Replace with question number */}
           <hr class='question_underline'/>
@@ -57,11 +60,11 @@ function SurveyQuestions() {
       </div>
 
       <div class='finish'>
-        <input type="submit" value="next question"/>
+        <input type="submit" value="Next question"/>  {/* FOR ALL QUESTIONS EXCEPT THE LAST ONE*/}
       </div>
 
       <div class='finish'>
-        <Link to="/thankyou" class='link'><input type="submit" value="finish survey" /></Link>
+        <Link to="/thankyou" class='link'><input type="submit" value="Finish survey" /></Link>  {/*ONLY FOR THE LAST QUESTION */}
       </div>
       
     </div>
