@@ -155,7 +155,7 @@
     .finish input[type="submit"] {
       background-color: var(--button_color);
       border: none;
-      border-radius: 30px;
+      border-radius: 50px;
       height: 200%;
       width: 100%;
       color: #FFFFFF;
