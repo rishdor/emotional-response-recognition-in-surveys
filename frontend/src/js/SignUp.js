@@ -357,7 +357,7 @@ function SignUp({ onAuthenticationSuccess }) {
           checked={formData.rodo}
           onChange={handleRodoChange}
            />
-          <label for="rodo">*I confirm being informed about the privacy policy</label>
+          <label for="rodo" id='rodo_label'>*I confirm being informed about the privacy policy</label>
         </div>
         {errors.rodo && <div style={{ color: 'red', fontSize: 12 }}>{errors.rodo}</div>}
 
