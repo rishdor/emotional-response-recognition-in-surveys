@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../css/App.css';
 import '../css/SurveyInfo.css';
-import '../css/SurveyQuestions.css';
+//import '../css/SurveyQuestions.css';
 
 function SurveyInfo() {
   const isLogged = document.cookie.includes("user_session");

@@ -3,9 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import NoResultFound
 from database.database import get_db
 from database.crud import (get_user, delete_user, update_user, 
-                           update_user_points, get_user_points_by_id)
-from database.schemas import UserCreate, UserUpdate, UserLogin, EmailCheckRequest
-from .services import login_user, signup_user, verify_token, check_email_exists
+                           update_user_points, get_user_points_by_id, get_user_data)
+from database.schemas import (UserCreate, UserUpdate, UserLogin, EmailCheckRequest,
+                               PasswordVerificationRequest, PasswordChangeRequest)
+from .services import (login_user, signup_user, verify_token, check_email_exists, 
+                       verify_user_password, change_user_password)
 
 app = FastAPI()
 
@@ -30,10 +32,11 @@ def read(user_id: int, db = Depends(get_db)):
     return user
 
 @app.delete("/delete_user/{user_id}", tags=["DeleteUser"])
-def delete(user_id: int, db = Depends(get_db)):
+def delete(user_id: int, response: Response, db = Depends(get_db),):
     user = delete_user(db=db, user_id=user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    response.delete_cookie(key="access_token")
     return {"status": "success", "message": "User successfully deleted"}
 
 @app.put("/update_user/{user_id}", tags=["UpdateUser"])
@@ -88,3 +91,31 @@ async def logout_user(response: Response):
 @app.post("/check-email", tags=["checkEmail"])
 async def check_email(email_request: EmailCheckRequest, db = Depends(get_db)):
     return check_email_exists(db, email_request)
+
+@app.get("/users_data/{user_id}", tags=["GetUsersData"])
+def read_user_data(user_id: int, db = Depends(get_db)):
+    user = get_user_data(db=db, user_id=user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@app.post("/verify-password/{user_id}", tags=["VerifyPassword"])
+async def verify_password(user_id: int, request: PasswordVerificationRequest, db = Depends(get_db)):
+    entered_password = request.password
+    
+    is_valid = verify_user_password(user_id, entered_password, db)
+    
+    if is_valid:
+        return {"message": "Password is correct"}
+    else:
+        raise HTTPException(status_code=400, detail="Incorrect password")
+
+@app.post("/change-password/{user_id}", tags=["ChangePassword"])
+async def change_password(user_id: int, request: PasswordChangeRequest, db = Depends(get_db)):
+    is_updated = change_user_password(user_id, request.new_password, db)
+
+    if is_updated:
+        return {"message": "Password successfully updated"}
+    else:
+        raise HTTPException(status_code=500, detail="Failed to update password")
+
