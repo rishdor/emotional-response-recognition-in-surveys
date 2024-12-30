@@ -19,7 +19,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleLoginSuccess = async () => {
-    console.log("ASD");
     setIsLoading(true);
 
     try {
@@ -101,7 +100,7 @@ function App() {
               <Route path="/" element={<Home />} />
             </Route>
             <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
-              <Route path="/user" element={<User />} />
+              <Route path="/user" element={<User userId={userId}/>} />
               <Route path="/dashboard" element={<Dashboard userId={userId}/>} />
               <Route path="/surveys" element={<Surveys />} />
               <Route path="/surveywindow" element={<SurveyWindow />} />

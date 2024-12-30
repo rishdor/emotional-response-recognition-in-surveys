@@ -10,7 +10,7 @@ import bulbIcon from '../images/icons8-light-bulb-48.png';
 const Dashboard = ({ userId }) => {
   const [user, setUser] = useState(null);
   const [points, setPoints] = useState(null);
-  //const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   const logout = async () => {
     try {
@@ -42,6 +42,8 @@ const Dashboard = ({ userId }) => {
         }
       } catch (error) {
         console.error("Error fetching user:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -62,6 +64,8 @@ const Dashboard = ({ userId }) => {
         }
       } catch (error) {
         console.error("Error fetching points:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -71,7 +75,9 @@ const Dashboard = ({ userId }) => {
     }
   }, [userId]);
 
- 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="Dashboard">
