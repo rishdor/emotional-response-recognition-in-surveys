@@ -4,39 +4,39 @@ import '../css/App.css';
 import '../css/SurveyInfo.css';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
+import logo from '../images/photos/logo_surveys3.png';
 import bottomImage from '../images/photos/circles.png';
 
 function SurveyInfo() {
-  const isLogged = document.cookie.includes("user_session");
-  const handleLogout = () => {
-    document.cookie = "user_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.assign("/");
-  }
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:8000/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      window.location.assign("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
   return (
     <div className="SurveyInfo">
       <nav>
         <ul class='navbar'>
-          {!isLogged && (
-          <li><Link to="/signUp" class='link'>sign up</Link></li>
-          )}
-          {!isLogged && (
-          <li><Link to="/signIn" class='link'>sign in</Link></li>
-          )}
-          {isLogged && (
-          <li onClick={handleLogout} style={{ cursor: "pointer" }}>sign out</li> 
-          )}
-          {!isLogged &&(
-          <li><Link to="/" class='link'>SmartSurveys</Link></li>
-          )}    
-          <li><Link to="/about" class='link'>about</Link></li>                            
-          {isLogged &&(
-            <li><Link to="/user" class='link'>user</Link></li>
-          )}
-          {isLogged &&(
-            <li><Link to="/dashboard" class='link'>dashboard</Link></li>
-          )}
+          <div class='nav_side'>
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+            <li><Link to="/about" class='link'>About</Link></li>
+            <li><Link to="/contact" class='link'>Contact</Link></li>
+          </div>
+          <li><img src={logo} alt='logo'/></li>
+          <div class='nav_side'>
+            <li><Link to="/user" class='link'>User</Link></li>
+            <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
+            <li><Link to="/surveys" class='link'>Surveys</Link></li>
+          </div>
         </ul>
       </nav>
+      <div class='fix_nav_position'/>
       <div class='survey_info_main_cointainer'>
           <h2>survey title</h2> {/* from db*/}
           <hr class='question_underline'></hr>
@@ -56,7 +56,7 @@ function SurveyInfo() {
           </div>
       </div>
       <div>
-        <img src={bottomImage} alt='bottom image' class='bottom_image'/>
+        <img src={bottomImage} alt='circles' class='bottom_image'/>
       </div>
 
       <footer>

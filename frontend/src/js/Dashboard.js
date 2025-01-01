@@ -2,6 +2,7 @@ import { React, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Dashboard.css';
 import '../css/App.css';
+import logo from '../images/photos/logo_surveys3.png';
 import starIcon from '../images/icons8-star-64.png';
 import frogIcon from '../images/icons8-frog-96.png';
 import bulbIcon from '../images/icons8-light-bulb-48.png';
@@ -77,12 +78,22 @@ const Dashboard = ({ userId }) => {
     <div className="Dashboard">
       <nav>
             <ul class='navbar'>
-              <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
-              <li><Link to="/about" class='link'>About</Link></li>
-              <li><Link to="/user" class='link'>User</Link></li>
-              <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
+              <div class='nav_side'>
+                <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+                <li><Link to="/about" class='link'>About</Link></li>
+                <li><Link to="/contact" class='link'>Contact</Link></li>
+              </div>
+              <li><img src={logo} alt='logo'/></li>
+              <div class='nav_side'>
+                <li><Link to="/user" class='link'>User</Link></li>
+                <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
+                <li><Link to="/surveys" class='link'>Surveys</Link></li>
+              </div>
             </ul>
         </nav>
+
+        
+        <div class='fix_nav_position'/>
       <h1>WELCOME {user}</h1> 
       <div class='sidebar'>
         <ul>

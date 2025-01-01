@@ -7,6 +7,7 @@ import editIcon from '../images/icons8-edit-64.png';
 import userIcon from '../images/icons8-user-64.png';
 import CountriesSelect from './CountriesSelect';
 import closeIcon from '../images/icons8-close-128.png';
+import logo from '../images/photos/logo_surveys3.png';
 
 
 function User() {
@@ -32,12 +33,20 @@ function User() {
     <div className="User">
         <nav>
             <ul class='navbar'>
-              <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li> 
-              <li><Link to="/about" class='link'>about</Link></li>
-              <li><Link to="/user" class='link'>user</Link></li>
-              <li><Link to="/dashboard" class='link'>dashboard</Link></li>
+              <div class='nav_side'>
+                <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+                <li><Link to="/about" class='link'>About</Link></li>
+                <li><Link to="/contact" class='link'>Contact</Link></li>
+              </div>
+              <li><img src={logo} alt='logo'/></li>
+              <div class='nav_side'>
+                <li><Link to="/user" class='link'>User</Link></li>
+                <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
+                <li><Link to="/surveys" class='link'>Surveys</Link></li>
+              </div>
             </ul>
         </nav>
+        <div class='fix_nav_position'/>
       <h1>WELCOME NAME</h1> {/* Replace NAME with the user's name */}
       <div class='sidebar'>
         <ul>
