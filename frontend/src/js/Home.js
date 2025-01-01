@@ -5,18 +5,25 @@ import '../css/App.css';
 import checkIcon from '../images/icons8-checkmark-50.png';
 import heroPhoto from '../images/photos/portrait-stylish-young-woman-brunette-girl-with-laptop-sitting-outdoors-using-computer.jpg'
 import arrowIcon from '../images/icons8-arrow-left-96.png';
+import logo from '../images/photos/logo_surveys3.png'
 
 function Home() {
     return (
       <div className="Home">
         <nav>
             <ul class='navbar'>
-              <li><Link to="/signUp" class='link'>sign up</Link></li> {/*Visible only when user not signed in*/}
-              <li><Link to="/signIn" class='link'>sign in</Link></li> {/*Visible only when user not signed in*/}
-              <li><Link to="/" class='link'>SmartSurveys</Link></li>
-              <li><Link to="/about" class='link'>about</Link></li>
+              <div class='nav_side'>
+                <li><Link to="/signUp" class='link'>Sign up</Link></li> {/*Visible only when user not signed in*/}
+                <li><Link to="/signIn" class='link'>Sign in</Link></li> {/*Visible only when user not signed in*/}
+                <li><Link to="/about" class='link'>About</Link></li>
+                <li><Link to="/contact" class='link'>Contact</Link></li>  
+              </div>
+              <li><Link to="/" class='link'><img src={logo} alt='logo'/></Link></li>
+              <div class='nav_side'>
+              </div>
             </ul>
           </nav>
+          <div class='fix_nav_position'/>
         <div class='hero'>
           <div class='left_side'>
             <h1>SURVEYS OF TOMORROW</h1>

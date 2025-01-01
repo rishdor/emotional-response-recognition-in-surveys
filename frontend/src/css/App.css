@@ -34,16 +34,43 @@
   --footer_color: #7AB296;
 }
 
+.fix_nav_position{
+  height: 30px;
+  visibility: hidden;
+  position: relative;
+}
+
+nav{
+  position: fixed;
+  width:100%;
+  margin: 0;
+}
+
 .navbar {
   background-color: var(--main_color);
   color: var(--font_color);
   margin: 0;
-  padding: 10px 7%;
+  padding: 10px 0 5px 0;
   display: flex;
   justify-content: space-between;
   list-style-type: none;
   position: relative;
   z-index: 1;
+}
+
+.nav_side{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7%;
+  width: 100%;
+}
+
+.nav_side li{
+  padding: 0 7%;
+}
+
+.navbar li img{
+  height: 25px;
 }
 
 .link{

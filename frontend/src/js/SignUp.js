@@ -3,6 +3,7 @@ import '../css/SignForm.css';
 import CountriesSelect from './CountriesSelect';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/App.css';
+import logo from '../images/photos/logo_surveys3.png'
 import axios from 'axios';
 
 function SignUp({ onAuthenticationSuccess }) {
@@ -217,13 +218,19 @@ function SignUp({ onAuthenticationSuccess }) {
   return (
     <div className="SignUp">
       <nav>
-            <ul class='navbar'>
-              <li><Link to="/signUp" class='link'>sign up</Link></li> {/*Visible only when user not signed in*/}
-              <li><Link to="/signIn" class='link'>sign in</Link></li> {/*Visible only when user not signed in*/}
-              <li><Link to="/" class='link'>SmartSurveys</Link></li>
-              <li><Link to="/about" class='link'>about</Link></li>
-            </ul>
-          </nav>
+        <ul class='navbar'>
+          <div class='nav_side'>
+          <li><Link to="/signUp" class='link'>Sign up</Link></li> {/*Visible only when user not signed in*/}
+          <li><Link to="/signIn" class='link'>Sign in</Link></li> {/*Visible only when user not signed in*/}
+          <li><Link to="/about" class='link'>About</Link></li>
+          <li><Link to="/contact" class='link'>Contact</Link></li>  
+        </div>
+        <li><Link to="/" class='link'><img src={logo} alt='logo'/></Link></li>
+        <div class='nav_side'>
+        </div> 
+        </ul>
+      </nav>
+      <div class='fix_nav_position'/>
       <h1>Sign Up</h1>
 
       {/* Sign-up Form */}
