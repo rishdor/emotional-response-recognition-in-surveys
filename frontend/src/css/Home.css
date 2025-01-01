@@ -20,7 +20,7 @@
 
 .hero h1{
     width: 60%;
-    margin:10% 0 10% 20%;
+    margin: 15% 0 5% 5%;
 }
 
 .left_side{
@@ -50,8 +50,7 @@
         border: none;
         border-radius: 100px 10px;
         height: 70px;
-        width: 200px;
-        margin-top: 5%;
+        width: 220px;
         text-align: center;
         align-content: center;
         margin-top: 15%;
@@ -77,7 +76,6 @@
       rotate: 45deg;
     }
 
-
   .hero_photo_container{
     width: 50%;
     align-items: right;
@@ -100,11 +98,48 @@
       background-color: var(--footer_color);
       border: none;
       border-radius: 0 500px 0 0;
-      margin-left: 0;
-      margin-bottom: 0;
+      margin: 0;
       display: inline-block;
       align-self: flex-end;
     }
+
+@media (max-width: 1920px){
+  .hero h1{
+    margin: 10% 0 5% 10%;
+  }
+
+  .hero_check_list{
+    width: 80%;
+  }
+
+  .hero_button{
+    margin-top: 5%;
+    height: 60px;
+    width: 200px;
+
+  }
+    .hero_button .link{
+      font-weight: 600;
+      font-size: 120%;
+    }
+
+  .arrow_top{
+    rotate: 210deg;
+  }
+
+  .arrow_bottom{
+    margin-top: 10%;
+    rotate: 30deg;
+  }
+
+  .hero_photo{
+    margin-top: -20%;
+}
+
+  .quarter_circle_container{
+    margin-top: -5%;
+  }
+}
 
 .under_hero{
   margin-bottom: 5%;
