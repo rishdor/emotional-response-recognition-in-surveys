@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
 import '../css/App.css';
@@ -7,8 +7,11 @@ import logo from '../images/photos/logo_surveys3.png';
 
 function SurveyQuestions() {
   const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
   const location = useLocation();
-  const { survey } = location.state || {};
+  const navigate = useNavigate();
+  const { survey, user } = location.state || {};
 
   useEffect(() => {
     console.log("Survey object in SurveyQuestions:", survey);
@@ -68,70 +71,116 @@ function SurveyQuestions() {
     }
   };
 
+  const handleAnswerChange = (event) => {
+    setSelectedAnswer(event.target.value);
+  };
+
+  const handleNextQuestion = () => {
+    if (selectedAnswer) {
+      setSelectedAnswer(null);
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      alert("Please select an answer before proceeding.");
+    }
+  };
+
+  const handleFinishSurvey = () => {
+    if (selectedAnswer) {
+      navigate('/thankyou', { state: { user } });
+    } else {
+      alert("Please select an answer before finishing the survey.");
+    }
+  };
+
+  const currentQuestion = questions[currentQuestionIndex];
+
   return (
     <div className="SurveyQuestions">
       <nav>
-        <ul class='navbar'>
-          <div class='nav_side'>
+        <ul className='navbar'>
+          <div className='nav_side'>
             <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
-            <li><Link to="/about" class='link'>About</Link></li>
-            <li><Link to="/contact" class='link'>Contact</Link></li>
+            <li><Link to="/about" className='link'>About</Link></li>
+            <li><Link to="/contact" className='link'>Contact</Link></li>
           </div>
           <li><img src={logo} alt='logo'/></li>
-          <div class='nav_side'>
-            <li><Link to="/user" class='link'>User</Link></li>
-            <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
-            <li><Link to="/surveys" class='link'>Surveys</Link></li>
+          <div className='nav_side'>
+            <li><Link to="/user" className='link'>User</Link></li>
+            <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
+            <li><Link to="/surveys" className='link'>Surveys</Link></li>
           </div>
         </ul>
       </nav>
-      <div class='fix_nav_position'/>
+      <div className='fix_nav_position'/>
         
-      <div class='stop_button_container'>
-        <Link to="/surveys" class='link'><button class='stop_button'>Stop survey</button></Link>
+      <div className='stop_button_container'>
+        <Link to="/surveys" className='link'><button className='stop_button'>Stop survey</button></Link>
       </div>
-      {questions.map((question, index) => (
-        <div className="question_container" key={index}>
-          <h3>Question {index + 1}</h3>
+      {currentQuestion && (
+        <div className="question_container">
+          <h3>Question {currentQuestionIndex + 1}</h3>
           <hr className="question_underline" />
           <div className="question">
-            <p>{question.question_text}</p>
-            {question.question_type === 'multiple choice' && (
+            <p>{currentQuestion.question_text}</p>
+            {currentQuestion.question_type === 'multiple choice' && (
               <div className="multiple_choice">
-                {question.answers.map((answer, idx) => (
+                {currentQuestion.answers.map((answer, idx) => (
                   <div className="answer" key={idx}>
-                    <input type="checkbox" id={`answer_checkbox${idx}`} name={`answer_checkbox${index}`} value={answer.answer_value} />
+                    <input
+                      type="checkbox"
+                      id={`answer_checkbox${idx}`}
+                      name={`answer_checkbox${currentQuestionIndex}`}
+                      value={answer.answer_value}
+                      onChange={handleAnswerChange}
+                    />
                     <label htmlFor={`answer_checkbox${idx}`}>{answer.answer_value}</label>
                   </div>
                 ))}
               </div>
             )}
-            {question.question_type === 'yes/no' && (
+            {currentQuestion.question_type === 'yes/no' && (
               <div className="singular_choice">
                 <div className="answer">
-                  <input type="radio" id={`answer_radio_yes${index}`} name={`answer_radio${index}`} value="yes" />
-                  <label htmlFor={`answer_radio_yes${index}`}>Yes</label>
+                  <input
+                    type="radio"
+                    id={`answer_radio_yes${currentQuestionIndex}`}
+                    name={`answer_radio${currentQuestionIndex}`}
+                    value="yes"
+                    onChange={handleAnswerChange}
+                  />
+                  <label htmlFor={`answer_radio_yes${currentQuestionIndex}`}>Yes</label>
                 </div>
                 <div className="answer">
-                  <input type="radio" id={`answer_radio_no${index}`} name={`answer_radio${index}`} value="no" />
-                  <label htmlFor={`answer_radio_no${index}`}>No</label>
+                  <input
+                    type="radio"
+                    id={`answer_radio_no${currentQuestionIndex}`}
+                    name={`answer_radio${currentQuestionIndex}`}
+                    value="no"
+                    onChange={handleAnswerChange}
+                  />
+                  <label htmlFor={`answer_radio_no${currentQuestionIndex}`}>No</label>
                 </div>
               </div>
             )}
-            {question.question_type === 'number' && (
+            {currentQuestion.question_type === 'number' && (
               <div className="number_input">
-                <input type="number" id={`answer_number${index}`} name={`answer_number${index}`} />
+                <input
+                  type="number"
+                  id={`answer_number${currentQuestionIndex}`}
+                  name={`answer_number${currentQuestionIndex}`}
+                  onChange={handleAnswerChange}
+                />
               </div>
             )}
           </div>
         </div>
-      ))}
+      )}
       <div className="finish">
-        <input type="submit" value="next question" />
-      </div>
-
-      <div className="finish">
-        <Link to="/thankyou" className="link"><input type="submit" value="finish survey" /></Link>
+        {currentQuestionIndex < questions.length - 1 ? (
+          <input type="submit" value="Next question" onClick={handleNextQuestion} />
+        ) : (
+          <input type="submit" value="Finish survey" onClick={handleFinishSurvey} />
+        )}
       </div>
     </div>
   );
