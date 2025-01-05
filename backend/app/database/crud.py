@@ -6,7 +6,8 @@ from .schemas import UserCreate, UserUpdate
 from .surveys import Survey, PreferencesUserPreferences, PreferencesSurveyRequirements, UserSurveyCompletion, SurveyProgress
 from .survey_questions import Question, Answer
 from sqlalchemy.sql import literal
-from .reward import Reward
+from .reward import Reward, UserReward
+from datetime import datetime
 
 # Get user's name by ID
 def get_user(db: Session, user_id: int):
@@ -176,3 +177,27 @@ def get_questions_by_survey_id(db: Session, survey_id: int):
 
 def get_answers_by_question_id(db: Session, question_id: int):
     return db.query(Answer).filter(Answer.question_id == question_id).all()
+
+def redeem_reward(db: Session, user_id: int, reward_id: int):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    reward = db.query(Reward).filter(Reward.reward_id == reward_id).first()
+
+    if not user or not reward:
+        return None
+
+    if user.points < reward.points_required:
+        return "Not enough points"
+
+    now = datetime.utcnow()
+    last_redeemed = db.query(UserReward).filter(UserReward.user_id == user_id, UserReward.reward_id == reward_id).order_by(UserReward.redeemed_at.desc()).first()
+
+    if last_redeemed and (now - last_redeemed.redeemed_at).days < 30:
+        return "Reward can only be redeemed once a month"
+
+    user.points -= reward.points_required
+    user_reward = UserReward(user_id=user_id, reward_id=reward_id, redeemed_at=now)
+    db.add(user_reward)
+    db.commit()
+    db.refresh(user)
+    db.refresh(reward)
+    return "Reward redeemed successfully"

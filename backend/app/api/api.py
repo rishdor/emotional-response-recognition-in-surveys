@@ -6,7 +6,7 @@ from typing import List
 from database.database import get_db
 from database.crud import (get_user, delete_user, update_user, 
                            update_user_points, get_user_points_by_id,
-                           get_surveys_by_user_id, get_rewards,
+                           get_surveys_by_user_id, get_rewards, redeem_reward,
                            get_questions_by_survey_id, get_answers_by_question_id)
 from database.schemas import UserCreate, UserUpdate, UserLogin, EmailCheckRequest
 
@@ -109,6 +109,17 @@ def get_all_rewards(user_id: int, db = Depends(get_db)):
         return {"rewards": rewards}
     except NoResultFound:
         raise HTTPException(status_code=404, detail=f"Awards for user {user_id} not found.")
+
+@app.post('/user/{user_id}/rewards/{reward_id}/redeem', tags=["RedeemReward"])
+def redeem_user_reward(user_id: int, reward_id: int, db = Depends(get_db)):
+    result = redeem_reward(db=db, user_id=user_id, reward_id=reward_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="User or reward not found")
+    elif result == "Not enough points":
+        raise HTTPException(status_code=400, detail="Not enough points")
+    elif result == "Reward can only be redeemed once a month":
+        raise HTTPException(status_code=400, detail="Reward can only be redeemed once a month")
+    return {"status": "success", "message": result}
 
 @app.get("/surveys/{survey_id}/questions", tags=["GetSurveyQuestions"])
 def get_survey_questions(survey_id: int, db = Depends(get_db)):
