@@ -85,7 +85,7 @@ const Dashboard = ({ userId }) => {
 
   const handleSurveyClick = (survey) => {
     console.log("Navigating to survey window with survey:", survey);
-    navigate('/surveywindow', { state: { survey } });
+    navigate('/surveyinfo', { state: { survey, user } });
   };
 
   const formatDateWithRemainingDays = (deadline) => {
@@ -179,7 +179,7 @@ const Dashboard = ({ userId }) => {
             )}
           </div>
         </div>
-        <Link to={`/surveys?userId=${userId}`} className="link" id="view_more">view more</Link>
+        <Link to={`/surveys?userId=${userId}`} className="link" class="view_more">view more</Link>
       </div>
       <div className="section">
         <h2 className="section_name" id="rewards">rewards</h2>
