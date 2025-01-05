@@ -11,7 +11,8 @@ function SurveyQuestions() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { survey, user } = location.state || {};
+  const { survey } = location.state || {};
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     console.log("Survey object in SurveyQuestions:", survey);
@@ -86,7 +87,7 @@ function SurveyQuestions() {
 
   const handleFinishSurvey = () => {
     if (selectedAnswer) {
-      navigate('/thankyou', { state: { user } });
+      navigate('/thankyou', { state: { userId } });
     } else {
       alert("Please select an answer before finishing the survey.");
     }

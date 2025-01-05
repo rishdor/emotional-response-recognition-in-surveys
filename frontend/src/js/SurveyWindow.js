@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import arrowIcon from '../images/icons8-arrow-left-96.png';
 import '../css/App.css';
@@ -8,7 +8,8 @@ import logo from '../images/photos/logo_surveys3.png';
 function SurveyWindow() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { survey, user } = location.state || {};
+  const { survey } = location.state || {};
+  const userId = localStorage.getItem('userId');
 
   const logout = async () => {
     try {
@@ -24,7 +25,7 @@ function SurveyWindow() {
 
   const handleStartClick = () => {
     console.log("Navigating to survey questions with survey:", survey);
-    navigate('/surveyquestions', { state: { survey, user } });
+    navigate('/surveyquestions', { state: { survey, userId } });
   };
 
   console.log("Survey object in SurveyWindow:", survey);
@@ -32,17 +33,17 @@ function SurveyWindow() {
   return (
     <div className="SurveyWindow">
       <nav>
-        <ul class='navbar'>
-          <div class='nav_side'>
+        <ul className='navbar'>
+          <div className='nav_side'>
             <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
-            <li><Link to="/about" class='link'>About</Link></li>
-            <li><Link to="/contact" class='link'>Contact</Link></li>
+            <li><Link to="/about" className='link'>About</Link></li>
+            <li><Link to="/contact" className='link'>Contact</Link></li>
           </div>
           <li><img src={logo} alt='logo'/></li>
-          <div class='nav_side'>
-            <li><Link to="/user" class='link'>User</Link></li>
-            <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
-            <li><Link to="/surveys" class='link'>Surveys</Link></li>
+          <div className='nav_side'>
+            <li><Link to="/user" className='link'>User</Link></li>
+            <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
+            <li><Link to="/surveys" className='link'>Surveys</Link></li>
           </div>
         </ul>
       </nav>

@@ -10,7 +10,8 @@ import bottomImage from '../images/photos/circles.png';
 function SurveyInfo() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { survey, user } = location.state;
+  const { survey } = location.state;
+  const userId = localStorage.getItem('userId');
 
   const logout = async () => {
     try {
@@ -37,7 +38,7 @@ function SurveyInfo() {
   };
 
   const handleStartSurvey = () => {
-    navigate('/surveywindow', { state: { survey, user } });
+    navigate('/surveywindow', { state: { survey, userId } });
   };
 
   return (

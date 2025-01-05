@@ -19,6 +19,12 @@ const Dashboard = ({ userId }) => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (userId) {
+      localStorage.setItem('userId', userId);
+    }
+  }, [userId]);
+
   const logout = async () => {
     try {
       await fetch("http://localhost:8000/logout", {
@@ -42,7 +48,7 @@ const Dashboard = ({ userId }) => {
         if (userResponse.ok) {
           const userData = await userResponse.json();
           console.log("User Data:", userData);
-          setUser(userData.toUpperCase());
+          setUser(userData);
         }
         if (pointsResponse.ok) {
           const pointsData = await pointsResponse.json();
@@ -103,25 +109,23 @@ const Dashboard = ({ userId }) => {
   return (
     <div className="Dashboard">
       <nav>
-            <ul class='navbar'>
-              <div class='nav_side'>
-                <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
-                <li><Link to="/about" class='link'>About</Link></li>
-                <li><Link to="/contact" class='link'>Contact</Link></li>
-              </div>
-              <li><img src={logo} alt='logo'/></li>
-              <div class='nav_side'>
-                <li><Link to="/user" class='link'>User</Link></li>
-                <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
-                <li><Link to="/surveys" class='link'>Surveys</Link></li>
-              </div>
-            </ul>
-        </nav>
-
-        
-        <div class='fix_nav_position'/>
+        <ul className='navbar'>
+          <div className='nav_side'>
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+            <li><Link to="/about" className='link'>About</Link></li>
+            <li><Link to="/contact" className='link'>Contact</Link></li>
+          </div>
+          <li><img src={logo} alt='logo'/></li>
+          <div className='nav_side'>
+            <li><Link to="/user" className='link'>User</Link></li>
+            <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
+            <li><Link to={`/surveys?userId=${userId}`} className='link'>Surveys</Link></li>
+          </div>
+        </ul>
+      </nav>
+      <div className='fix_nav_position'/>
       <h1>WELCOME {user}</h1> 
-      <div class='sidebar'>
+      <div className='sidebar'>
         <ul>
             <li><h3>NAVIGATE</h3></li>
             <li><a href="#surveys">Surveys</a></li>
@@ -179,7 +183,7 @@ const Dashboard = ({ userId }) => {
             )}
           </div>
         </div>
-        <Link to={`/surveys?userId=${userId}`} className="link" class="view_more">view more</Link>
+        <Link to={`/surveys?userId=${userId}`} className="link view_more">view more</Link>
       </div>
       <div className="section">
         <h2 className="section_name" id="rewards">rewards</h2>
