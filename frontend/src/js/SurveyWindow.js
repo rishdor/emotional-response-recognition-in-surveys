@@ -8,7 +8,7 @@ import logo from '../images/photos/logo_surveys3.png';
 function SurveyWindow() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { survey } = location.state || {};
+  const { survey, user } = location.state || {};
 
   const logout = async () => {
     try {
@@ -36,7 +36,7 @@ function SurveyWindow() {
 
   const handleStartClick = () => {
     console.log("Navigating to survey questions with survey:", survey);
-    navigate('/surveyquestions', { state: { survey } });
+    navigate('/surveyquestions', { state: { survey, user } });
   };
 
   console.log("Survey object in SurveyWindow:", survey);
@@ -59,17 +59,6 @@ function SurveyWindow() {
         </ul>
       </nav>
       <div class='fix_nav_position'/>
-      {survey ? (
-        <div className="survey_details">
-          <h2>{survey.title}</h2>
-          <p><strong>Description:</strong> {survey.description}</p>
-          <p><strong>Deadline:</strong> {formatDateWithRemainingDays(survey.deadline)}</p>
-          <p><strong>Issuer:</strong> {survey.issuer}</p>
-          <p><strong>Points:</strong> {survey.points_awarded}</p>
-        </div>
-      ) : (
-        <p>No survey details available.</p>
-      )}
       <div className="video_container">
         <iframe
           src="https://www.youtube.com/embed/dQw4w9WgXcQ"
