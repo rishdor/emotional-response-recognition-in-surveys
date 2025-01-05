@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
 import '../css/App.css';
+import logo from '../images/photos/logo_surveys3.png';
 
 function SurveyQuestions() {
   const [questions, setQuestions] = useState([]);
@@ -70,14 +71,25 @@ function SurveyQuestions() {
   return (
     <div className="SurveyQuestions">
       <nav>
-        <ul className="navbar">
-          <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li>
-          <li><Link to="/about" className="link">about</Link></li>
-          <li><Link to="/user" className="link">user</Link></li>
-          <li><Link to="/dashboard" className="link">dashboard</Link></li>
+        <ul class='navbar'>
+          <div class='nav_side'>
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+            <li><Link to="/about" class='link'>About</Link></li>
+            <li><Link to="/contact" class='link'>Contact</Link></li>
+          </div>
+          <li><img src={logo} alt='logo'/></li>
+          <div class='nav_side'>
+            <li><Link to="/user" class='link'>User</Link></li>
+            <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
+            <li><Link to="/surveys" class='link'>Surveys</Link></li>
+          </div>
         </ul>
       </nav>
-
+      <div class='fix_nav_position'/>
+        
+      <div class='stop_button_container'>
+        <Link to="/surveys" class='link'><button class='stop_button'>Stop survey</button></Link>
+      </div>
       {questions.map((question, index) => (
         <div className="question_container" key={index}>
           <h3>Question {index + 1}</h3>
@@ -114,7 +126,6 @@ function SurveyQuestions() {
           </div>
         </div>
       ))}
-
       <div className="finish">
         <input type="submit" value="next question" />
       </div>

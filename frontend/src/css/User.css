@@ -160,6 +160,22 @@
         background-color: var(--button_hover_color);
     }
 
+    .close_user_changes_container{
+        display: flex;
+        justify-content: flex-end;
+        margin: -3% 0 2% 0;
+    }
+        .close_user_changes{
+            border: none;
+            background-color: var(--element_color);
+            width: 40px;
+            height: 40px;
+        }
+            .close_user_changes img{
+                width: 30px;
+                height: 30px;
+            }
+
 .delete_account{
     text-align: center;
 }
