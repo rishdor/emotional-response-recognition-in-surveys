@@ -96,7 +96,7 @@
     margin: 0;
   }
 
-    .singular_choice,
+    .single_choice,
     .multiple_choice {
       display: flex;
       flex-direction: column;

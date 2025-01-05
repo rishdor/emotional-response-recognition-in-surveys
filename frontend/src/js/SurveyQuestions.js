@@ -139,38 +139,20 @@ function SurveyQuestions() {
                 ))}
               </div>
             )}
-            {currentQuestion.question_type === 'yes/no' && (
-              <div className="singular_choice">
-                <div className="answer">
-                  <input
-                    type="radio"
-                    id={`answer_radio_yes${currentQuestionIndex}`}
-                    name={`answer_radio${currentQuestionIndex}`}
-                    value="yes"
-                    onChange={handleAnswerChange}
-                  />
-                  <label htmlFor={`answer_radio_yes${currentQuestionIndex}`}>Yes</label>
-                </div>
-                <div className="answer">
-                  <input
-                    type="radio"
-                    id={`answer_radio_no${currentQuestionIndex}`}
-                    name={`answer_radio${currentQuestionIndex}`}
-                    value="no"
-                    onChange={handleAnswerChange}
-                  />
-                  <label htmlFor={`answer_radio_no${currentQuestionIndex}`}>No</label>
-                </div>
-              </div>
-            )}
-            {currentQuestion.question_type === 'number' && (
-              <div className="number_input">
-                <input
-                  type="number"
-                  id={`answer_number${currentQuestionIndex}`}
-                  name={`answer_number${currentQuestionIndex}`}
-                  onChange={handleAnswerChange}
-                />
+            {currentQuestion.question_type === 'single choice' && (
+              <div className="single_choice">
+                {currentQuestion.answers.map((answer, idx) => (
+                  <div className="answer" key={idx}>
+                    <input
+                      type="radio"
+                      id={`answer_radio${idx}`}
+                      name={`answer_radio${currentQuestionIndex}`}
+                      value={answer.answer_value}
+                      onChange={handleAnswerChange}
+                    />
+                    <label htmlFor={`answer_radio${idx}`}>{answer.answer_value}</label>
+                  </div>
+                ))}
               </div>
             )}
           </div>
