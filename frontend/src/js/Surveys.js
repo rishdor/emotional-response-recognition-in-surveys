@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../css/Dashboard.css';
 import '../css/Surveys.css';
 import '../css/App.css';
+import logo from '../images/photos/logo_surveys3.png';
 
 function Surveys() {
   const [surveys, setSurveys] = useState({ new: [], inProgress: [] });
@@ -76,29 +77,37 @@ function Surveys() {
   return (
     <div className="Surveys">
       <nav>
-        <ul className="navbar">
-          <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li>
-          <li><Link to="/about" className="link">about</Link></li>
-          <li><Link to="/user" className="link">user</Link></li>
-          <li><Link to="/dashboard" className="link">dashboard</Link></li>
+<ul class='navbar'>
+          <div class='nav_side'>
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+            <li><Link to="/about" class='link'>About</Link></li>
+            <li><Link to="/contact" class='link'>Contact</Link></li>
+          </div>
+          <li><img src={logo} alt='logo'/></li>
+          <div class='nav_side'>
+            <li><Link to="/user" class='link'>User</Link></li>
+            <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
+            <li><Link to="/surveys" class='link'>Surveys</Link></li>
+          </div>
         </ul>
       </nav>
-      <h1>all surveys in one place</h1>
-      <div className="sidebar">
+          <div class='fix_nav_position'/>
+      <h1>ALL SURVEYS IN ONE PLACE</h1>
+      <div class='sidebar'>
         <ul>
-          <li><h3>NAVIGATE</h3></li>
-          <li><a href="#in_progress">in progress</a></li>
-          <li><a href="#new">new</a></li>
+            <li><h3>NAVIGATE</h3></li>
+            <li><a href="#in_progress">In progress</a></li>
+            <li><a href="#new">New</a></li>
         </ul>
       </div>
 
-      <div className="section">
-        <h2 className="section_name" id="in_progress">in progress</h2>
-        <hr className="devide_line" />
-        <div className="survey_list">
-          <div className="survey_headers">
-            <p>survey name</p>
-            <p className="deadline">deadline</p>
+      <div class='section'>
+        <h2 class='section_name' id='surveys'>In progress</h2>
+        <hr class='devide_line'></hr>
+        <div class='survey_list'>
+          <div class='survey_headers'>
+            <p>Survey name</p>
+            <p class='deadline'>Deadline</p>
           </div>
           {surveys.inProgress.length > 0 ? (
             surveys.inProgress.map((survey, index) => (
@@ -113,7 +122,6 @@ function Surveys() {
           )}
         </div>
       </div>
-
       <div className="section">
         <h2 className="section_name" id="new">new</h2>
         <hr className="devide_line" />

@@ -11,6 +11,8 @@ import Surveys from './Surveys';
 import SurveyWindow from './SurveyWindow';
 import ThankYou from './ThankYou';
 import SurveyQuestions from './SurveyQuestions';
+import SurveyInfo from './SurveyInfo';
+import Contact from './Contact'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -106,8 +108,10 @@ function App() {
               <Route path="/surveywindow" element={<SurveyWindow />} />
               <Route path="/thankyou" element={<ThankYou />} />
               <Route path='/surveyquestions' element={<SurveyQuestions />} />
+              <Route path='/surveyinfo' element={<SurveyInfo />} />
             </Route>
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </div>
     </Router>
