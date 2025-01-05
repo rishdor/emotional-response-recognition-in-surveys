@@ -119,7 +119,7 @@ function SurveyQuestions() {
       </div>
       {currentQuestion && (
         <div className="question_container">
-          <h3>Question {currentQuestionIndex + 1}</h3>
+          <h3>Question {currentQuestionIndex + 1} / {questions.length}</h3>
           <hr className="question_underline" />
           <div className="question">
             <p>{currentQuestion.question_text}</p>
