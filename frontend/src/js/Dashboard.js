@@ -106,16 +106,21 @@ const Dashboard = ({ userId }) => {
     return `${formattedDate} (${daysLeft} days left)`;
   };
 
+  const handleRedeem = (reward) => {
+    alert("Yay, next time you can redeem the reward is in one month.");
+    // Implement the logic to mark the reward as redeemed and set the cooldown period
+  };
+
   return (
     <div className="Dashboard">
       <nav>
         <ul className='navbar'>
           <div className='nav_side'>
-            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign Out</li> 
             <li><Link to="/about" className='link'>About</Link></li>
             <li><Link to="/contact" className='link'>Contact</Link></li>
           </div>
-          <li><img src={logo} alt='logo'/></li>
+          <li><img src={logo} alt='Logo'/></li>
           <div className='nav_side'>
             <li><Link to="/user" className='link'>User</Link></li>
             <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
@@ -124,10 +129,10 @@ const Dashboard = ({ userId }) => {
         </ul>
       </nav>
       <div className='fix_nav_position'/>
-      <h1>WELCOME {user}</h1> 
+      <h1>Welcome {user}</h1> 
       <div className='sidebar'>
         <ul>
-            <li><h3>NAVIGATE</h3></li>
+            <li><h3>Navigate</h3></li>
             <li><a href="#surveys">Surveys</a></li>
             <li><a href="#awards">Awards</a></li>
             <li><a href="#messages">Messages</a></li>
@@ -144,7 +149,7 @@ const Dashboard = ({ userId }) => {
           </div>
           {notifications.map((note, index) => (
             <div className="message_container" key={index}>
-              <img src={bulbIcon} alt="notification" />
+              <img src={bulbIcon} alt="Notification" />
               <p>{note.message}</p>
               <p>{note.date}</p>
             </div>
@@ -153,11 +158,11 @@ const Dashboard = ({ userId }) => {
       </div>
 
       <div className="section">
-        <h2 className="section_name" id="surveys">surveys</h2>
+        <h2 className="section_name" id="surveys">Surveys</h2>
         <hr className="devide_line" />
         <div className="survey_container">
           <div className="inner_surveys">
-            <h3>new</h3>
+            <h3>New</h3>
             {surveys.new.length > 0 ? (
               surveys.new.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
@@ -170,7 +175,7 @@ const Dashboard = ({ userId }) => {
             )}
           </div>
           <div className="inner_surveys">
-            <h3>in progress</h3>
+            <h3>In Progress</h3>
             {surveys.inProgress.length > 0 ? (
               surveys.inProgress.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
@@ -183,27 +188,32 @@ const Dashboard = ({ userId }) => {
             )}
           </div>
         </div>
-        <Link to={`/surveys?userId=${userId}`} className="link view_more">view more</Link>
+        <Link to={`/surveys?userId=${userId}`} className="link view_more">View More</Link>
       </div>
       <div className="section">
-        <h2 className="section_name" id="rewards">rewards</h2>
+        <h2 className="section_name" id="rewards">Rewards</h2>
         <hr className="devide_line" />
         <div className="points">
-          <p>you have</p>
+          <p>You Have</p>
           <p>{points}</p>
-          <img src={starIcon} alt="star" />
+          <img src={starIcon} alt="Star" />
         </div>
         <div className="all_rewards">
-          {rewards.map((reward, index) => (
+          {rewards.sort((a, b) => a.points_required - b.points_required).map((reward, index) => (
             <div className="reward_container" key={index}>
               <div className="points_required">
                 <p>{reward.points_required}</p>
-                <img src={starIcon} alt="star" />
+                <img src={starIcon} alt="Star" />
               </div>
               <div className="reward">
-                <img src={frogIcon} alt="reward" />
+                <img src={frogIcon} alt="Reward" />
                 <p>{reward.reward_description}</p>
-                <input type="submit" value="redeem" />
+                <input 
+                  type="submit" 
+                  value={points >= reward.points_required ? "Redeem Now" : "Not Enough Points"} 
+                  onClick={() => handleRedeem(reward)} 
+                  disabled={points < reward.points_required}
+                />
               </div>
             </div>
           ))}
