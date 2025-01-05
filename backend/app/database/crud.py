@@ -168,8 +168,14 @@ def get_surveys_by_user_id(db: Session, user_id: int):
     return {"surveys": surveys}
 
 
-def get_rewards(db: Session):
+def get_rewards(db: Session, user_id: int):
     rewards = db.query(Reward).all()
+    user_rewards = db.query(UserReward).filter(UserReward.user_id == user_id).all()
+    user_rewards_dict = {ur.reward_id: ur.redeemed_at for ur in user_rewards}
+
+    for reward in rewards:
+        reward.last_redeemed = user_rewards_dict.get(reward.reward_id, None)
+
     return rewards
 
 def get_questions_by_survey_id(db: Session, survey_id: int):
@@ -185,7 +191,8 @@ def redeem_reward(db: Session, user_id: int, reward_id: int):
     if not user or not reward:
         return None
 
-    if user.points < reward.points_required:
+    user_points = user.points
+    if user_points.points < reward.points_required:
         return "Not enough points"
 
     now = datetime.utcnow()
@@ -194,7 +201,7 @@ def redeem_reward(db: Session, user_id: int, reward_id: int):
     if last_redeemed and (now - last_redeemed.redeemed_at).days < 30:
         return "Reward can only be redeemed once a month"
 
-    user.points -= reward.points_required
+    user_points.points -= reward.points_required
     user_reward = UserReward(user_id=user_id, reward_id=reward_id, redeemed_at=now)
     db.add(user_reward)
     db.commit()

@@ -105,7 +105,7 @@ def get_user_surveys(user_id: int, db = Depends(get_db)):
 @app.get('/user/{user_id}/rewards', tags=["GetRewards"])
 def get_all_rewards(user_id: int, db = Depends(get_db)):
     try:
-        rewards = get_rewards(db=db)
+        rewards = get_rewards(db=db, user_id=user_id)
         return {"rewards": rewards}
     except NoResultFound:
         raise HTTPException(status_code=404, detail=f"Awards for user {user_id} not found.")
@@ -120,6 +120,7 @@ def redeem_user_reward(user_id: int, reward_id: int, db = Depends(get_db)):
     elif result == "Reward can only be redeemed once a month":
         raise HTTPException(status_code=400, detail="Reward can only be redeemed once a month")
     return {"status": "success", "message": result}
+
 
 @app.get("/surveys/{survey_id}/questions", tags=["GetSurveyQuestions"])
 def get_survey_questions(survey_id: int, db = Depends(get_db)):

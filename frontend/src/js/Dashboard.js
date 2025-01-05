@@ -106,9 +106,42 @@ const Dashboard = ({ userId }) => {
     return `${formattedDate} (${daysLeft} days left)`;
   };
 
-  const handleRedeem = (reward) => {
-    alert("Yay, next time you can redeem the reward is in one month.");
-    // Implement the logic to mark the reward as redeemed and set the cooldown period
+  const handleRedeem = async (reward) => {
+    try {
+      const response = await fetch(`http://localhost:8000/user/${userId}/rewards/${reward.reward_id}/redeem`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        alert("Yay, next time you can redeem the reward is in one month.");
+
+        const updatedRewards = rewards.map(r => r.reward_id === reward.reward_id ? { ...r, last_redeemed: new Date() } : r);
+        setRewards(updatedRewards);
+
+        // Update user points
+        const pointsResponse = await fetch(`http://localhost:8000/user/${userId}/points`);
+        if (pointsResponse.ok) {
+          const pointsData = await pointsResponse.json();
+          setPoints(pointsData.points);
+        }
+      } else {
+        const errorData = await response.json();
+        alert(errorData.detail);
+      }
+    } catch (error) {
+      console.error("Error redeeming reward:", error);
+      alert("Failed to redeem reward");
+    }
+  };
+
+  const calculateDaysLeft = (lastRedeemed) => {
+    const now = new Date();
+    const lastRedeemedDate = new Date(lastRedeemed);
+    const daysSinceLastRedeemed = Math.ceil((now - lastRedeemedDate) / (1000 * 60 * 60 * 24));
+    return 30 - daysSinceLastRedeemed;
   };
 
   return (
@@ -199,24 +232,29 @@ const Dashboard = ({ userId }) => {
           <img src={starIcon} alt="Star" />
         </div>
         <div className="all_rewards">
-          {rewards.sort((a, b) => a.points_required - b.points_required).map((reward, index) => (
-            <div className="reward_container" key={index}>
-              <div className="points_required">
-                <p>{reward.points_required}</p>
-                <img src={starIcon} alt="Star" />
+          {rewards.sort((a, b) => a.points_required - b.points_required).map((reward, index) => {
+            const daysLeft = reward.last_redeemed ? calculateDaysLeft(reward.last_redeemed) : 0;
+            const canRedeem = points >= reward.points_required && daysLeft <= 0;
+
+            return (
+              <div className="reward_container" key={index}>
+                <div className="points_required">
+                  <p>{reward.points_required}</p>
+                  <img src={starIcon} alt="Star" />
+                </div>
+                <div className="reward">
+                  <img src={frogIcon} alt="Reward" />
+                  <p>{reward.reward_description}</p>
+                  <input 
+                    type="submit" 
+                    value={canRedeem ? "Redeem Now" : points < reward.points_required ? "Not Enough Points" : `Available in ${daysLeft} days`} 
+                    onClick={() => handleRedeem(reward)} 
+                    disabled={!canRedeem}
+                  />
+                </div>
               </div>
-              <div className="reward">
-                <img src={frogIcon} alt="Reward" />
-                <p>{reward.reward_description}</p>
-                <input 
-                  type="submit" 
-                  value={points >= reward.points_required ? "Redeem Now" : "Not Enough Points"} 
-                  onClick={() => handleRedeem(reward)} 
-                  disabled={points < reward.points_required}
-                />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
