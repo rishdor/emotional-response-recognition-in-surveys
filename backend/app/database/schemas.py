@@ -44,3 +44,9 @@ class EmailCheckRequest(BaseModel):
 
     class Config:
         from_attributes = True
+
+class PasswordVerificationRequest(BaseModel):
+    password: str
+
+class PasswordChangeRequest(BaseModel):
+    new_password: str

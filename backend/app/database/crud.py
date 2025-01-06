@@ -80,6 +80,31 @@ def get_user_points_by_id(db: Session, user_id: id):
         return user_points
     except NoResultFound:
         raise NoResultFound(f"No points record found for user with id {user_id}")
+    
+def get_user_data(db: Session, user_id: int):
+    user_data = db.query(
+        User.first_name, 
+        User.email, 
+        User.country,
+        User.city,
+        User.job_position,
+        User.education_level,
+        User.date_of_birth,
+        User.gender
+    ).filter(User.user_id == user_id).first()
+
+    if user_data:
+        return {
+            'first_name': user_data[0],
+            'email': user_data[1],
+            'country': user_data[2],
+            'city': user_data[3],
+            'job_position': user_data[4],
+            'education_level': user_data[5],
+            'date_of_birth': user_data[6],
+            'gender': user_data[7],
+        }
+    return None
 
 # Match surveys to user preferences
 def match_surveys_to_user(db: Session, user_id: int):

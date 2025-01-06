@@ -9,6 +9,7 @@ const SignIn = ({ onAuthenticationSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +29,7 @@ const SignIn = ({ onAuthenticationSuccess }) => {
       }
     } catch (error) {
       console.error('Login failed:', error);
+      setErrorMessage("Invalid credentials");
     } finally {
       setIsLoading(false);
     }
@@ -77,6 +79,11 @@ const SignIn = ({ onAuthenticationSuccess }) => {
             </button>
           </div>
         </form> 
+        {errorMessage && (
+        <div style={{ color: 'red' }}>
+          <p>{errorMessage}</p>
+        </div>
+      )}
         <footer>
         </footer>
       </div>
