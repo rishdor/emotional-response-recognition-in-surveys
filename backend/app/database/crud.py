@@ -4,7 +4,7 @@ from .user import User
 from .user_points import UserPoints
 from .schemas import UserCreate, UserUpdate
 from .surveys import Survey, PreferencesUserPreferences, PreferencesSurveyRequirements, UserSurveyCompletion, SurveyProgress
-from .survey_questions import Question, Answer
+from .survey_questions import Question, Answer, UserSurveyAnswer, UserAnswerCreate
 from sqlalchemy.sql import literal
 from .reward import Reward, UserReward
 from datetime import datetime
@@ -167,7 +167,6 @@ def get_surveys_by_user_id(db: Session, user_id: int):
     
     return {"surveys": surveys}
 
-
 def get_rewards(db: Session, user_id: int):
     rewards = db.query(Reward).all()
     user_rewards = db.query(UserReward).filter(UserReward.user_id == user_id).all()
@@ -208,3 +207,39 @@ def redeem_reward(db: Session, user_id: int, reward_id: int):
     db.refresh(user)
     db.refresh(reward)
     return "Reward redeemed successfully"
+
+def fetch_survey_state(db: Session, user_id: int, survey_id: int):
+    return db.query(UserSurveyCompletion).filter_by(user_id=user_id, survey_id=survey_id).first()
+
+def modify_survey_state(db: Session, user_id: int, survey_id: int, state: SurveyProgress):
+    completion = db.query(UserSurveyCompletion).filter_by(user_id=user_id, survey_id=survey_id).first()
+    if not completion:
+        return None
+    completion.survey_state = state
+    if state == SurveyProgress.completed:
+        completion.completed_at = datetime.utcnow()
+    db.commit()
+    return completion
+
+def save_user_answer(db: Session, answer: UserAnswerCreate):
+    user_answer = UserSurveyAnswer(
+        user_id=answer.user_id,
+        survey_id=answer.survey_id,
+        question_id=answer.question_id,
+        answer_id=answer.answer_id
+    )
+    db.add(user_answer)
+    db.commit()
+    db.refresh(user_answer)
+    return user_answer
+
+def fetch_last_answered_question(db: Session, user_id: int, survey_id: int):
+    try:
+        last_answer = db.query(UserSurveyAnswer).join(Question).filter(
+            UserSurveyAnswer.user_id == user_id,
+            UserSurveyAnswer.survey_id == survey_id,
+            Question.survey_id == survey_id
+        ).order_by(UserSurveyAnswer.answered_at.desc()).first()
+        return last_answer
+    except NoResultFound:
+        return None

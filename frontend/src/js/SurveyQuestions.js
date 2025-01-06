@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
@@ -14,8 +14,40 @@ function SurveyQuestions() {
   const { survey } = location.state || {};
   const userId = localStorage.getItem('userId');
 
+  const updateSurveyState = useCallback(async (state) => {
+    try {
+      await fetch(`http://localhost:8000/user_survey_completion/${userId}/${survey.survey_id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ survey_state: state }),
+      });
+    } catch (error) {
+      console.error("Error updating survey state:", error);
+    }
+  }, [userId, survey.survey_id]);
+
   useEffect(() => {
-    console.log("Survey object in SurveyQuestions:", survey);
+    const fetchSurveyState = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/user_survey_completion/${userId}/${survey.survey_id}`);
+        if (response.ok) {
+          const surveyState = await response.json();
+          if (surveyState.survey_state === 'not_started') {
+            await updateSurveyState('started');
+          } else if (surveyState.survey_state === 'started') {
+            const lastAnsweredQuestionResponse = await fetch(`http://localhost:8000/user_survey_answers/last_answered/${userId}/${survey.survey_id}`);
+            if (lastAnsweredQuestionResponse.ok) {
+              const lastAnsweredQuestion = await lastAnsweredQuestionResponse.json();
+              setCurrentQuestionIndex(lastAnsweredQuestion.question_id + 1);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching survey state:", error);
+      }
+    };
 
     const fetchQuestions = async () => {
       if (!survey || !survey.survey_id) {
@@ -24,13 +56,9 @@ function SurveyQuestions() {
       }
 
       try {
-        console.log(`Fetching questions for survey ID: ${survey.survey_id}`);
         const response = await fetch(`http://localhost:8000/surveys/${survey.survey_id}/questions`);
         if (response.ok) {
           const questionsData = await response.json();
-          console.log("Fetched questions:", questionsData);
-
-          // Fetch answers for each question
           const questionsWithAnswers = await Promise.all(
             questionsData.map(async (question) => {
               const answersResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/answers`);
@@ -43,7 +71,6 @@ function SurveyQuestions() {
               }
             })
           );
-
           setQuestions(questionsWithAnswers);
         } else {
           console.error("Failed to fetch questions:", response.statusText);
@@ -54,11 +81,48 @@ function SurveyQuestions() {
     };
 
     if (survey) {
+      fetchSurveyState();
       fetchQuestions();
     } else {
       console.error("Survey object is missing");
     }
-  }, [survey]);
+  }, [survey, userId, updateSurveyState]);
+
+  const saveAnswer = async (questionId, answerIds) => {
+    try {
+      if (Array.isArray(answerIds)) {
+        for (const answerId of answerIds) {
+          await fetch(`http://localhost:8000/user_survey_answers`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user_id: userId,
+              survey_id: survey.survey_id,
+              question_id: questionId,
+              answer_id: parseInt(answerId, 10),
+            }),
+          });
+        }
+      } else {
+        await fetch(`http://localhost:8000/user_survey_answers`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            survey_id: survey.survey_id,
+            question_id: questionId,
+            answer_id: parseInt(answerIds, 10),
+          }),
+        });
+      }
+    } catch (error) {
+      console.error("Error saving answer:", error);
+    }
+  };
 
   const logout = async () => {
     try {
@@ -73,11 +137,23 @@ function SurveyQuestions() {
   };
 
   const handleAnswerChange = (event) => {
-    setSelectedAnswer(event.target.value);
+    const { type, value, checked } = event.target;
+    if (type === 'checkbox') {
+      setSelectedAnswer((prev) => {
+        if (checked) {
+          return [...(prev || []), value];
+        } else {
+          return (prev || []).filter((answer) => answer !== value);
+        }
+      });
+    } else {
+      setSelectedAnswer(value);
+    }
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     if (selectedAnswer) {
+      await saveAnswer(questions[currentQuestionIndex].question_id, selectedAnswer);
       setSelectedAnswer(null);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -85,8 +161,10 @@ function SurveyQuestions() {
     }
   };
 
-  const handleFinishSurvey = () => {
+  const handleFinishSurvey = async () => {
     if (selectedAnswer) {
+      await saveAnswer(questions[currentQuestionIndex].question_id, selectedAnswer);
+      await updateSurveyState('completed');
       navigate('/thankyou', { state: { userId } });
     } else {
       alert("Please select an answer before finishing the survey.");
@@ -131,7 +209,7 @@ function SurveyQuestions() {
                       type="checkbox"
                       id={`answer_checkbox${idx}`}
                       name={`answer_checkbox${currentQuestionIndex}`}
-                      value={answer.answer_value}
+                      value={answer.answer_id}
                       onChange={handleAnswerChange}
                     />
                     <label htmlFor={`answer_checkbox${idx}`}>{answer.answer_value}</label>
@@ -147,7 +225,7 @@ function SurveyQuestions() {
                       type="radio"
                       id={`answer_radio${idx}`}
                       name={`answer_radio${currentQuestionIndex}`}
-                      value={answer.answer_value}
+                      value={answer.answer_id}
                       onChange={handleAnswerChange}
                     />
                     <label htmlFor={`answer_radio${idx}`}>{answer.answer_value}</label>

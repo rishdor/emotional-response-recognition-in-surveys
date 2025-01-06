@@ -7,9 +7,10 @@ from database.database import get_db
 from database.crud import (get_user, delete_user, update_user, 
                            update_user_points, get_user_points_by_id,
                            get_surveys_by_user_id, get_rewards, redeem_reward,
-                           get_questions_by_survey_id, get_answers_by_question_id)
+                           get_questions_by_survey_id, get_answers_by_question_id,
+                           fetch_last_answered_question, save_user_answer, fetch_survey_state, modify_survey_state)
 from database.schemas import UserCreate, UserUpdate, UserLogin, EmailCheckRequest
-
+from database.survey_questions import SurveyStateUpdate, UserAnswerCreate
 from .services import login_user, signup_user, verify_token, check_email_exists
 
 app = FastAPI()
@@ -137,3 +138,29 @@ def get_question_answers(question_id: int, db = Depends(get_db)):
         return answers
     except NoResultFound:
         raise HTTPException(status_code=404, detail=f"Answers for question {question_id} not found.")
+    
+@app.get("/user_survey_completion/{user_id}/{survey_id}", tags=["GetSurveyState"])
+def get_survey_state(user_id: int, survey_id: int, db: Session = Depends(get_db)):
+    completion = fetch_survey_state(db=db, user_id=user_id, survey_id=survey_id)
+    if not completion:
+        raise HTTPException(status_code=404, detail="Survey completion not found")
+    return completion
+
+@app.put("/user_survey_completion/{user_id}/{survey_id}", tags=["UpdateSurveyState"])
+def update_survey_state(user_id: int, survey_id: int, state: SurveyStateUpdate, db: Session = Depends(get_db)):
+    completion = modify_survey_state(db=db, user_id=user_id, survey_id=survey_id, state=state.survey_state)
+    if not completion:
+        raise HTTPException(status_code=404, detail="Survey completion not found")
+    return completion
+
+@app.post("/user_survey_answers", tags=["SaveAnswer"])
+def save_answer(answer: UserAnswerCreate, db: Session = Depends(get_db)):
+    user_answer = save_user_answer(db=db, answer=answer)
+    return user_answer
+
+@app.get("/user_survey_answers/last_answered/{user_id}/{survey_id}", tags=["GetLastAnsweredQuestion"])
+def get_last_answered_question(user_id: int, survey_id: int, db: Session = Depends(get_db)):
+    last_answer = fetch_last_answered_question(db=db, user_id=user_id, survey_id=survey_id)
+    if not last_answer:
+        raise HTTPException(status_code=404, detail="No answers found for this survey")
+    return last_answer
