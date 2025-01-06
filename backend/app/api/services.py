@@ -108,3 +108,28 @@ def check_email_exists(db: Session, email_request: EmailCheckRequest):
             detail="Email already exists"
         )
     return {"message": "Email is available"}
+
+def verify_user_password(user_id: int, entered_password: str, db: Session) -> bool:
+    user = db.query(User).filter(User.user_id == user_id).first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if pwd_context.verify(entered_password, user.password_hash):
+        return True
+    else:
+        return False
+    
+
+def change_user_password(user_id: int, new_password: str, db: Session) -> bool:
+    hashed_password = hash_password(new_password)
+
+    user = db.query(User).filter(User.user_id == user_id).first()
+
+    if user:
+        user.password_hash = hashed_password
+        db.commit()
+        db.refresh(user)
+        return True
+
+    return False

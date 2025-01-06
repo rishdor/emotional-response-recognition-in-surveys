@@ -5,8 +5,11 @@ import logo from '../images/photos/logo_surveys3.png'
 
 function About() {
   const [isLogged, setIsLogged] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+ 
 
   const checkAuthStatus = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:8000/verify", {
         method: "GET",
@@ -21,6 +24,8 @@ function About() {
     } catch (error) {
       console.log("Authentication error:", error);
       setIsLogged(false);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -38,6 +43,11 @@ function About() {
       console.error("Logout error:", error);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="About">
       <nav>
