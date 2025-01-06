@@ -88,6 +88,12 @@ function SurveyQuestions() {
     }
   }, [survey, userId, updateSurveyState]);
 
+  useEffect(() => {
+    setSelectedAnswer(null);
+    const inputs = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+    inputs.forEach(input => input.checked = false);
+  }, [currentQuestionIndex]);
+
   const saveAnswer = async (questionId, answerIds) => {
     try {
       if (Array.isArray(answerIds)) {
