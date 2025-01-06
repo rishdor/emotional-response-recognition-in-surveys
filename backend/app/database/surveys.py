@@ -12,7 +12,6 @@ class SurveyProgress(enum.Enum):
     completed = 'completed'
     abandoned = 'abandoned'
 
-
 class Survey(Base):
     __tablename__ = "surveys"
     survey_id = Column(Integer, primary_key=True, index=True)
@@ -23,7 +22,8 @@ class Survey(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     issuer = Column(String)
     points_awarded = Column(Integer, default=100)
-    survey_completions = relationship("UserSurveyCompletion", back_populates="survey")  
+    survey_completions = relationship("UserSurveyCompletion", back_populates="survey")
+    user_answers = relationship("UserSurveyAnswer", back_populates="survey")
 
 class PreferencesTypes(Base):
     __tablename__ = "preferences_types"
@@ -32,7 +32,6 @@ class PreferencesTypes(Base):
     description = Column(Text)
 
     values = relationship("PreferencesValues", back_populates="type")
-
 
 class PreferencesValues(Base):
     __tablename__ = "preferences_values"
@@ -43,7 +42,6 @@ class PreferencesValues(Base):
     type = relationship("PreferencesTypes", back_populates="values")
     __table_args__ = (UniqueConstraint("type_id", "value", name="uq_type_value"),)
 
-
 class PreferencesUserPreferences(Base):
     __tablename__ = "preferences_userpreferences"
     user_preference_id = Column(Integer, primary_key=True)
@@ -52,7 +50,6 @@ class PreferencesUserPreferences(Base):
     value_id = Column(Integer, ForeignKey("preferences_values.value_id", ondelete="CASCADE"), nullable=False)
 
     __table_args__ = (UniqueConstraint("user_id", "type_id", name="uq_user_type"),)
-
 
 class PreferencesSurveyRequirements(Base):
     __tablename__ = "preferences_surveyrequirements"
@@ -63,7 +60,6 @@ class PreferencesSurveyRequirements(Base):
 
     __table_args__ = (UniqueConstraint("survey_id", "type_id", "value_id", name="uq_survey_type_value"),)
 
-
 class UserSurveyCompletion(Base):
     __tablename__ = 'usersurveycompletion'
     
@@ -72,6 +68,6 @@ class UserSurveyCompletion(Base):
     survey_id = Column(Integer, ForeignKey('surveys.survey_id', ondelete='CASCADE'), nullable=False)
     completed_at = Column(TIMESTAMP, nullable=True)
     survey_state = Column(SqlEnum(SurveyProgress, name='survey_progress'), nullable=True, default=SurveyProgress.not_started)
-
+    
     user = relationship("User", back_populates="survey_completions")
     survey = relationship("Survey", back_populates="survey_completions")
