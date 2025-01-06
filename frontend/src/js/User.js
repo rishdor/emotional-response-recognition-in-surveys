@@ -315,79 +315,76 @@ const User = ({ userId }) => {
   return (
     <div className="User">
         <nav>
-            <ul class='navbar'>
-              <div class='nav_side'>
+            <ul className='navbar'>
+              <div className='nav_side'>
                 <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
-                <li><Link to="/about" class='link'>About</Link></li>
-                <li><Link to="/contact" class='link'>Contact</Link></li>
+                <li><Link to="/about" className='link'>About</Link></li>
+                <li><Link to="/contact" className='link'>Contact</Link></li>
               </div>
               <li><img src={logo} alt='logo'/></li>
-              <div class='nav_side'>
-                <li><Link to="/user" class='link'>User</Link></li>
-                <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
-                <li><Link to="/surveys" class='link'>Surveys</Link></li>
+              <div className='nav_side'>
+                <li><Link to="/user" className='link'>User</Link></li>
+                <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
+                <li><Link to="/surveys" className='link'>Surveys</Link></li>
               </div>
             </ul>
         </nav>
-        <div class='fix_nav_position'/>
+        <div className='fix_nav_position'/>
       <h1>WELCOME { userData.first_name.toUpperCase() }</h1>
-      <div class='sidebar'>
+      <div className='sidebar'>
         <ul>
             <li><h3>NAVIGATE</h3></li>
-            <li><a href="#personal_data">Personal data</a></li>
-            <li><a href="#change_password">Change password</a></li>
-            <li><a href="#del_account">Delete account</a></li>
+            <li><a href="#personal_data">Personal Data</a></li>
+            <li><a href="#change_password">Change Password</a></li>
+            <li><a href="#del_account">Delete Account</a></li>
         </ul>
       </div>
 
-      <div class='user_section'>
-        <div class='above_line'>
-            <h2 class='section_name' id='personal_data'>Personal data</h2>
-            <div  class='edit_icon'>  {/*EDIT ICON */}
-                <input type='checkbox' id='edit_icon_checkbox' class='edit_icon_checkbox' checked={isCheckedData} onChange={(e) => setIsCheckedData(e.target.checked)}/>
-                <label for='edit_icon_checkbox' class='edit_icon_label'>
-                    <img src={editIcon} alt='edit' class='edit_icon_img'/>
+      <div className='user_section'>
+        <div className='above_line'>
+            <h2 className='section_name' id='personal_data'>Personal Data</h2>
+            <div className='edit_icon'>  {/*EDIT ICON */}
+                <input type='checkbox' id='edit_icon_checkbox' className='edit_icon_checkbox'/>
+                <label htmlFor='edit_icon_checkbox' className='edit_icon_label'>
+                    <img src={editIcon} alt='edit' className='edit_icon_img'/>
                 </label>
                 {/* EDIT WINDOW */}
-                <div class='edit_container'>
-                    <form class='edit_data' onSubmit={handleUpdate}> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
-                        <h2 class='edit_personal_data'>Edit personal data</h2>
-                        <div class='close_user_changes_container'>
-                            <button class='close_user_changes' onClick={uncheckCheckboxes}><img src={closeIcon} alt='X'/></button>
-                        </div>
-                        <div class='all_user_data'>
-                            <div class='data'>
-                                <label for='first_name'>Name:</label>
+                <div className='edit_container'>
+                    <form className='edit_data' onSubmit={handleUpdate}> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                        <h2 className='edit_personal_data'>Edit Personal Data</h2>
+                        <div className='all_user_data'>
+                            <div className='data'>
+                                <label htmlFor='first_name'>Name:</label>
                                 <input name='first_name' type='text'
                                  value={formData.first_name}
                                  onChange={handleChange} />
                                 {errors.first_name && <span style={{ color: 'red', fontSize: 12 }}>{errors.first_name}</span>}
                             </div>
-                            <div class='data'>
-                                <label for='email_edit'>Email:</label>
+                            <div className='data'>
+                                <label htmlFor='email_edit'>Email:</label>
                                 <input type='email_edit' name='email'
                                  value={formData.email}
                                  onChange={handleChange} />
                                  {errors.email && <span style={{ color: 'red', fontSize: 12 }}>{errors.email}</span>}
                             </div>
-                            <div class='data'>
-                            <label for="country">Country:</label>
+                            <div className='data'>
+                            <label htmlFor="country">Country:</label>
                                 <CountriesSelect
                                 country={formData.country}
                                 setCountry={(value) => setFormData({ ...formData, country: value })} />
                                 {errors.country && <span style={{ color: 'red', fontSize: 12 }}>{errors.country}</span>}
                             </div>
 
-                            <div class='data'>
-                                <label for="city">City:</label>
+                            <div className='data'>
+                                <label htmlFor="city">City:</label>
                                 <input type="text" name='city'
                                  value={formData.city}
                                  onChange={handleChange} />
                                  {errors.city && <span style={{ color: 'red', fontSize: 12 }}>{errors.city}</span>}
                             </div>
 
-                            <div class='data'>
-                                <label for="job_position">Job position:</label>
+                            <div className='data'>
+                                <label htmlFor="job_position">Job Position:</label>
                                 <input type="text" name='job_position'
                                  value={formData.job_position}
                                  onChange={handleChange} />
@@ -395,12 +392,12 @@ const User = ({ userId }) => {
                                   <span style={{ color: 'red', fontSize: 12 }}>{errors.job_position}</span>}
                             </div>
 
-                            <div class='data'>
-                                <label for="education_level">Education level:</label>
+                            <div className='data'>
+                                <label htmlFor="education_level">Education Level:</label>
                                 <select name="education_level" id="education_level"
                                  value={formData.education_level}
                                  onChange={handleChange}>
-                                    <option value="">Select your education level</option>
+                                    <option value="">Select Your Education Level</option>
                                     <option value="highschool">High School</option>
                                     <option value="associates">Associate's Degree</option>
                                     <option value="bachelors">Bachelor's Degree</option>
@@ -412,111 +409,108 @@ const User = ({ userId }) => {
                                  <span style={{ color: 'red', fontSize: 12 }}>{errors.education_level}</span>}
                             </div>
 
-                            <div class='data'>
-                                <label for="birth">Date of birth:</label>
+                            <div className='data'>
+                                <label htmlFor="birth">Date of Birth:</label>
                                 <input type="date" name='date_of_birth' 
                                 value={formatDate(formData.date_of_birth)}
                                 onChange={handleChange} />
                                 {errors.date_of_birth && <span style={{ color: 'red', fontSize: 12 }}>{errors.date_of_birth}</span>}
                             </div>
 
-                            <div class='data'>
-                                <label for="gerder">Gender:</label>
+                            <div className='data'>
+                                <label htmlFor="gender">Gender:</label>
                                 <select name="gender" id="gender"
                                  value={formData.gender}
                                  onChange={handleChange} >
-                                    <option value="">Select your gender</option>
-                                    <option value="F">female</option>
-                                    <option value="M">male</option>
-                                    <option value="O">other</option>
-                                    <option value="N">prefer not to say</option>
+                                    <option value="">Select Your Gender</option>
+                                    <option value="F">Female</option>
+                                    <option value="M">Male</option>
+                                    <option value="O">Other</option>
+                                    <option value="N">Prefer Not to Say</option>
                                 </select>
                                 {errors.gender && <span style={{ color: 'red', fontSize: 12 }}>{errors.gender}</span>}
                             </div>
                         </div>
-                        <input type='submit' value='Save changes' onClick={uncheckCheckboxes}/>  {/* has to uncheck the checkbox edit_icon_checkbox from line 25*/}
+                        <input type='submit' value='Save Changes'></input>  {/* has to uncheck the checkbox edit_icon_checkbox from line 25*/}
                     </form>  
                 </div>  
             </div>
         </div>
-        <hr class='devide_line'></hr>
-        <div class='data_container'>
-            <div class='user_photo'>
+        <hr className='devide_line'></hr>
+        <div className='data_container'>
+            <div className='user_photo'>
                 <img src={userIcon} alt='user'/>
             </div>
-            <div class='all_user_data'>
-                <div class='data'>
-                    <label for='name'>Name:</label>
+            <div className='all_user_data'>
+                <div className='data'>
+                    <label htmlFor='name'>Name:</label>
                     <p name='name'>{userData.first_name}</p>
                 </div>
-                <div class='data'>
-                    <label for='email'>Email:</label>
+                <div className='data'>
+                    <label htmlFor='email'>Email:</label>
                     <p name='email'>{userData.email}</p>
                 </div>
-                <div class='data'>
-                    <label for='counrty'>Country:</label>
-                    <p name='counrty'>{userData.country}</p>
+                <div className='data'>
+                    <label htmlFor='country'>Country:</label>
+                    <p name='country'>{userData.country}</p>
                 </div>
-                <div class='data'>
-                    <label for='city'>City:</label>
+                <div className='data'>
+                    <label htmlFor='city'>City:</label>
                     <p name='city'>{userData.city}</p>
                 </div>
-                <div class='data'>
-                    <label for='job position'>Job position:</label>
-                    <p name='job position'>{userData.job_position}</p>
+                <div className='data'>
+                    <label htmlFor='job_position'>Job Position:</label>
+                    <p name='job_position'>{userData.job_position}</p>
                 </div>
-                <div class='data'>
-                    <label for='education_level'>Education level:</label>
+                <div className='data'>
+                    <label htmlFor='education_level'>Education Level:</label>
                     <p name='education_level'>{userData.education_level}</p>
                 </div>
-                <div class='data'>
-                    <label for='birth'>Date of birth:</label>
+                <div className='data'>
+                    <label htmlFor='birth'>Date of Birth:</label>
                     <p name='birth'>{userData.date_of_birth}</p>
                 </div>
-                <div class='data'>
-                    <label for='gender'>Gender:</label>
+                <div className='data'>
+                    <label htmlFor='gender'>Gender:</label>
                     <p name='gender'>{userData.gender}</p>
                 </div>
             </div>        
         </div>
       </div>
 
-      <div class='user_section'>    {/*CHANGE PASSWORD*/}
-            <div class='above_line'>
-                <h2 class='section_name' id='change_password'>Change password</h2>
+      <div className='user_section'>    {/*CHANGE PASSWORD*/}
+            <div className='above_line'>
+                <h2 className='section_name' id='change_password'>Change Password</h2>
             </div>
-            <hr class='devide_line'></hr>
-            <div class='all_data'>
-            <p class='change_pass_info'>Do this at least twice a year to keep your data save.</p>
-                <div class='delete_account'>
-                    <input type='checkbox' id='edit_pass_chechbox' class='edit_pass_checkbox' checked={isCheckedPass} onChange={(e) => setIsCheckedPass(e.target.checked)}/>
-                    <label for='edit_pass_chechbox' class='change_pass_label'>Change password</label>
+            <hr className='devide_line'></hr>
+            <div className='all_data'>
+            <p className='change_pass_info'>Do this at least twice a year to keep your data safe.</p>
+                <div className='delete_account'>
+                    <input type='checkbox' id='edit_pass_checkbox' className='edit_pass_checkbox'/>
+                    <label htmlFor='edit_pass_checkbox' className='change_pass_label'>Change Password</label>
                     {/* EDIT WINDOW */}
-                    <form class='edit_container_password' onSubmit={handlePasswordChange}>
-                        <div class='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
-                            <h2 class='edit_personal_data'>Change password</h2>
-                            <div class='close_user_changes_container'>
-                                <button class='close_user_changes' onClick={uncheckCheckboxes}><img src={closeIcon} alt='X'/></button>
-                            </div>
-                            <div class='all_data'>
-                                <div class='data'>
-                                    <label for='oldPassword'>Old password:</label>
+                    <form className='edit_container_password' onSubmit={handlePasswordChange}>
+                        <div className='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                            <h2 className='edit_personal_data'>Change Password</h2>
+                            <div className='all_data'>
+                                <div className='data'>
+                                    <label htmlFor='oldPassword'>Old Password:</label>
                                     <input type='password'
                                     id="oldPassword"
                                     name="oldPassword"
                                     value={passwordForm.oldPassword}
                                     onChange={handleInputChange}/>
                                 </div>
-                                <div class='data'>
-                                    <label for='newPassword'>New password:</label>
+                                <div className='data'>
+                                    <label htmlFor='newPassword'>New Password:</label>
                                     <input type='password' 
                                     id="newPassword"
                                     name="newPassword"
                                     value={passwordForm.newPassword}
                                     onChange={handleInputChange}/>
                                 </div>
-                                <div class='data'>
-                                    <label for='confirmPassword'>Repeat new password:</label>
+                                <div className='data'>
+                                    <label htmlFor='confirmPassword'>Repeat New Password:</label>
                                     <input type='password'  
                                     id="confirmPassword"
                                     name="confirmPassword"
@@ -524,7 +518,7 @@ const User = ({ userId }) => {
                                     onChange={handleInputChange}/>
                                 </div>
                             </div>
-                            <input type='submit' value='save changes' onClick={uncheckCheckboxes}/> {/* has to uncheck the checkbox edit_pass_chechbox from line 132*/}
+                            <input type='submit' value='Save Changes'></input> {/* has to uncheck the checkbox edit_pass_checkbox from line 132*/}
                             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                             {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
                         </div>  
@@ -532,20 +526,19 @@ const User = ({ userId }) => {
                 </div>
             </div>
         </div>
-        <div class='user_section'>
-            <div class='above_line'>
-                <h2 class='section_name' id='del_account'>Delete account</h2>
+        <div className='user_section'>
+            <div className='above_line'>
+                <h2 className='section_name' id='del_account'>Delete Account</h2>
             </div>
-            <hr class='devide_line'></hr>
-            <div class='all_data'>
-            <p for='delete_acc'>Once you delete your account, there is no going back. Please be certain.</p>
-                <div class='delete_account'>
-                    <button onClick={handleDeleteAccount} disabled="true"> Delete Account </button> {/* TODO */}
+            <hr className='devide_line'></hr>
+            <div className='all_data'>
+            <p htmlFor='delete_acc'>Once you delete your account, there is no going back. Please be certain.</p>
+                <div className='delete_account'>
+                    <button onClick={handleDeleteAccount} disabled>Delete Account</button> {/* TODO */}
                 </div>
             </div>
         </div>
-        <footer>
-        </footer>
+
     </div>
   );
 }
