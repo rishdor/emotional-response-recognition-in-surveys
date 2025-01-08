@@ -3,13 +3,14 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../css/Dashboard.css';
 import '../css/Surveys.css';
 import '../css/App.css';
+import logo from '../images/photos/logo_surveys3.png';
 
 function Surveys() {
   const [surveys, setSurveys] = useState({ new: [], inProgress: [] });
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const userId = queryParams.get('userId');
+  const userId = queryParams.get('userId') || localStorage.getItem('userId');
 
   const logout = async () => {
     try {
@@ -54,11 +55,13 @@ function Surveys() {
 
     if (userId) {
       fetchData();
+    } else {
+      console.error("User ID is missing");
     }
   }, [userId]);
 
   const handleSurveyClick = (survey) => {
-    navigate('/surveywindow', { state: { survey } });
+    navigate('/surveyinfo', { state: { survey, userId } });
   };
 
   const formatDateWithRemainingDays = (deadline) => {
@@ -76,29 +79,37 @@ function Surveys() {
   return (
     <div className="Surveys">
       <nav>
-        <ul className="navbar">
-          <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li>
-          <li><Link to="/about" className="link">about</Link></li>
-          <li><Link to="/user" className="link">user</Link></li>
-          <li><Link to="/dashboard" className="link">dashboard</Link></li>
+        <ul className='navbar'>
+          <div className='nav_side'>
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+            <li><Link to="/about" className='link'>About</Link></li>
+            <li><Link to="/contact" className='link'>Contact</Link></li>
+          </div>
+          <li><img src={logo} alt='logo'/></li>
+          <div className='nav_side'>
+            <li><Link to="/user" className='link'>User</Link></li>
+            <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
+            <li><Link to="/surveys" className='link'>Surveys</Link></li>
+          </div>
         </ul>
       </nav>
-      <h1>all surveys in one place</h1>
-      <div className="sidebar">
+      <div className='fix_nav_position'/>
+      <h1>ALL SURVEYS IN ONE PLACE</h1>
+      <div className='sidebar'>
         <ul>
-          <li><h3>NAVIGATE</h3></li>
-          <li><a href="#in_progress">in progress</a></li>
-          <li><a href="#new">new</a></li>
+            <li><h3>NAVIGATE</h3></li>
+            <li><a href="#in_progress">In progress</a></li>
+            <li><a href="#new">New</a></li>
         </ul>
       </div>
 
-      <div className="section">
-        <h2 className="section_name" id="in_progress">in progress</h2>
-        <hr className="devide_line" />
-        <div className="survey_list">
-          <div className="survey_headers">
-            <p>survey name</p>
-            <p className="deadline">deadline</p>
+      <div className='section'>
+        <h2 className='section_name' id='surveys'>In progress</h2>
+        <hr className='devide_line'></hr>
+        <div className='survey_list'>
+          <div className='survey_headers'>
+            <p>Survey name</p>
+            <p className='deadline'>Deadline</p>
           </div>
           {surveys.inProgress.length > 0 ? (
             surveys.inProgress.map((survey, index) => (
@@ -113,7 +124,6 @@ function Surveys() {
           )}
         </div>
       </div>
-
       <div className="section">
         <h2 className="section_name" id="new">new</h2>
         <hr className="devide_line" />

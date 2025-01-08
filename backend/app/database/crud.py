@@ -4,9 +4,10 @@ from .user import User
 from .user_points import UserPoints
 from .schemas import UserCreate, UserUpdate
 from .surveys import Survey, PreferencesUserPreferences, PreferencesSurveyRequirements, UserSurveyCompletion, SurveyProgress
-from .survey_questions import Question, Answer
+from .survey_questions import Question, Answer, UserSurveyAnswer, UserAnswerCreate
 from sqlalchemy.sql import literal
-from .reward import Reward
+from .reward import Reward, UserReward
+from datetime import datetime
 
 # Get user's name by ID
 def get_user(db: Session, user_id: int):
@@ -79,6 +80,31 @@ def get_user_points_by_id(db: Session, user_id: id):
         return user_points
     except NoResultFound:
         raise NoResultFound(f"No points record found for user with id {user_id}")
+    
+def get_user_data(db: Session, user_id: int):
+    user_data = db.query(
+        User.first_name, 
+        User.email, 
+        User.country,
+        User.city,
+        User.job_position,
+        User.education_level,
+        User.date_of_birth,
+        User.gender
+    ).filter(User.user_id == user_id).first()
+
+    if user_data:
+        return {
+            'first_name': user_data[0],
+            'email': user_data[1],
+            'country': user_data[2],
+            'city': user_data[3],
+            'job_position': user_data[4],
+            'education_level': user_data[5],
+            'date_of_birth': user_data[6],
+            'gender': user_data[7],
+        }
+    return None
 
 # Match surveys to user preferences
 def match_surveys_to_user(db: Session, user_id: int):
@@ -166,9 +192,14 @@ def get_surveys_by_user_id(db: Session, user_id: int):
     
     return {"surveys": surveys}
 
-
-def get_rewards(db: Session):
+def get_rewards(db: Session, user_id: int):
     rewards = db.query(Reward).all()
+    user_rewards = db.query(UserReward).filter(UserReward.user_id == user_id).all()
+    user_rewards_dict = {ur.reward_id: ur.redeemed_at for ur in user_rewards}
+
+    for reward in rewards:
+        reward.last_redeemed = user_rewards_dict.get(reward.reward_id, None)
+
     return rewards
 
 def get_questions_by_survey_id(db: Session, survey_id: int):
@@ -176,3 +207,64 @@ def get_questions_by_survey_id(db: Session, survey_id: int):
 
 def get_answers_by_question_id(db: Session, question_id: int):
     return db.query(Answer).filter(Answer.question_id == question_id).all()
+
+def redeem_reward(db: Session, user_id: int, reward_id: int):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    reward = db.query(Reward).filter(Reward.reward_id == reward_id).first()
+
+    if not user or not reward:
+        return None
+
+    user_points = user.points
+    if user_points.points < reward.points_required:
+        return "Not enough points"
+
+    now = datetime.utcnow()
+    last_redeemed = db.query(UserReward).filter(UserReward.user_id == user_id, UserReward.reward_id == reward_id).order_by(UserReward.redeemed_at.desc()).first()
+
+    if last_redeemed and (now - last_redeemed.redeemed_at).days < 30:
+        return "Reward can only be redeemed once a month"
+
+    user_points.points -= reward.points_required
+    user_reward = UserReward(user_id=user_id, reward_id=reward_id, redeemed_at=now)
+    db.add(user_reward)
+    db.commit()
+    db.refresh(user)
+    db.refresh(reward)
+    return "Reward redeemed successfully"
+
+def fetch_survey_state(db: Session, user_id: int, survey_id: int):
+    return db.query(UserSurveyCompletion).filter_by(user_id=user_id, survey_id=survey_id).first()
+
+def modify_survey_state(db: Session, user_id: int, survey_id: int, state: SurveyProgress):
+    completion = db.query(UserSurveyCompletion).filter_by(user_id=user_id, survey_id=survey_id).first()
+    if not completion:
+        return None
+    completion.survey_state = state
+    if state == SurveyProgress.completed:
+        completion.completed_at = datetime.utcnow()
+    db.commit()
+    return completion
+
+def save_user_answer(db: Session, answer: UserAnswerCreate):
+    user_answer = UserSurveyAnswer(
+        user_id=answer.user_id,
+        survey_id=answer.survey_id,
+        question_id=answer.question_id,
+        answer_id=answer.answer_id
+    )
+    db.add(user_answer)
+    db.commit()
+    db.refresh(user_answer)
+    return user_answer
+
+def fetch_last_answered_question(db: Session, user_id: int, survey_id: int):
+    try:
+        last_answer = db.query(UserSurveyAnswer).join(Question).filter(
+            UserSurveyAnswer.user_id == user_id,
+            UserSurveyAnswer.survey_id == survey_id,
+            Question.survey_id == survey_id
+        ).order_by(UserSurveyAnswer.answered_at.desc()).first()
+        return last_answer
+    except NoResultFound:
+        return None

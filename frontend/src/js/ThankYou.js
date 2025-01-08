@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import '../css/ThankYou.css';
 import '../css/SurveyWindow.css';
 import '../css/App.css';
+import logo from '../images/photos/logo_surveys3.png';
 import thankULeft from '../images/photos/thank_you_left.png'
 import thankURight from '../images/photos/thank_you_right.png'
 
@@ -21,13 +22,21 @@ function ThankYou() {
   return (
     <div className="ThankYou">
       <nav>
-            <ul class='navbar'>
-              <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li>
-              <li><Link to="/about" class='link'>about</Link></li>
-              <li><Link to="/user" class='link'>user</Link></li>
-              <li><Link to="/dashboard" class='link'>dashboard</Link></li>
-            </ul>
-          </nav>
+       <ul class='navbar'>
+          <div class='nav_side'>
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+            <li><Link to="/about" class='link'>About</Link></li>
+            <li><Link to="/contact" class='link'>Contact</Link></li>
+          </div>
+          <li><img src={logo} alt='logo'/></li>
+          <div class='nav_side'>
+            <li><Link to="/user" class='link'>User</Link></li>
+            <li><Link to="/dashboard" class='link'>Dashboard</Link></li>
+            <li><Link to="/surveys" class='link'>Surveys</Link></li>
+          </div>
+        </ul>
+      </nav>
+      <div class='fix_nav_position'/>
       <div class='thank_container'>
         <img src={thankULeft} alt='Thank you' class='thx_img1'/>
         <h1 class='thx_message'>thank you for being a part of this survey</h1>

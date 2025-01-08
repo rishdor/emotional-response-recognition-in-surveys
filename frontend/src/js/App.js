@@ -11,6 +11,8 @@ import Surveys from './Surveys';
 import SurveyWindow from './SurveyWindow';
 import ThankYou from './ThankYou';
 import SurveyQuestions from './SurveyQuestions';
+import SurveyInfo from './SurveyInfo';
+import Contact from './Contact'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,7 +20,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleLoginSuccess = async () => {
-    console.log("ASD");
     setIsLoading(true);
 
     try {
@@ -100,14 +101,16 @@ function App() {
               <Route path="/" element={<Home />} />
             </Route>
             <Route element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
-              <Route path="/user" element={<User />} />
+              <Route path="/user" element={<User userId={userId}/>} />
               <Route path="/dashboard" element={<Dashboard userId={userId}/>} />
               <Route path="/surveys" element={<Surveys />} />
               <Route path="/surveywindow" element={<SurveyWindow />} />
               <Route path="/thankyou" element={<ThankYou />} />
               <Route path='/surveyquestions' element={<SurveyQuestions />} />
+              <Route path='/surveyinfo' element={<SurveyInfo />} />
             </Route>
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </div>
     </Router>
