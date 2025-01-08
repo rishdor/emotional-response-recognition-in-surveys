@@ -21,3 +21,5 @@ class User(Base):
     updated_at = Column(Date, default=func.now(), onupdate=func.now())
     points = relationship("UserPoints", back_populates="user", uselist=False)  # One-to-one relationship with UserPoints
     survey_completions = relationship("UserSurveyCompletion", back_populates="user")  # One-to-many relationship with UserSurveyCompletion
+    user_rewards = relationship("UserReward", back_populates="user")
+    survey_answers = relationship("UserSurveyAnswer", back_populates="user")

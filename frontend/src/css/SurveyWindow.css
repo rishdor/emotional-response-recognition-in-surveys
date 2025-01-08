@@ -96,7 +96,7 @@
     margin: 0;
   }
 
-    .singular_choice,
+    .single_choice,
     .multiple_choice {
       display: flex;
       flex-direction: column;
@@ -155,7 +155,7 @@
     .finish input[type="submit"] {
       background-color: var(--button_color);
       border: none;
-      border-radius: 30px;
+      border-radius: 50px;
       height: 200%;
       width: 100%;
       color: #FFFFFF;
@@ -163,6 +163,26 @@
       padding: 10%;
     }
 
-      .finish input[type="submit"]:hover {
+      .finish input[type="submit"]:hover,
+      .stop_button:hover {
         background-color: var(--button_hover_color);
       }
+
+
+.stop_button_container{
+  display: flex;
+  width: 10%;
+  position: fixed;
+  margin: 30vh 0 0 10%;
+
+}
+.stop_button{
+  left: 0 !important;
+  background-color: var(--button_color);
+  border: none;
+  border-radius: 20px;
+  color: #FFFFFF;
+  height: 120px;
+  width: 120px;
+  font-size: 100%;
+}

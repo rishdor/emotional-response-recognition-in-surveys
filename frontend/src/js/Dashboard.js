@@ -2,6 +2,7 @@ import { React, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/Dashboard.css';
 import '../css/App.css';
+import logo from '../images/photos/logo_surveys3.png';
 import starIcon from '../images/icons8-star-64.png';
 import frogIcon from '../images/icons8-frog-96.png';
 import bulbIcon from '../images/icons8-light-bulb-48.png';
@@ -17,6 +18,12 @@ const Dashboard = ({ userId }) => {
   ]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userId) {
+      localStorage.setItem('userId', userId);
+    }
+  }, [userId]);
 
   const logout = async () => {
     try {
@@ -41,7 +48,7 @@ const Dashboard = ({ userId }) => {
         if (userResponse.ok) {
           const userData = await userResponse.json();
           console.log("User Data:", userData);
-          setUser(userData.toUpperCase());
+          setUser(userData);
         }
         if (pointsResponse.ok) {
           const pointsData = await pointsResponse.json();
@@ -84,7 +91,7 @@ const Dashboard = ({ userId }) => {
 
   const handleSurveyClick = (survey) => {
     console.log("Navigating to survey window with survey:", survey);
-    navigate('/surveywindow', { state: { survey } });
+    navigate('/surveyinfo', { state: { survey, user } });
   };
 
   const formatDateWithRemainingDays = (deadline) => {
@@ -99,23 +106,69 @@ const Dashboard = ({ userId }) => {
     return `${formattedDate} (${daysLeft} days left)`;
   };
 
+  const handleRedeem = async (reward) => {
+    try {
+      const response = await fetch(`http://localhost:8000/user/${userId}/rewards/${reward.reward_id}/redeem`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        alert("Yay, next time you can redeem the reward is in one month.");
+
+        const updatedRewards = rewards.map(r => r.reward_id === reward.reward_id ? { ...r, last_redeemed: new Date() } : r);
+        setRewards(updatedRewards);
+
+        // Update user points
+        const pointsResponse = await fetch(`http://localhost:8000/user/${userId}/points`);
+        if (pointsResponse.ok) {
+          const pointsData = await pointsResponse.json();
+          setPoints(pointsData.points);
+        }
+      } else {
+        const errorData = await response.json();
+        alert(errorData.detail);
+      }
+    } catch (error) {
+      console.error("Error redeeming reward:", error);
+      alert("Failed to redeem reward");
+    }
+  };
+
+  const calculateDaysLeft = (lastRedeemed) => {
+    const now = new Date();
+    const lastRedeemedDate = new Date(lastRedeemed);
+    const daysSinceLastRedeemed = Math.ceil((now - lastRedeemedDate) / (1000 * 60 * 60 * 24));
+    return 30 - daysSinceLastRedeemed;
+  };
+
   return (
     <div className="Dashboard">
       <nav>
-        <ul className="navbar">
-          <li onClick={logout} style={{ cursor: "pointer" }}>sign out</li>
-          <li><Link to="/about" className="link">about</Link></li>
-          <li><Link to="/user" className="link">user</Link></li>
-          <li><Link to="/dashboard" className="link">dashboard</Link></li>
+        <ul className='navbar'>
+          <div className='nav_side'>
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign Out</li> 
+            <li><Link to="/about" className='link'>About</Link></li>
+            <li><Link to="/contact" className='link'>Contact</Link></li>
+          </div>
+          <li><img src={logo} alt='Logo'/></li>
+          <div className='nav_side'>
+            <li><Link to="/user" className='link'>User</Link></li>
+            <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
+            <li><Link to={`/surveys?userId=${userId}`} className='link'>Surveys</Link></li>
+          </div>
         </ul>
       </nav>
-      <h1>WELCOME {user}!</h1>
-      <div className="sidebar">
+      <div className='fix_nav_position'/>
+      <h1>Welcome {user}</h1> 
+      <div className='sidebar'>
         <ul>
-          <li><h3>NAVIGATE</h3></li>
-          <li><a href="#surveys">surveys</a></li>
-          <li><a href="#rewards">rewards</a></li>
-          <li><a href="#messages">messages</a></li>
+            <li><h3>Navigate</h3></li>
+            <li><a href="#surveys">Surveys</a></li>
+            <li><a href="#awards">Awards</a></li>
+            <li><a href="#messages">Messages</a></li>
         </ul>
       </div>
 
@@ -129,7 +182,7 @@ const Dashboard = ({ userId }) => {
           </div>
           {notifications.map((note, index) => (
             <div className="message_container" key={index}>
-              <img src={bulbIcon} alt="notification" />
+              <img src={bulbIcon} alt="Notification" />
               <p>{note.message}</p>
               <p>{note.date}</p>
             </div>
@@ -138,11 +191,11 @@ const Dashboard = ({ userId }) => {
       </div>
 
       <div className="section">
-        <h2 className="section_name" id="surveys">surveys</h2>
+        <h2 className="section_name" id="surveys">Surveys</h2>
         <hr className="devide_line" />
         <div className="survey_container">
           <div className="inner_surveys">
-            <h3>new</h3>
+            <h3>New</h3>
             {surveys.new.length > 0 ? (
               surveys.new.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
@@ -155,7 +208,7 @@ const Dashboard = ({ userId }) => {
             )}
           </div>
           <div className="inner_surveys">
-            <h3>in progress</h3>
+            <h3>In Progress</h3>
             {surveys.inProgress.length > 0 ? (
               surveys.inProgress.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
@@ -168,31 +221,40 @@ const Dashboard = ({ userId }) => {
             )}
           </div>
         </div>
-        <Link to={`/surveys?userId=${userId}`} className="link" id="view_more">view more</Link>
+        <Link to={`/surveys?userId=${userId}`} className="link view_more">View More</Link>
       </div>
-
       <div className="section">
-        <h2 className="section_name" id="rewards">rewards</h2>
+        <h2 className="section_name" id="rewards">Rewards</h2>
         <hr className="devide_line" />
         <div className="points">
-          <p>you have</p>
+          <p>You Have</p>
           <p>{points}</p>
-          <img src={starIcon} alt="star" />
+          <img src={starIcon} alt="Star" />
         </div>
         <div className="all_rewards">
-          {rewards.map((reward, index) => (
-            <div className="reward_container" key={index}>
-              <div className="points_required">
-                <p>{reward.points_required}</p>
-                <img src={starIcon} alt="star" />
+          {rewards.sort((a, b) => a.points_required - b.points_required).map((reward, index) => {
+            const daysLeft = reward.last_redeemed ? calculateDaysLeft(reward.last_redeemed) : 0;
+            const canRedeem = points >= reward.points_required && daysLeft <= 0;
+
+            return (
+              <div className="reward_container" key={index}>
+                <div className="points_required">
+                  <p>{reward.points_required}</p>
+                  <img src={starIcon} alt="Star" />
+                </div>
+                <div className="reward">
+                  <img src={frogIcon} alt="Reward" />
+                  <p>{reward.reward_description}</p>
+                  <input 
+                    type="submit" 
+                    value={canRedeem ? "Redeem Now" : points < reward.points_required ? "Not Enough Points" : `Available in ${daysLeft} days`} 
+                    onClick={() => handleRedeem(reward)} 
+                    disabled={!canRedeem}
+                  />
+                </div>
               </div>
-              <div className="reward">
-                <img src={frogIcon} alt="reward" />
-                <p>{reward.reward_description}</p>
-                <input type="submit" value="redeem" />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
