@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore', category = FutureWarning)
 
 parser = argparse.ArgumentParser(description="run")
 
-parser.add_argument('--path_video', type=str, default='video/', help='Path to all videos')
+parser.add_argument('--path_video', type=str, default='D:\\emotional-response-recognition-in-surveys\\backend\\app\\model\\videos\\video_one.mp4', help='Path to all videos')
 parser.add_argument('--path_save', type=str, default='report/', help='Path to save the report')
 parser.add_argument('--conf_d', type=float, default=0.7, help='Elimination threshold for false face areas')
 parser.add_argument('--path_FE_model', type=str, default='models/EmoAffectnet/weights_0_66_37_wo_gl.h5',
@@ -62,12 +62,29 @@ def pred_one_video(path):
     print('Lead time: {} s'.format(np.round(end_time, 2)))
     print()
 
-def pred_all_video():
-    path_all_videos = os.listdir(args.path_video)
-    for id, cr_path in enumerate(path_all_videos):
-        print('{}/{}'.format(id+1, len(path_all_videos)))
-        pred_one_video(os.path.join(args.path_video,cr_path))
+# def pred_all_video():
+#     path_all_videos = os.listdir(args.path_video)
+#     for id, cr_path in enumerate(path_all_videos):
+#         print('{}/{}'.format(id+1, len(path_all_videos)))
+#         pred_one_video(os.path.join(args.path_video,cr_path))
         
+def pred_all_video():
+    # Sprawdzenie, czy `args.path_video` to plik, czy katalog
+    if os.path.isfile(args.path_video):
+        # Jeśli to plik, wykonaj analizę dla jednego wideo
+        print('Processing single video...')
+        pred_one_video(args.path_video)
+    elif os.path.isdir(args.path_video):
+        # Jeśli to katalog, przetwórz wszystkie pliki wideo w katalogu
+        print('Processing all videos in directory...')
+        path_all_videos = os.listdir(args.path_video)
+        for id, cr_path in enumerate(path_all_videos):
+            print('{}/{}'.format(id+1, len(path_all_videos)))
+            pred_one_video(os.path.join(args.path_video, cr_path))
+    else:
+        # Jeśli ścieżka nie istnieje, wyświetl błąd
+        print(f"Ścieżka '{args.path_video}' nie istnieje!")
+
         
 if __name__ == "__main__":
     pred_all_video()

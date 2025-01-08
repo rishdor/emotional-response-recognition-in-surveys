@@ -26,6 +26,8 @@ backend/app/api/__pycache__/
 */__pycache__
 */*/__pycache__
 */*/*/__pycache__
+*/*/*/*/__pycache__
+*/*/*/*/*/__pycache__
 
 #IDE
 .idea/
