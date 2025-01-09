@@ -22,6 +22,14 @@ const User = ({ userId }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     let debounceTimeout;
+
+    const [isCheckedData, setIsCheckedData] = useState(false);
+    const [isCheckedPass, setIsCheckedPass] = useState(false);
+    const uncheckCheckboxes = () => {
+      console.log('uncheckCheckboxes');
+      setIsCheckedData(false); // Uncheck the checkbox for editing personal data
+      setIsCheckedPass(false); // Uncheck the checkbox for changing password
+    };
     
     const logout = async () => {
         try {
@@ -279,13 +287,6 @@ const User = ({ userId }) => {
         setSuccessMessage("Password successfully updated.");
       };
 
-      const [isCheckedData, setIsCheckedData] = useState(false);
-      const [isCheckedPass, setIsCheckedPass] = useState(false);
-      const uncheckCheckboxes = () => {
-        setIsCheckedData(false); // Uncheck the checkbox for editing personal data
-        setIsCheckedPass(false); // Uncheck the checkbox for changing password
-      };
-
       /* TODO */
       const handleDeleteAccount = async () => {
         if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
@@ -496,12 +497,15 @@ const User = ({ userId }) => {
             <div className='all_data'>
             <p className='change_pass_info'>Do this at least twice a year to keep your data safe.</p>
                 <div className='delete_account'>
-                    <input type='checkbox' id='edit_pass_checkbox' className='edit_pass_checkbox'/>
-                    <label htmlFor='edit_pass_checkbox' className='change_pass_label'>Change Password</label>
+                    <input type='checkbox' id='edit_pass_chechbox' className='edit_pass_checkbox' checked={isCheckedPass} onChange={(e) => setIsCheckedPass(e.target.checked)}/>
+                    <label htmlFor='edit_pass_chechbox' className='change_pass_label'>Change password</label>
                     {/* EDIT WINDOW */}
-                    <form className='edit_container_password' onSubmit={handlePasswordChange}>
-                        <div className='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                    <div className='edit_container_password'>  {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                        <form className='edit_data' onSubmit={handlePasswordChange}>
                             <h2 className='edit_personal_data'>Change Password</h2>
+                            <div class='close_user_changes_container'>
+                                <button class='close_user_changes' onClick={uncheckCheckboxes}><img src={closeIcon} alt='X'/></button>
+                            </div>
                             <div className='all_data'>
                                 <div className='data'>
                                     <label htmlFor='oldPassword'>Old Password:</label>
@@ -528,11 +532,11 @@ const User = ({ userId }) => {
                                     onChange={handleInputChange}/>
                                 </div>
                             </div>
-                            <input type='submit' value='Save Changes'></input> {/* has to uncheck the checkbox edit_pass_checkbox from line 132*/}
+                            <input type='submit' value='Save changes' onClick={uncheckCheckboxes}/> {/* has to uncheck the checkbox edit_pass_chechbox from line 132*/}
                             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                             {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-                        </div>  
-                    </form>  
+                        </form>  
+                    </div>  
                 </div>
             </div>
         </div>

@@ -180,7 +180,7 @@
     text-align: center;
 }
 
-    .delete_account input[type="submit"],
+    .delete_account button,
     .change_pass_label{
         background-color: var(--delete_color);
         color: #FFFFFF;
@@ -194,7 +194,7 @@
         font-size: 90%;
     }
 
-    .delete_account input[type="submit"]:hover,
+    .delete_account button:hover,
     .change_pass_label:hover{
         cursor: pointer;
         background-color: var(--delete_color_hover);
