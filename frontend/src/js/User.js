@@ -279,6 +279,13 @@ const User = ({ userId }) => {
         setSuccessMessage("Password successfully updated.");
       };
 
+      const [isCheckedData, setIsCheckedData] = useState(false);
+      const [isCheckedPass, setIsCheckedPass] = useState(false);
+      const uncheckCheckboxes = () => {
+        setIsCheckedData(false); // Uncheck the checkbox for editing personal data
+        setIsCheckedPass(false); // Uncheck the checkbox for changing password
+      };
+
       /* TODO */
       const handleDeleteAccount = async () => {
         if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
@@ -344,7 +351,7 @@ const User = ({ userId }) => {
         <div className='above_line'>
             <h2 className='section_name' id='personal_data'>Personal Data</h2>
             <div className='edit_icon'>  {/*EDIT ICON */}
-                <input type='checkbox' id='edit_icon_checkbox' className='edit_icon_checkbox'/>
+                <input type='checkbox' id='edit_icon_checkbox' className='edit_icon_checkbox' checked={isCheckedData} onChange={(e) => setIsCheckedData(e.target.checked)}/>
                 <label htmlFor='edit_icon_checkbox' className='edit_icon_label'>
                     <img src={editIcon} alt='edit' className='edit_icon_img'/>
                 </label>
@@ -352,6 +359,9 @@ const User = ({ userId }) => {
                 <div className='edit_container'>
                     <form className='edit_data' onSubmit={handleUpdate}> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
                         <h2 className='edit_personal_data'>Edit Personal Data</h2>
+                        <div class='close_user_changes_container'>
+                            <button class='close_user_changes' onClick={uncheckCheckboxes}><img src={closeIcon} alt='X'/></button>
+                        </div>
                         <div className='all_user_data'>
                             <div className='data'>
                                 <label htmlFor='first_name'>Name:</label>
@@ -431,7 +441,7 @@ const User = ({ userId }) => {
                                 {errors.gender && <span style={{ color: 'red', fontSize: 12 }}>{errors.gender}</span>}
                             </div>
                         </div>
-                        <input type='submit' value='Save Changes'></input>  {/* has to uncheck the checkbox edit_icon_checkbox from line 25*/}
+                        <input type='submit' value='Save changes' onClick={uncheckCheckboxes}/>  {/* has to uncheck the checkbox edit_icon_checkbox from line 25*/}
                     </form>  
                 </div>  
             </div>
