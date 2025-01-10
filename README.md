@@ -36,7 +36,7 @@ This project is a web application designed to analyze consumer facial emotional 
      ```
 
 2. **Frontend Setup**:
-   - Navigate to the frontend directory:
+   - Open new terminal and navigate to the frontend directory:
      ```bash
      cd frontend
      ```
