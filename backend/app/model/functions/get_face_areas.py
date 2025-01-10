@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import os
+import torch
 from functions import utils
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from tensorflow.keras.preprocessing.image import img_to_array
@@ -13,7 +14,13 @@ class VideoCamera(object):
         self.cur_frame = 0
         self.video = None
         self.dict_face_area = {}
-        self.detector = RetinaFace(gpu_id=0)
+        if torch.cuda.is_available():
+            gpu_id = 0  
+            print("CUDA is available. Using GPU with gpu_id=0.")
+        else:
+            gpu_id = -1 
+            print("CUDA is not available. Using CPU.")
+        self.detector = RetinaFace(gpu_id=gpu_id)
 
     def __del__(self):
         self.video.release()

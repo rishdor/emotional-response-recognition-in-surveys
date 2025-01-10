@@ -1,0 +1,146 @@
+:root{
+    --main_color: #EEFFFA;
+    --font_color: #000000;
+    --devide_line_color: #CEEBC8;
+    --element_color: #E5F1F0;
+    --footer_color: #7AB296;
+    --button_hover_color: #5A8A7F;
+    --be_a_square: 30vh;
+    --button_hero_color: #994f42;
+    --button_hero_hover_color: #683021;
+  }
+
+
+.hero{
+    background-color: var(--main_color);
+    display: flex;
+    height: 90vh;
+    overflow: hidden;
+}
+
+.hero h1{
+    width: 60%;
+    margin: 15% 0 5% 5%;
+}
+
+.left_side{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+  .hero_check_list{
+    width: 60%;
+    margin-left: 30%;
+  }
+
+    .hero_elem{
+        display: flex;
+        align-items: center;
+    }
+
+    .hero_elem img{
+        height: 40px;
+        width: 40px;
+        margin-right: 5%;
+    }
+
+    .hero_button{
+        background-color: var(--button_hero_color);
+        border: none;
+        border-radius: 100px 10px;
+        height: 70px;
+        width: 220px;
+        text-align: center;
+        align-content: center;
+        margin-top: 15%;
+    }
+
+      .hero_button .link{
+        color: #FFFFFF;
+        font-weight: 600;
+        font-size: 140%;
+      }
+
+      .hero_button:hover{
+        background-color: var(--button_hero_hover_color);
+      }
+
+    .arrow_top{
+      margin-left: 20%;
+      rotate: 225deg;
+    }
+
+    .arrow_bottom{
+      margin-top: 30%;
+      rotate: 45deg;
+    }
+
+  .hero_photo_container{
+    width: 50%;
+    align-items: right;
+  }
+
+    .hero_photo{
+        width: 100%;
+        border-radius: 1000px 0 0 1000px;
+        margin-top: -17%;
+    }
+
+  .quarter_circle_container{
+      height: 100%;
+      display: flex;
+  }
+
+    .quarter_circle{
+      width: var(--be_a_square);
+      height: var(--be_a_square);
+      background-color: var(--footer_color);
+      border: none;
+      border-radius: 0 500px 0 0;
+      margin: 0;
+      display: inline-block;
+      align-self: flex-end;
+    }
+
+@media (max-width: 1920px){
+  .hero h1{
+    margin: 10% 0 5% 10%;
+  }
+
+  .hero_check_list{
+    width: 80%;
+  }
+
+  .hero_button{
+    margin-top: 5%;
+    height: 60px;
+    width: 200px;
+
+  }
+    .hero_button .link{
+      font-weight: 600;
+      font-size: 120%;
+    }
+
+  .arrow_top{
+    rotate: 210deg;
+  }
+
+  .arrow_bottom{
+    margin-top: 10%;
+    rotate: 30deg;
+  }
+
+  .hero_photo{
+    margin-top: -20%;
+}
+
+  .quarter_circle_container{
+    margin-top: -5%;
+  }
+}
+
+.under_hero{
+  margin-bottom: 5%;
+}
