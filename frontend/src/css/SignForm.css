@@ -1,0 +1,72 @@
+:root{
+    --button_color: #CEEBC8;
+    --font_color: #000000;
+    --button_hover_color: #5A8A7F;
+}
+
+.signForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1%;
+}
+
+.formElem{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    margin: 1% auto;
+    width: 35%;
+}
+
+.formElem label{
+    margin-right: 1%;
+}
+
+.formElem select{
+    width: 67%;
+    padding: 1%;
+    border-radius: 10px;
+    border: 2px solid var(--button_hover_color);
+    height: 50%;
+    background-color: #FFFFFF;
+}
+
+.formElem input{
+    width: 65%;
+    padding: 1%;
+    border-radius: 10px;
+    border: 2px solid var(--button_hover_color);
+    height: 50%;
+    background-color: #FFFFFF;
+}
+
+.formElem input[type='checkbox']{
+    width: 5%;
+    padding: 1%;
+    border-radius: 5px;
+    border: 1px solid;
+    height: 50%;
+    margin-left: 10%;
+}
+
+.formElem button{
+    width: 30%;
+    margin: 0 auto 5% auto;
+    padding: 2%;
+    border-radius: 30px;
+    border: 1px solid var(--button_color);
+    height: 50%;
+    background-color: var(--button_color);
+    color: #FFFFFF;
+}
+
+.formElem button:hover{
+    cursor: pointer;
+    background-color: var(--button_hover_color);
+}
+
+#rodo_label{
+    margin: auto !important;
+}
