@@ -196,3 +196,12 @@ def get_last_answered_question(user_id: int, survey_id: int, db: Session = Depen
     if not last_answer:
         raise HTTPException(status_code=404, detail="No answers found for this survey")
     return last_answer
+
+# @app.post("/user/{user_id}/surveys/{survey_id}/drop", tags=["DropSurvey"])
+# def drop_survey(user_id: int, survey_id: int, db: Session = Depends(get_db)):
+#     survey = db.query(Survey).filter_by(id=survey_id, user_id=user_id).first()
+#     if not survey:
+#         raise HTTPException(status_code=404, detail="Survey not found")
+#     survey.survey_state = "abandoned"
+#     db.commit()
+#     return {"message": "Survey dropped successfully"}

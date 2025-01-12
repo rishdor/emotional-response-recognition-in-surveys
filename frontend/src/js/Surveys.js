@@ -41,6 +41,9 @@ function Surveys() {
           const inProgressSurveys = surveysArray.filter(
             (survey) => survey.survey_state === 'started'
           );
+          const historySurveys = surveysArray.filter(
+            (survey) => survey.survey_state === 'completed' || survey.survey_state === 'abandoned'
+          );
 
           setSurveys({
             new: notStartedSurveys,
@@ -48,12 +51,7 @@ function Surveys() {
               (a, b) => new Date(a.deadline) - new Date(b.deadline)
             ),
           });
-        }
-
-        const historyResponse = await fetch(`http://localhost:8000/user/${userId}/history`);
-        if (historyResponse.ok) {
-          const historyData = await historyResponse.json();
-          setHistory(historyData);
+          setHistory(historySurveys);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -152,7 +150,7 @@ function Surveys() {
       </div>
 
       <div className="section">
-        <h2 className="section_name" id="surveys">
+        <h2 className="section_name" id="in_progress">
           In progress
         </h2>
         <hr className="devide_line" />
@@ -197,13 +195,13 @@ function Surveys() {
 
       <div className="section">
         <h2 className="section_name" id="new">
-          new
+          New
         </h2>
         <hr className="devide_line" />
         <div className="survey_list">
           <div className="survey_headers">
-            <p>survey name</p>
-            <p className="deadline">deadline</p>
+            <p>Survey name</p>
+            <p className="deadline">Deadline</p>
           </div>
           {surveys.new.length > 0 ? (
             surveys.new.map((survey, index) => (
@@ -254,8 +252,8 @@ function Surveys() {
             history.map((survey, index) => (
               <div key={index} className="survey_cont_surv">
                 <p className="sur_name">{survey.title}</p>
-                <p>{survey.survey_state === 'completed' ? 'completed' : 'not completed'}</p>
-                <p>{survey.points}</p>
+                <p>{survey.survey_state === 'completed' ? 'Completed' : 'Not completed'}</p>
+                <p>{survey.points_awarded}</p>
               </div>
             ))
           ) : (
