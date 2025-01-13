@@ -171,8 +171,25 @@ def match_surveys_to_user(db: Session, user_id: int):
     db.commit()
     return {"message": "All active surveys have been added to the user."}
 
+def remove_inactive_surveys(db: Session, user_id: int):
+    users_surveys = db.query(UserSurveyCompletion.survey_id).filter(UserSurveyCompletion.user_id == user_id).all()
+    users_survey_ids = [survey.survey_id for survey in users_surveys]
+
+    inactive_surveys = db.query(Survey.survey_id).filter(Survey.survey_id.in_(users_survey_ids), Survey.is_active == False).all()
+    inactive_survey_ids = [survey.survey_id for survey in inactive_surveys]
+
+    db.query(UserSurveyCompletion).filter(
+        UserSurveyCompletion.user_id == user_id,
+        UserSurveyCompletion.survey_id.in_(inactive_survey_ids)
+    ).update({UserSurveyCompletion.survey_state: SurveyProgress.abandoned}, synchronize_session=False)
+
+    db.commit()
+
+    return {"message": "Inactive surveys have been marked as abandoned."}
+
 def get_surveys_by_user_id(db: Session, user_id: int):
     match_surveys_to_user(db, user_id)
+    remove_inactive_surveys(db, user_id)
     user_surveys = db.query(UserSurveyCompletion).filter(UserSurveyCompletion.user_id == user_id).all()
     
     surveys = []

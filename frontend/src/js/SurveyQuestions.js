@@ -26,86 +26,97 @@ function SurveyQuestions() {
     } catch (error) {
       console.error("Error updating survey state:", error);
     }
-  }, [userId, survey.survey_id]);
+  }, [userId, survey?.survey_id]);
+
+  // Return the fetched questions so we can use them immediately
+  const fetchQuestions = async () => {
+    if (!survey || !survey.survey_id) {
+      console.error("Survey data is missing or invalid");
+      return [];
+    }
+    try {
+      const response = await fetch(`http://localhost:8000/surveys/${survey.survey_id}/questions`);
+      if (response.ok) {
+        const questionsData = await response.json();
+        const questionsWithAnswers = await Promise.all(
+          questionsData.map(async (question) => {
+            const answersResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/answers`);
+            if (answersResponse.ok) {
+              const answersData = await answersResponse.json();
+
+              // pobieranie listy video
+              let videoUrl = null;
+              if (question.video === true) {
+                const videoResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/videos`);
+                if (videoResponse.ok) {
+                  const videoData = await videoResponse.json();
+                  if (videoData.videos.length > 0) {
+                    videoUrl = videoData.videos[0].video_url;
+                  }
+                }
+              }
+              return { ...question, answers: answersData, video_url: videoUrl };
+            } else {
+              console.error("Failed to fetch answers:", answersResponse.statusText);
+              return { ...question, answers: [] };
+            }
+          })
+        );
+        return questionsWithAnswers;
+      } else {
+        console.error("Failed to fetch questions:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+    }
+    return [];
+  };
 
   useEffect(() => {
-    const fetchSurveyState = async () => {
+    const loadSurveyData = async () => {
+      if (!survey || !survey.survey_id) return;
+
+      // 1. Fetch all questions
+      const loadedQuestions = await fetchQuestions();
+      setQuestions(loadedQuestions);
+
+      // 2. Fetch survey state
       try {
         const response = await fetch(`http://localhost:8000/user_survey_completion/${userId}/${survey.survey_id}`);
         if (response.ok) {
           const surveyState = await response.json();
           if (surveyState.survey_state === 'not_started') {
             await updateSurveyState('started');
+            // Start at question 0
+            setCurrentQuestionIndex(0);
           } else if (surveyState.survey_state === 'started') {
-            const lastAnsweredQuestionResponse = await fetch(`http://localhost:8000/user_survey_answers/last_answered/${userId}/${survey.survey_id}`);
-            if (lastAnsweredQuestionResponse.ok) {
-              const lastAnsweredQuestion = await lastAnsweredQuestionResponse.json();
-              setCurrentQuestionIndex(lastAnsweredQuestion.question_id + 1);
+            // Get the last answered question
+            const lastAnsweredResponse = await fetch(`http://localhost:8000/user_survey_answers/last_answered/${userId}/${survey.survey_id}`);
+            if (lastAnsweredResponse.ok) {
+              const lastAnswered = await lastAnsweredResponse.json();
+              // Find index within the newly loaded questions array
+              const lastIndex = loadedQuestions.findIndex(q => q.question_id === lastAnswered.question_id);
+              // If found, move to the next question. If not, just remain on 0
+              if (lastIndex >= 0 && lastIndex < loadedQuestions.length - 1) {
+                setCurrentQuestionIndex(lastIndex + 1);
+              } else {
+                setCurrentQuestionIndex(0);
+              }
             }
           }
         }
       } catch (error) {
-        console.error("Error fetching survey state:", error);
+        console.error("Error loading survey data:", error);
       }
     };
 
-    const fetchQuestions = async () => {
-      if (!survey || !survey.survey_id) {
-        console.error("Survey data is missing or invalid");
-        return;
-      }
-
-      try {
-        // możliwe odpowiedzi na pytania
-        const response = await fetch(`http://localhost:8000/surveys/${survey.survey_id}/questions`);
-        if (response.ok) {
-          const questionsData = await response.json();
-          const questionsWithAnswers = await Promise.all(
-            questionsData.map(async (question) => {
-              const answersResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/answers`);
-              if (answersResponse.ok) {
-                const answersData = await answersResponse.json();
-                // 2) Jeżeli question.video === true, pobierz video
-                let videoUrl = null;
-                if (question.video === true) {
-                  const videoResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/videos`);
-                  if (videoResponse.ok) {
-                    const videoData = await videoResponse.json();
-                    // Załóżmy, że mamy "videos": [...lista obiektów...]
-                    if (videoData.videos.length > 0) {
-                      videoUrl = videoData.videos[0].video_url;
-                    }
-                  }
-                }
-                return { ...question, answers: answersData, video_url: videoUrl };
-              } else {
-                console.error("Failed to fetch answers:", answersResponse.statusText);
-                return { ...question, answers: [] };
-              }
-              
-            })
-          );
-          setQuestions(questionsWithAnswers);
-        } else {
-          console.error("Failed to fetch questions:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching questions:", error);
-      }
-    };
-
-    if (survey) {
-      fetchSurveyState();
-      fetchQuestions();
-    } else {
-      console.error("Survey object is missing");
-    }
+    loadSurveyData();
   }, [survey, userId, updateSurveyState]);
 
   useEffect(() => {
     setSelectedAnswer(null);
     const inputs = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
-    inputs.forEach(input => input.checked = false);
+    inputs.forEach(input => { input.checked = false; });
   }, [currentQuestionIndex]);
 
   const saveAnswer = async (questionId, answerIds) => {
@@ -144,18 +155,6 @@ function SurveyQuestions() {
     }
   };
 
-  const logout = async () => {
-    try {
-      await fetch("http://localhost:8000/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      window.location.assign("/");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   const handleAnswerChange = (event) => {
     const { type, value, checked } = event.target;
     if (type === 'checkbox') {
@@ -191,6 +190,18 @@ function SurveyQuestions() {
     }
   };
 
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:8000/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      window.location.assign("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
@@ -198,7 +209,7 @@ function SurveyQuestions() {
       <nav>
         <ul className='navbar'>
           <div className='nav_side'>
-            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li> 
+            <li onClick={logout} style={{ cursor: "pointer" }}>Sign out</li>
             <li><Link to="/about" className='link'>About</Link></li>
             <li><Link to="/contact" className='link'>Contact</Link></li>
           </div>
@@ -210,11 +221,12 @@ function SurveyQuestions() {
           </div>
         </ul>
       </nav>
-      <div className='fix_nav_position'/>
-        
+      <div className='fix_nav_position' />
+
       <div className='stop_button_container'>
         <Link to="/surveys" className='link'><button className='stop_button'>Stop survey</button></Link>
       </div>
+
       {currentQuestion && (
         <div className="question_container">
           <h3>Question {currentQuestionIndex + 1} / {questions.length}</h3>
@@ -253,22 +265,10 @@ function SurveyQuestions() {
                 ))}
               </div>
             )}
-            {currentQuestion.video === true && currentQuestion.video_url && (
-              <div className="video_survey">
-                <iframe
-                  title="video"
-                  width="560"
-                  height="315"
-                  // src='https://www.youtube.com/embed/1jHw9x6J2ZQ'
-                  src={currentQuestion.video_url}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-            </div>
-            )}
           </div>
         </div>
       )}
+
       <div className="finish">
         {currentQuestionIndex < questions.length - 1 ? (
           <input type="submit" value="Next question" onClick={handleNextQuestion} />
