@@ -165,14 +165,14 @@ const Dashboard = ({ userId }) => {
       <h1>Welcome {user}</h1> 
       <div className='sidebar'>
         <ul>
-            <li><h3>Navigate</h3></li>
+            <li><h3>NAVIGATE</h3></li>
             <li><a href="#surveys">Surveys</a></li>
             <li><a href="#awards">Awards</a></li>
             <li><a href="#messages">Messages</a></li>
         </ul>
       </div>
 
-      <div className="section">
+      {/* <div className="section">
         <h2 className="section_name" id="messages">Notifications</h2>
         <hr className="devide_line" />
         <div className="all_messages">
@@ -188,7 +188,7 @@ const Dashboard = ({ userId }) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       <div className="section">
         <h2 className="section_name" id="surveys">Surveys</h2>

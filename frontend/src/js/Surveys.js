@@ -6,7 +6,7 @@ import '../css/App.css';
 import logo from '../images/photos/logo_surveys3.png';
 
 function Surveys() {
-  const [surveys, setSurveys] = useState({ new: [], inProgress: [] });
+  const [surveys, setSurveys] = useState({ new: [], inProgress: [] , abandoned: [] });
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -33,19 +33,21 @@ function Surveys() {
           const surveysData = await surveysResponse.json();
           console.log("Surveys Data:", surveysData);
 
-          // Ensure surveysData.surveys is an array and flatten it
           const surveysArray = Array.isArray(surveysData.surveys) ? surveysData.surveys.flat() : Object.values(surveysData.surveys).flat();
           console.log("Surveys Array:", surveysArray);
 
           const notStartedSurveys = surveysArray.filter(survey => survey.survey_state === 'not_started');
           const inProgressSurveys = surveysArray.filter(survey => survey.survey_state === 'started');
+          const abandonedSurveys = surveysArray.filter(survey => survey.survey_state === 'abandoned' || survey.survey_state === 'completed');
 
           console.log("Not Started Surveys:", notStartedSurveys);
           console.log("In Progress Surveys:", inProgressSurveys);
+          console.log("Abandoned Surveys:", abandonedSurveys);
 
           setSurveys({
             new: notStartedSurveys, // All new surveys
             inProgress: inProgressSurveys.sort((a, b) => new Date(a.deadline) - new Date(b.deadline)), // All in-progress surveys sorted by deadline
+            abandoned: abandonedSurveys, // All abandoned surveys
           });
         }
       } catch (error) {
@@ -62,6 +64,31 @@ function Surveys() {
 
   const handleSurveyClick = (survey) => {
     navigate('/surveyinfo', { state: { survey, userId } });
+  };
+
+  const handleDropSurvey = async (survey) => {
+    try {
+      const response = await fetch(`http://localhost:8000/user/${userId}/surveys/${survey.survey_id}/drop`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (response.ok) {
+        setSurveys((prev) => {
+          const updatedInProgress = prev.inProgress.filter(s => s.survey_id !== survey.survey_id);
+          const updatedNew = prev.new.filter(s => s.survey_id !== survey.survey_id);
+          const updatedAbandoned = [...prev.abandoned, { ...survey, survey_state: 'abandoned' }];
+  
+          return {
+            ...prev,
+            inProgress: updatedInProgress,
+            new: updatedNew,
+            abandoned: updatedAbandoned,
+          };
+        });
+      }
+    } catch (error) {
+      console.error('Drop survey error:', error);
+    }
   };
 
   const formatDateWithRemainingDays = (deadline) => {
@@ -113,10 +140,11 @@ function Surveys() {
           </div>
           {surveys.inProgress.length > 0 ? (
             surveys.inProgress.map((survey, index) => (
-              <div key={index} className="survey_cont_surv" onClick={() => handleSurveyClick(survey)}>
-                <p className="sur_name">{survey.title}</p>
+              <div key={index} className="survey_cont_surv">
+                <p className="sur_name" onClick={() => handleSurveyClick(survey)}>{survey.title}</p>
                 <p className="deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
-                <Link to="/surveywindow" className="link">View details</Link>
+                <button onClick={() => handleSurveyClick(survey)}>View details</button>
+                <button onClick={() => handleDropSurvey(survey)}>Drop Survey</button>
               </div>
             ))
           ) : (
@@ -125,23 +153,49 @@ function Surveys() {
         </div>
       </div>
       <div className="section">
-        <h2 className="section_name" id="new">new</h2>
+        <h2 className="section_name" id="new">New</h2>
         <hr className="devide_line" />
         <div className="survey_list">
           <div className="survey_headers">
-            <p>survey name</p>
-            <p className="deadline">deadline</p>
+            <p>Survey name</p>
+            <p className="deadline">Deadline</p>
           </div>
           {surveys.new.length > 0 ? (
             surveys.new.map((survey, index) => (
-              <div key={index} className="survey_cont_surv" onClick={() => handleSurveyClick(survey)}>
-                <p className="sur_name">{survey.title}</p>
+              <div key={index} className="survey_cont_surv">
+                <p className="sur_name" onClick={() => handleSurveyClick(survey)}>{survey.title}</p>
                 <p className="deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
-                <Link to="/surveywindow" className="link">View details</Link>
+                <button onClick={() => handleSurveyClick(survey)}>View details</button>
+                <button onClick={() => handleDropSurvey(survey)}>Drop Survey</button>
               </div>
             ))
           ) : (
             <p>No new surveys available.</p>
+          )}
+        </div>
+      </div>
+
+      <div className="section">
+        <h2 className="section_name" id="history">
+          History
+        </h2>
+        <hr className="devide_line" />
+        <div className="survey_list">
+          <div className="survey_headers">
+            <p>Survey Name</p>
+            <p>Status</p>
+            <p>Points</p>
+          </div>
+          {surveys.abandoned.length > 0 ? (
+            surveys.abandoned.map((survey, index) => (
+              <div key={index} className="survey_cont_surv">
+                <p className="sur_name">{survey.title}</p>
+                <p>{survey.survey_state === 'completed' ? 'Completed' : 'Not completed'}</p>
+                <p>{survey.points_awarded}</p>
+              </div>
+            ))
+          ) : (
+            <p>No surveys in history.</p>
           )}
         </div>
       </div>
