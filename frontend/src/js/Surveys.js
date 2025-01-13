@@ -38,7 +38,7 @@ function Surveys() {
 
           const notStartedSurveys = surveysArray.filter(survey => survey.survey_state === 'not_started');
           const inProgressSurveys = surveysArray.filter(survey => survey.survey_state === 'started');
-          const abandonedSurveys = surveysArray.filter(survey => survey.survey_state === 'abandoned');
+          const abandonedSurveys = surveysArray.filter(survey => survey.survey_state === 'abandoned' || survey.survey_state === 'completed');
 
           console.log("Not Started Surveys:", notStartedSurveys);
           console.log("In Progress Surveys:", inProgressSurveys);
@@ -68,10 +68,24 @@ function Surveys() {
 
   const handleDropSurvey = async (survey) => {
     try {
-      await fetch(`http://localhost:8000/user/${userId}/surveys/${survey.survey_id}/drop`, {
+      const response = await fetch(`http://localhost:8000/user/${userId}/surveys/${survey.survey_id}/drop`, {
         method: 'POST',
         credentials: 'include',
       });
+      if (response.ok) {
+        setSurveys((prev) => {
+          const updatedInProgress = prev.inProgress.filter(s => s.survey_id !== survey.survey_id);
+          const updatedNew = prev.new.filter(s => s.survey_id !== survey.survey_id);
+          const updatedAbandoned = [...prev.abandoned, { ...survey, survey_state: 'abandoned' }];
+  
+          return {
+            ...prev,
+            inProgress: updatedInProgress,
+            new: updatedNew,
+            abandoned: updatedAbandoned,
+          };
+        });
+      }
     } catch (error) {
       console.error('Drop survey error:', error);
     }
