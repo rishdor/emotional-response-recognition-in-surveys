@@ -8,7 +8,8 @@ from database.crud import (get_user, delete_user, update_user,
                            update_user_points, get_user_points_by_id, get_user_data,
                            get_surveys_by_user_id, get_rewards, redeem_reward,
                            get_questions_by_survey_id, get_answers_by_question_id,
-                           fetch_last_answered_question, save_user_answer, fetch_survey_state, modify_survey_state)
+                           fetch_last_answered_question, save_user_answer, fetch_survey_state, modify_survey_state, 
+                           get_videos_for_survey, get_videos_for_question )
 from database.schemas import (UserCreate, UserUpdate, UserLogin, EmailCheckRequest,
                                PasswordVerificationRequest, PasswordChangeRequest)
 from database.survey_questions import SurveyStateUpdate, UserAnswerCreate
@@ -125,8 +126,6 @@ async def change_password(user_id: int, request: PasswordChangeRequest, db = Dep
     else:
         raise HTTPException(status_code=500, detail="Failed to update password")
 
-
-
 @app.get('/user/{user_id}/surveys', tags=["GetSurveys"])
 def get_user_surveys(user_id: int, db = Depends(get_db)):
     try:
@@ -196,3 +195,24 @@ def get_last_answered_question(user_id: int, survey_id: int, db: Session = Depen
     if not last_answer:
         raise HTTPException(status_code=404, detail="No answers found for this survey")
     return last_answer
+
+@app.get("/surveys/{survey_id}/videos", tags=["Videos"])
+def get_survey_videos_endpoint(survey_id: int, db: Session = Depends(get_db)):
+    """
+    Zwraca listę wszystkich wideo przypisanych do ankiety o danym survey_id.
+    """
+    videos = get_videos_for_survey(db=db, survey_id=survey_id)
+    # Możesz sprawdzić, czy videos jest puste:
+    if not videos:
+        raise HTTPException(status_code=404, detail="No videos found for this survey")
+    return {"videos": videos}
+
+@app.get("/questions/{question_id}/videos", tags=["Videos"])
+def get_question_videos_endpoint(question_id: int, db: Session = Depends(get_db)):
+    """
+    Zwraca listę wszystkich wideo przypisanych do pytania o danym question_id.
+    """
+    videos = get_videos_for_question(db=db, question_id=question_id)
+    if not videos:
+        raise HTTPException(status_code=404, detail="No videos found for this question")
+    return {"videos": videos}

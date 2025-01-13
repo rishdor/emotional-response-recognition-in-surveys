@@ -25,6 +25,7 @@ class Question(Base):
 
     answers = relationship("Answer", back_populates="question")
     user_answers = relationship("UserSurveyAnswer", back_populates="question")
+    surveyvideos = relationship("SurveyVideos", back_populates="question")
 
 class Answer(Base):
     __tablename__ = "surveyanswers"
