@@ -5,12 +5,14 @@ from .user_points import UserPoints
 from .schemas import UserCreate, UserUpdate
 from .surveys import Survey, PreferencesUserPreferences, PreferencesSurveyRequirements, UserSurveyCompletion, SurveyProgress
 from .survey_questions import Question, Answer, UserSurveyAnswer, UserAnswerCreate
+from .video import Video, SurveyVideos
 from sqlalchemy.sql import literal
 from .reward import Reward, UserReward
 from datetime import datetime
 
 # Get user's name by ID
 def get_user(db: Session, user_id: int):
+    
     return db.query(User).filter(User.user_id == user_id).first().first_name
 
 # Delete a user by ID
@@ -268,3 +270,60 @@ def fetch_last_answered_question(db: Session, user_id: int, survey_id: int):
         return last_answer
     except NoResultFound:
         return None
+    
+
+# Pobiera film (Video) po jego ID
+def get_video_by_id(db: Session, video_id: int):
+    """
+    Pobiera film (Video) po jego ID.
+    """
+    video = db.query(Video).filter(Video.video_id == video_id).first()
+    return video
+
+# Connect survey, question and video
+def create_survey_video(db: Session, survey_id: int, video_id: int, question_id: int):
+    """
+    Łączy ankietę, pytanie i wideo w tabeli SurveyVideos.
+    """
+    new_survey_video = SurveyVideos(
+        survey_id=survey_id,
+        video_id=video_id,
+        question_id=question_id
+    )
+    db.add(new_survey_video)
+    db.commit()
+    db.refresh(new_survey_video)
+    return new_survey_video
+
+# Pobiera rekord z SurveyVideos po jego ID
+def get_survey_video(db: Session, survey_video_id: int):
+    """
+    Pobiera rekord z SurveyVideos po jego ID.
+    """
+    survey_video = db.query(SurveyVideos).filter(SurveyVideos.survey_video_id == survey_video_id).first()
+    return survey_video
+
+def get_videos_for_survey(db: Session, survey_id: int):
+    """
+    Zwraca wszystkie obiekty Video przypisane do danej ankiety (survey_id),
+    korzystając z relacji w tabeli SurveyVideos.
+    """
+    videos = (
+        db.query(Video)
+          .join(SurveyVideos, Video.video_id == SurveyVideos.video_id)
+          .filter(SurveyVideos.survey_id == survey_id)
+          .all()
+    )
+    return videos
+
+def get_videos_for_question(db: Session, question_id: int):
+    """
+    Zwraca wszystkie obiekty Video przypisane do konkretnego pytania (question_id).
+    """
+    videos = (
+        db.query(Video)
+          .join(SurveyVideos, Video.video_id == SurveyVideos.video_id)
+          .filter(SurveyVideos.question_id == question_id)
+          .all()
+    )
+    return videos

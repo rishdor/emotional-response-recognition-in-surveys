@@ -56,6 +56,7 @@ function SurveyQuestions() {
       }
 
       try {
+        // możliwe odpowiedzi na pytania
         const response = await fetch(`http://localhost:8000/surveys/${survey.survey_id}/questions`);
         if (response.ok) {
           const questionsData = await response.json();
@@ -64,11 +65,24 @@ function SurveyQuestions() {
               const answersResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/answers`);
               if (answersResponse.ok) {
                 const answersData = await answersResponse.json();
-                return { ...question, answers: answersData };
+                // 2) Jeżeli question.video === true, pobierz video
+                let videoUrl = null;
+                if (question.video === true) {
+                  const videoResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/videos`);
+                  if (videoResponse.ok) {
+                    const videoData = await videoResponse.json();
+                    // Załóżmy, że mamy "videos": [...lista obiektów...]
+                    if (videoData.videos.length > 0) {
+                      videoUrl = videoData.videos[0].video_url;
+                    }
+                  }
+                }
+                return { ...question, answers: answersData, video_url: videoUrl };
               } else {
                 console.error("Failed to fetch answers:", answersResponse.statusText);
                 return { ...question, answers: [] };
               }
+              
             })
           );
           setQuestions(questionsWithAnswers);
@@ -238,6 +252,19 @@ function SurveyQuestions() {
                   </div>
                 ))}
               </div>
+            )}
+            {currentQuestion.video === true && currentQuestion.video_url && (
+              <div className="video_survey">
+                <iframe
+                  title="video"
+                  width="560"
+                  height="315"
+                  // src='https://www.youtube.com/embed/1jHw9x6J2ZQ'
+                  src={currentQuestion.video_url}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+            </div>
             )}
           </div>
         </div>

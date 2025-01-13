@@ -3,9 +3,11 @@
 This project is a web application designed to analyze consumer facial emotional responses in real-time while they complete surveys. By leveraging deep learning models, it provides businesses with actionable insights into customer reactions to advertisements, trailers, and other video content.
 
 ## Key Features
+- **Completing Surveys**: Completing bussiness surveys, while earning points doing that.
 - **Real-Time Emotion Analysis**: The application detects and records emotional responses during survey completion.
 - **Timestamped Emotional Insights**: For videos shown during surveys, the app saves data on the exact moment specific emotional responses occur.
 - **Seamless Integration**: Allows businesses to gather more authentic and valuable feedback on their content.
+- **Redeem rewards**: Allows customers to redeem awards with points collection by completing a lot of surveys.
 
 ## Technologies Used
 ### Backend
