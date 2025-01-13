@@ -126,10 +126,10 @@ function Surveys() {
           </div>
           {surveys.inProgress.length > 0 ? (
             surveys.inProgress.map((survey, index) => (
-              <div key={index} className="survey_cont_surv" onClick={() => handleSurveyClick(survey)}>
-                <p className="sur_name">{survey.title}</p>
+              <div key={index} className="survey_cont_surv">
+                <p className="sur_name" onClick={() => handleSurveyClick(survey)}>{survey.title}</p>
                 <p className="deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
-                <Link to="/surveywindow" className="link">View details</Link>
+                <button onClick={() => handleSurveyClick(survey)}>View details</button>
                 <button onClick={() => handleDropSurvey(survey)}>Drop Survey</button>
               </div>
             ))
@@ -148,10 +148,10 @@ function Surveys() {
           </div>
           {surveys.new.length > 0 ? (
             surveys.new.map((survey, index) => (
-              <div key={index} className="survey_cont_surv" onClick={() => handleSurveyClick(survey)}>
-                <p className="sur_name">{survey.title}</p>
+              <div key={index} className="survey_cont_surv">
+                <p className="sur_name" onClick={() => handleSurveyClick(survey)}>{survey.title}</p>
                 <p className="deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
-                <Link to="/surveywindow" className="link">View details</Link>
+                <button onClick={() => handleSurveyClick(survey)}>View details</button>
                 <button onClick={() => handleDropSurvey(survey)}>Drop Survey</button>
               </div>
             ))
