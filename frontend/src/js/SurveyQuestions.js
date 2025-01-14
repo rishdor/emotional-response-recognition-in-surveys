@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
@@ -14,6 +14,26 @@ function SurveyQuestions() {
   const { survey } = location.state || {};
   const userId = localStorage.getItem('userId');
 
+  // camera access
+  const [cameraAllowed, setCameraAllowed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        setCameraAllowed(true);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      })
+      .catch(err => {
+        setCameraAllowed(false);
+        setErrorMessage(`No camera access or error: ${err.message}. Please turn your webcam on and then try refreshing the page.`);
+        console.error("Error when accessing the camera:", err);
+      });
+  }, []);
+
   const updateSurveyState = useCallback(async (state) => {
     try {
       await fetch(`http://localhost:8000/user_survey_completion/${userId}/${survey.survey_id}`, {
@@ -27,6 +47,11 @@ function SurveyQuestions() {
       console.error("Error updating survey state:", error);
     }
   }, [userId, survey?.survey_id]);
+
+  const transformYouTubeUrl = (url) => {
+    const match = url.match(/https:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+  };
 
   // Return the fetched questions so we can use them immediately
   const fetchQuestions = async () => {
@@ -51,10 +76,12 @@ function SurveyQuestions() {
                 if (videoResponse.ok) {
                   const videoData = await videoResponse.json();
                   if (videoData.videos.length > 0) {
-                    videoUrl = videoData.videos[0].video_url;
+                    // videoUrl = videoData.videos[0].video_url;
+                    videoUrl = transformYouTubeUrl(videoData.videos[0].video_url);
                   }
                 }
               }
+              console.log("question debug:", question.question_id, question.video, typeof question.video);
               return { ...question, answers: answersData, video_url: videoUrl };
             } else {
               console.error("Failed to fetch answers:", answersResponse.statusText);
@@ -264,6 +291,24 @@ function SurveyQuestions() {
                   </div>
                 ))}
               </div>
+            )}
+            {currentQuestion.video === true && currentQuestion.video_url && cameraAllowed && (
+              <div className="video_survey">
+                <h3>Video</h3>
+                <iframe
+                  title="video"
+                  width="560"
+                  height="315"
+                  src={currentQuestion.video_url}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+            </div>
+            )}
+            {!cameraAllowed && (
+              <p style={{ color: 'red' }}>
+                {errorMessage || "The user did not consent to the use of the webcam."}
+              </p>
             )}
           </div>
         </div>
