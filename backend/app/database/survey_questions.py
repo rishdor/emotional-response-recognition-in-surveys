@@ -21,6 +21,7 @@ class Question(Base):
     survey_id = Column(Integer, ForeignKey("surveys.survey_id"))
     question_text = Column(String, index=True)
     question_type = Column(String)
+    video = Column(String)
     created_at = Column(DateTime)
 
     answers = relationship("Answer", back_populates="question")

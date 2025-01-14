@@ -25,7 +25,7 @@ function SurveyWindow() {
       })
       .catch(err => {
         setCameraAllowed(false);
-        setErrorMessage(`No camera access or error: ${err.message}. Try refreshing the page.`);
+        setErrorMessage(`No camera access or error: ${err.message}. Please turn your webcam on and then try refreshing the page.`);
         console.error("Error when accessing the camera:", err);
       });
   }, []);
