@@ -38,3 +38,5 @@ backend/app/api/__pycache__/
 venv/
 
 node_modules
+
+backend/app/model/models_EmoAffectnet
