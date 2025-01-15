@@ -79,6 +79,10 @@ function SurveyWindow() {
             muted
             style={{ width: '700px', height: 'auto', backgroundColor: '#000' }}
           />
+          // <div>
+          //   <h1>Podgląd z serwera</h1>
+          //   <img src="http://localhost:8000/video_feed" alt="stream" />
+          // </div>
         ) : (
           <p style={{ color: 'red' }}>
             {errorMessage || "The user did not consent to the use of the webcam."}

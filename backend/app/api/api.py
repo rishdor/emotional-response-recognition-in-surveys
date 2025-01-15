@@ -15,6 +15,7 @@ from database.schemas import (UserCreate, UserUpdate, UserLogin, EmailCheckReque
 from database.survey_questions import SurveyStateUpdate, UserAnswerCreate
 from .services import (login_user, signup_user, verify_token, check_email_exists, 
                        verify_user_password, change_user_password)
+import cv2
 
 app = FastAPI()
 
@@ -30,6 +31,32 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+cap = cv2.VideoCapture(0)
+
+def gen_frames():
+    while True:
+        success, frame = cap.read()
+        if not success:
+            break
+        
+        # -- TU wstawiasz kod obróbki: face_mesh, pth_backbone_model, bounding box, itp. --
+        # frame = display_EMO_PRED(frame, (startX, startY, endX, endY), label, line_width=3)
+        
+        # Kodowanie klatki jako JPEG:
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame_jpg = buffer.tobytes()
+        
+        # Zwracamy klatkę w multipart:
+        yield (
+            b'--frame\r\n'
+            b'Content-Type: image/jpeg\r\n\r\n' + frame_jpg + b'\r\n'
+        )
+        # ewentualnie time.sleep(0.01) by ograniczyć FPS
+
+@app.get("/video_feed")
+def video_feed():
+    return Response(gen_frames(), media_type='multipart/x-mixed-replace; boundary=frame')
 
 @app.get("/users/{user_id}", tags=["GetUsersName"])
 def read(user_id: int, db = Depends(get_db)):

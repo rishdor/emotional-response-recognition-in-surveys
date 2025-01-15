@@ -16,9 +16,9 @@ parser = argparse.ArgumentParser(description="run")
 parser.add_argument('--path_video', type=str, default='D:\\emotional-response-recognition-in-surveys\\backend\\app\\model\\videos\\video_one.mp4', help='Path to all videos')
 parser.add_argument('--path_save', type=str, default='report/', help='Path to save the report')
 parser.add_argument('--conf_d', type=float, default=0.7, help='Elimination threshold for false face areas')
-parser.add_argument('--path_FE_model', type=str, default='models/EmoAffectnet/weights_0_66_37_wo_gl.h5',
+parser.add_argument('--path_FE_model', type=str, default='D:\\emotional-response-recognition-in-surveys\\backend\\app\\model\\models_EmoAffectnet\\weights_0_66_37_wo_gl.h5',
                     help='Path to a model for feature extraction')
-parser.add_argument('--path_LSTM_model', type=str, default='models/LSTM/RAVDESS_with_config.h5',
+parser.add_argument('--path_LSTM_model', type=str, default='D:\\emotional-response-recognition-in-surveys\\backend\\app\\model\\models_EmoAffectnet/RAVDESS_with_config.h5',
                     help='Path to a model for emotion prediction')
 
 args = parser.parse_args()

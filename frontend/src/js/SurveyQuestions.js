@@ -1,4 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { FaceDetection } from '@mediapipe/face_detection';
+import { Camera } from '@mediapipe/camera_utils';
+
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
@@ -9,6 +12,7 @@ function SurveyQuestions() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [faceDetected, setFaceDetected] = useState(null); // face detection
   const location = useLocation();
   const navigate = useNavigate();
   const { survey } = location.state || {};
@@ -20,12 +24,40 @@ function SurveyQuestions() {
   const videoRef = useRef(null);
 
   useEffect(() => {
+
+    // face detection
+    const faceDetection = new FaceDetection({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}` });
+    faceDetection.setOptions({
+      model: 'short', // or full
+      minDetectionConfidence: 0.5,
+    });
+
+    const onResults = (results) => {
+      if (results.detections && results.detections.length > 0) {
+        setFaceDetected(true);
+      } else {
+        setFaceDetected(false);
+      }
+    };
+
+    faceDetection.onResults(onResults);
+
+    // camera access
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         setCameraAllowed(true);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
+        const camera = new Camera(videoRef.current, {
+          onFrame: async () => {
+            // Tutaj co klatkę wysyłamy obraz do faceDetection
+            await faceDetection.send({ image: videoRef.current });
+          },
+          width: 1280,
+          height: 720,
+        });
+        camera.start();
       })
       .catch(err => {
         setCameraAllowed(false);
@@ -253,7 +285,14 @@ function SurveyQuestions() {
       <div className='stop_button_container'>
         <Link to="/surveys" className='link'><button className='stop_button'>Stop survey</button></Link>
       </div>
-
+      <video
+        ref={videoRef}
+        style={{ display: 'none' }}
+        width="640"
+        height="480"
+        playsInline
+        muted
+      />
       {currentQuestion && (
         <div className="question_container">
           <h3>Question {currentQuestionIndex + 1} / {questions.length}</h3>
@@ -292,9 +331,9 @@ function SurveyQuestions() {
                 ))}
               </div>
             )}
-            {currentQuestion.video === true && currentQuestion.video_url && cameraAllowed && (
+            {currentQuestion.video === true && currentQuestion.video_url && cameraAllowed && faceDetected && (
               <div className="video_survey">
-                <h3>Video</h3>
+                <h3>Watch a video while webcamera being on and earn the points!</h3>
                 <iframe
                   title="video"
                   width="560"
@@ -303,7 +342,13 @@ function SurveyQuestions() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />
+                
             </div>
+            )}
+            {!faceDetected && (
+              <p style={{ color: 'red' }}>
+                {errorMessage || "Please ensure your face is visible in the webcam to continue watching the video."}
+              </p>
             )}
             {!cameraAllowed && (
               <p style={{ color: 'red' }}>
