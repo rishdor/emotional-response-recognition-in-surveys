@@ -200,7 +200,7 @@ const Dashboard = ({ userId }) => {
               surveys.new.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
                   <p>{survey.title}</p>
-                  <p>{formatDateWithRemainingDays(survey.deadline)}</p>
+                  <p class="dash_deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
                 </div>
               ))
             ) : (
@@ -213,7 +213,7 @@ const Dashboard = ({ userId }) => {
               surveys.inProgress.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
                   <p>{survey.title}</p>
-                  <p>{formatDateWithRemainingDays(survey.deadline)}</p>
+                  <p class="dash_deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
                 </div>
               ))
             ) : (
@@ -247,7 +247,7 @@ const Dashboard = ({ userId }) => {
                   <p>{reward.reward_description}</p>
                   <input 
                     type="submit" 
-                    value={canRedeem ? "Redeem Now" : points < reward.points_required ? "Not Enough Points" : `Available in ${daysLeft} days`} 
+                    value={canRedeem ? "Redeem Now" : points < reward.points_required ? "Not Enough Points" : `Next in ${daysLeft} days`} 
                     onClick={() => handleRedeem(reward)} 
                     disabled={!canRedeem}
                   />
@@ -258,7 +258,7 @@ const Dashboard = ({ userId }) => {
         </div>
       </div>
 
-      <footer></footer>
+      {/*<footer></footer>*/}
     </div>
   );
 };
