@@ -211,10 +211,6 @@ function SurveyQuestions() {
       </nav>
       <div className='fix_nav_position' />
 
-      <div className='stop_button_container'>
-        <Link to="/surveys" className='link'><button className='stop_button'>Stop survey</button></Link>
-      </div>
-
       {currentQuestion && (
         <div className="question_container">
           <h3>Question {currentQuestionIndex + 1} / {questions.length}</h3>
@@ -257,12 +253,18 @@ function SurveyQuestions() {
         </div>
       )}
 
-      <div className="finish">
-        {currentQuestionIndex < questions.length - 1 ? (
-          <input type="submit" value="Next question" onClick={handleNextQuestion} />
-        ) : (
-          <input type="submit" value="Finish survey" onClick={handleFinishSurvey} />
-        )}
+      <div className="buttons_container">
+        <div className='finish'>
+          <Link to="/surveys" className='link'><button className='stop_button'>Stop survey</button></Link>
+        </div>
+
+        <div className="finish">
+          {currentQuestionIndex < questions.length - 1 ? (
+            <input type="submit" value="Next question" onClick={handleNextQuestion} />
+          ) : (
+            <input type="submit" value="Finish survey" onClick={handleFinishSurvey} />
+          )}
+        </div>
       </div>
     </div>
   );
