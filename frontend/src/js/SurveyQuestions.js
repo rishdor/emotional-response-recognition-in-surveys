@@ -331,7 +331,7 @@ function SurveyQuestions() {
                 ))}
               </div>
             )}
-            {currentQuestion.video === true && currentQuestion.video_url && cameraAllowed && faceDetected && (
+            {currentQuestion.video === true && currentQuestion.video_url && cameraAllowed && (
               <div className="video_survey">
                 <h3>Watch a video while webcamera being on and earn the points!</h3>
                 <iframe
@@ -342,14 +342,22 @@ function SurveyQuestions() {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 />
-                
-            </div>
+                {!faceDetected ? (
+                  <p style={{ color: 'red' }}>
+                    {errorMessage || "Please ensure your face is visible in the webcam to continue watching the video. Keep in mind that if your face is not detected, your chance of receiving full points decreases."}
+                  </p>
+                ) : (
+                  <p style={{ color: 'green' }}>
+                    Your face is detected. You can continue watching the video!
+                  </p>
+                )}
+              </div>
             )}
-            {!faceDetected && (
+            {/* {!faceDetected && (
               <p style={{ color: 'red' }}>
                 {errorMessage || "Please ensure your face is visible in the webcam to continue watching the video."}
               </p>
-            )}
+            )} */}
             {!cameraAllowed && (
               <p style={{ color: 'red' }}>
                 {errorMessage || "The user did not consent to the use of the webcam."}
