@@ -59,7 +59,7 @@ function Contact() {
           <li><Link to="/" class='link'><img src={logo} alt='logo'/></Link></li>
           )}
           {isLogged &&(
-          <li><img src={logo} alt='logo'/></li>
+          <li><Link to="/dashboard" class='link'><img src={logo} alt='logo'/></Link></li>
           )}
           <div class='nav_side'>
             {isLogged &&(

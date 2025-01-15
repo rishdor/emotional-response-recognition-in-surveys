@@ -39,7 +39,7 @@ function SurveyWindow() {
             <li><Link to="/about" className='link'>About</Link></li>
             <li><Link to="/contact" className='link'>Contact</Link></li>
           </div>
-          <li><img src={logo} alt='logo'/></li>
+          <li><Link to="/dashboard" class='link'><img src={logo} alt='logo'/></Link></li>
           <div className='nav_side'>
             <li><Link to="/user" className='link'>User</Link></li>
             <li><Link to="/dashboard" className='link'>Dashboard</Link></li>

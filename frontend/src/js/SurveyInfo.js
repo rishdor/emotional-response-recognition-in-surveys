@@ -50,7 +50,7 @@ function SurveyInfo() {
             <li><Link to="/about" className='link'>About</Link></li>
             <li><Link to="/contact" className='link'>Contact</Link></li>
           </div>
-          <li><img src={logo} alt='logo'/></li>
+          <li><Link to="/dashboard" class='link'><img src={logo} alt='logo'/></Link></li>
           <div className='nav_side'>
             <li><Link to="/user" className='link'>User</Link></li>
             <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
@@ -61,17 +61,37 @@ function SurveyInfo() {
       <div className='fix_nav_position'/>
       <div className='survey_info_main_cointainer'>
           <h2>{survey.title}</h2>
-          <p><strong>Description:</strong> {survey.description}</p>
-          <p><strong>Deadline:</strong> {formatDateWithRemainingDays(survey.deadline)}</p>
-          <p><strong>Issuer:</strong> {survey.issuer}</p>
-          <p><strong>Points:</strong> {survey.points_awarded}</p>
+          <hr class='question_underline'></hr>
+          <div class='surv_info_inner_div'>
+            <label><strong>Deadline:</strong></label>
+            <p> {formatDateWithRemainingDays(survey.deadline)}</p>
+          </div>
+          <div class='surv_info_inner_div'>
+            <label><strong>Issuer:</strong></label>
+            <p> {survey.issuer}</p>
+          </div>
+          <div class='surv_info_inner_div'>
+            <label><strong>Points:</strong></label>
+            <p> {survey.points_awarded}</p>
+          </div>
+          <div class='surv_info_inner_div'>
+            <label><strong>Description:</strong></label>
+            <p> {survey.description}</p>
+          </div>
           <div className='finish survey_info_button'>
               <button onClick={handleStartSurvey}>Start survey</button>
           </div>
       </div>
-      <div>
-        <img src={bottomImage} alt='circles' className='bottom_image'/>
+
+      <div class='survey_info_main_cointainer'>
+          <div class='finish survey_info_button'>
+              <Link to="/surveywindow" class='link'><input type="submit" value="Start survey" /></Link>
+          </div>
       </div>
+      <div>
+        <img src={bottomImage} alt='circles' class='bottom_image'/>
+      </div>
+
 
       <footer>
       </footer>
