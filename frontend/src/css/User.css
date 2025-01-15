@@ -180,7 +180,7 @@
     text-align: center;
 }
 
-    .delete_account button,
+    .delete_account > button,
     .change_pass_label{
         background-color: var(--delete_color);
         color: #FFFFFF;

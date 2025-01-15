@@ -127,6 +127,7 @@ function Surveys() {
             <li><h3>NAVIGATE</h3></li>
             <li><a href="#in_progress">In progress</a></li>
             <li><a href="#new">New</a></li>
+            <li><a href="#history">History</a></li>
         </ul>
       </div>
 
@@ -143,8 +144,8 @@ function Surveys() {
               <div key={index} className="survey_cont_surv">
                 <p className="sur_name" onClick={() => handleSurveyClick(survey)}>{survey.title}</p>
                 <p className="deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
-                <button onClick={() => handleSurveyClick(survey)}>View details</button>
-                <button onClick={() => handleDropSurvey(survey)}>Drop Survey</button>
+                <button class="details" onClick={() => handleSurveyClick(survey)}>View details</button>
+                <button class="drop_survey" onClick={() => handleDropSurvey(survey)}>Drop Survey</button>
               </div>
             ))
           ) : (
@@ -165,8 +166,8 @@ function Surveys() {
               <div key={index} className="survey_cont_surv">
                 <p className="sur_name" onClick={() => handleSurveyClick(survey)}>{survey.title}</p>
                 <p className="deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
-                <button onClick={() => handleSurveyClick(survey)}>View details</button>
-                <button onClick={() => handleDropSurvey(survey)}>Drop Survey</button>
+                <button class="details" onClick={() => handleSurveyClick(survey)}>View details</button>
+                <button class="drop_survey" onClick={() => handleDropSurvey(survey)}>Drop Survey</button>
               </div>
             ))
           ) : (
@@ -176,19 +177,17 @@ function Surveys() {
       </div>
 
       <div className="section">
-        <h2 className="section_name" id="history">
-          History
-        </h2>
+        <h2 className="section_name" id="history">History</h2>
         <hr className="devide_line" />
         <div className="survey_list">
-          <div className="survey_headers">
+          <div className="survey_headers history">
             <p>Survey Name</p>
             <p>Status</p>
             <p>Points</p>
           </div>
           {surveys.abandoned.length > 0 ? (
             surveys.abandoned.map((survey, index) => (
-              <div key={index} className="survey_cont_surv">
+              <div key={index} className="survey_cont_surv history">
                 <p className="sur_name">{survey.title}</p>
                 <p>{survey.survey_state === 'completed' ? 'Completed' : 'Not completed'}</p>
                 <p>{survey.points_awarded}</p>

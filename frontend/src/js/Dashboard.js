@@ -168,7 +168,7 @@ const Dashboard = ({ userId }) => {
             <li><h3>NAVIGATE</h3></li>
             <li><a href="#surveys">Surveys</a></li>
             <li><a href="#awards">Awards</a></li>
-            <li><a href="#messages">Messages</a></li>
+            {/*<li><a href="#messages">Messages</a></li>*/}
         </ul>
       </div>
 
