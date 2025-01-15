@@ -20,6 +20,8 @@ backend/venv
 
 backend/.env
 
+backend/.env
+
 # Python bytecode cache
 backend/api/__pycache__/
 backend/app/api/__pycache__/
