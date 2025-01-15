@@ -34,3 +34,5 @@ backend/app/api/__pycache__/
 
 .vscode/
 venv/
+
+node_modules

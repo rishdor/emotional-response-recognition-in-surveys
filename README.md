@@ -24,7 +24,16 @@ This project is a web application designed to analyze consumer facial emotional 
 ## Installation and Usage
 
 ### Prerequisites
-- Ensure you have Python, Node.js, and npm installed on your system.
+- Ensure you have Python, Node.js, and npm installed on your system. 
+- Check for requirements 
+- Check for @mediapipe for npm. For downloading @mediapipie, use
+```
+npm install @mediapipe/face_detection
+```
+and
+```
+npm install @mediapipe/camera_utils
+```
 
 ### Steps to Run
 1. **Backend Setup**:
