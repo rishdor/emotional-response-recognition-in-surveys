@@ -13,7 +13,6 @@ import base64
 from io import BytesIO
 from PIL import Image
 import cv2
-from retinaface import RetinaFace
 import mediapipe as mp
 import tensorflow as tf
 
@@ -21,8 +20,8 @@ import warnings
 warnings.filterwarnings('ignore', category = FutureWarning)
 
 # change for your paths
-path_LSTM_model = 'D:\\emotional-response-recognition-in-surveys\\backend\\app\\api\\model\\models_EmoAffectnet\\SAVEE_with_config.h5'
-path_FE_model = 'D:\\emotional-response-recognition-in-surveys\\backend\\app\\api\\model\\models_EmoAffectnet\\weights_0_66_49_wo_gl.h5'
+path_LSTM_model = 'C:\\Users\\no.2\\Desktop\\schools_are_for_fools\\studies\\ue\\sem5\\proj_zesp\\emotional-response-recognition-in-surveys\\backend\\app\\api\\model\\models_EmoAffectnet\\SAVEE_with_config.h5'
+path_FE_model = 'C:\\Users\\no.2\\Desktop\\schools_are_for_fools\\studies\\ue\\sem5\\proj_zesp\\emotional-response-recognition-in-surveys\\backend\\app\\api\\model\\models_EmoAffectnet\\weights_0_66_49_wo_gl.h5'
 
 def detect_faces_mediapipe(img_array):
     """
