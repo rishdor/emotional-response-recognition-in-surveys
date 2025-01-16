@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/App.css';
+import '../css/About.css';
 import logo from '../images/photos/logo_surveys3.png'
 
 function About() {
@@ -86,8 +87,18 @@ function About() {
         </ul>
       </nav>
       <div class='fix_nav_position'/>
-      <h2>About Page</h2>
-      <p>This is the about page.</p>
+      <div class="abt">
+        <div class="section">
+          <h2>About Us</h2>
+          <hr class="question_underline"></hr>
+          <p>At SmartSurveys, we are passionate about transforming the way organizations collect, analyze, and act on data. Our mission is to empower businesses, researchers, and decision-makers with innovative tools that make survey creation intuitive, responses insightful, and actions impactful.</p>
+        </div>
+        <div class="section">
+          <h2>Who We Are</h2>
+          <hr class="question_underline"></hr>
+          <p>Founded on the belief that great decisions start with great data, SmartSurveys combines cutting-edge technology with user-centric design to deliver a platform that meets the evolving needs of modern organizations. Whether you're a small business, a multinational corporation, or an academic researcher, we provide tailored solutions to make your data collection seamless and meaningful.</p>
+        </div>
+      </div>
     </div>
   );
 }
