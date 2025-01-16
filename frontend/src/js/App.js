@@ -112,6 +112,11 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
+
+          <footer>
+            <p>Ⓒ SmartSurveys</p>
+            <p>Since 2025</p>
+          </footer>
         </div>
     </Router>
   );
