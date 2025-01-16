@@ -78,20 +78,14 @@ function SurveyInfo() {
             <label><strong>Description:</strong></label>
             <p> {survey.description}</p>
           </div>
-          <div className='finish survey_info_button'>
-              <button onClick={handleStartSurvey}>Start survey</button>
+          <div class='survey_info_main_cointainer'>
+              <button class='survey_info_button' onClick={handleStartSurvey}>Start survey</button>
           </div>
       </div>
 
-      <div class='survey_info_main_cointainer'>
-          <div class='finish survey_info_button'>
-              <Link to="/surveywindow" class='link'><input type="submit" value="Start survey" /></Link>
-          </div>
-      </div>
       <div>
         <img src={bottomImage} alt='circles' class='bottom_image'/>
       </div>
-
 
       <footer>
       </footer>

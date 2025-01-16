@@ -13,7 +13,7 @@
     align-items: center;
     margin: 1% auto 0 auto;
     background-color: none;
-    width: 50%;
+    width: 40%;
 }
 
 .survey_info_main_container h2{
@@ -24,37 +24,50 @@
   text-align: justify;
 }
 
+.survey_info_main_cointainer .question_underline{
+  margin-bottom: 4%;
+}
+
 .surv_info_inner_div{
-  display: flex;
+  display: grid;
+  grid-template-columns: 0.25fr 1fr;
   width: 100%;
-  align-items: center;
+  align-items: top;
   justify-content: center;
 }
 
   .surv_info_inner_div label{
-    width: 15%;
     margin: 0;
     height: 20%;
     text-align: left;
   }
   .surv_info_inner_div p{
-    width: 85%;
     height: 20%;
     text-align: left;
-    margin: 1%;
+    margin: 0 0 3% 0;
   }
 
 .survey_info_button{
-    width: 15%;
+    width: 150px;
+    height: 40px;
+    border: none;
+    background-color: var(--footer_color);
+    color: #fff;
+    border-radius: 30px;
+    margin-top: 5%;
   }
 
-  .bottom_image{
-    rotate: 190deg;
-    height: 500px;
-    margin-top: -20%;
-    margin-left: -50%;
-    margin-bottom: 5%;
+  .survey_info_button:hover{
+    background-color: var(--button_hover_color);
   }
+
+.bottom_image{
+  rotate: 190deg;
+  height: 500px;
+  margin-top: -18%;
+  margin-left: -50%;
+  margin-bottom: 5%;
+}
 
 @media  screen and (min-width: 1920px){
   .bottom_image{
