@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Response
+from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from fastapi import FastAPI, Depends, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import NoResultFound
@@ -17,6 +17,11 @@ from database.survey_questions import SurveyStateUpdate, UserAnswerCreate
 from .services import (login_user, signup_user, verify_token, check_email_exists, 
                        verify_user_password, change_user_password)
 import cv2
+import base64
+from PIL import Image, UnidentifiedImageError
+from io import BytesIO
+import numpy as np
+from .model.new_model import pred_single_frame
 
 app = FastAPI()
 
@@ -33,31 +38,36 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-cap = cv2.VideoCapture(0)
+@app.post("/analyze_video", tags=["AnalyzeVideo"])
+async def analyze_video(request: Request):
+    try:
+        data = await request.json()
+        img_str = data["image"]
 
-def gen_frames():
-    while True:
-        success, frame = cap.read()
-        if not success:
-            break
-        
-        # -- TU wstawiasz kod obróbki: face_mesh, pth_backbone_model, bounding box, itp. --
-        # frame = display_EMO_PRED(frame, (startX, startY, endX, endY), label, line_width=3)
-        
-        # Kodowanie klatki jako JPEG:
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame_jpg = buffer.tobytes()
-        
-        # Zwracamy klatkę w multipart:
-        yield (
-            b'--frame\r\n'
-            b'Content-Type: image/jpeg\r\n\r\n' + frame_jpg + b'\r\n'
-        )
-        # ewentualnie time.sleep(0.01) by ograniczyć FPS
+        if "base64," in img_str:
+            img_str = img_str.split(",")[1]
 
-@app.get("/video_feed")
-def video_feed():
-    return Response(gen_frames(), media_type='multipart/x-mixed-replace; boundary=frame')
+        # Dekoduj base64 do bajtów
+        img_bytes = base64.b64decode(img_str)
+
+        np_arr = np.frombuffer(img_bytes, np.uint8)
+        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        if frame is None:
+            return {"status": "error", "message": "Cannot decode image using OpenCV"}
+
+        try:
+            results = pred_single_frame(frame)
+            return {"status": "success", "results": results}
+        except Exception as e:
+            print(str(e))
+            return {"status": "error", "message": f"Error during image processing: {str(e)}"}
+
+    except UnidentifiedImageError:
+        return {"status": "error", "message": "Cannot identify image file"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
 
 @app.get("/users/{user_id}", tags=["GetUsersName"])
 def read(user_id: int, db = Depends(get_db)):

@@ -24,7 +24,7 @@ jupyterlab
 tensorflow
 scikit-learn
 batch-face
-mediapipe
+mediapipe==0.10.9
 seaborn
 tqdm
 passlib
@@ -33,3 +33,4 @@ python-dotenv
 psycopg2
 jwt
 bcrypt
+retina-face

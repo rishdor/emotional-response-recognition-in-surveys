@@ -66,6 +66,41 @@ function SurveyQuestions() {
       });
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (faceDetected) { // Sprawdzanie, czy twarz została wykryta
+        const img = captureFrame();
+        if (img) {
+          try {
+            const resp = await fetch("http://localhost:8000/analyze_video", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ image: img }),
+            });
+            const data = await resp.json();
+            console.log("Emotion response:", data);
+            // zapisz do stanu, np. setDetectedEmotion(data.emotion)
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      }
+    }, 1000); // np. co 500 ms
+    return () => clearInterval(interval);
+  }, [faceDetected]);
+  
+
+  const captureFrame = () => {
+    if (!videoRef.current) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(videoRef.current, 0, 0);
+    const base64Image = canvas.toDataURL("image/png");
+    return base64Image;
+  };
+  
   const updateSurveyState = useCallback(async (state) => {
     try {
       await fetch(`http://localhost:8000/user_survey_completion/${userId}/${survey.survey_id}`, {

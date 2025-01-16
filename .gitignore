@@ -40,3 +40,5 @@ venv/
 node_modules
 
 backend/app/model/models_EmoAffectnet
+
+backend/app/api/model/models_EmoAffectnet
