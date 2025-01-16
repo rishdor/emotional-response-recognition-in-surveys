@@ -35,6 +35,7 @@ and
 ```
 npm install @mediapipe/camera_utils
 ```
+- You should change your path in new_model.py file.
 
 ### Steps to Run
 1. **Backend Setup**:
