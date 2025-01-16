@@ -3,9 +3,11 @@
 This project is a web application designed to analyze consumer facial emotional responses in real-time while they complete surveys. By leveraging deep learning models, it provides businesses with actionable insights into customer reactions to advertisements, trailers, and other video content.
 
 ## Key Features
+- **Completing Surveys**: Completing bussiness surveys, while earning points doing that.
 - **Real-Time Emotion Analysis**: The application detects and records emotional responses during survey completion.
 - **Timestamped Emotional Insights**: For videos shown during surveys, the app saves data on the exact moment specific emotional responses occur.
 - **Seamless Integration**: Allows businesses to gather more authentic and valuable feedback on their content.
+- **Redeem rewards**: Allows customers to redeem awards with points collection by completing a lot of surveys.
 
 ## Technologies Used
 ### Backend
@@ -18,11 +20,21 @@ This project is a web application designed to analyze consumer facial emotional 
 ### Pre-trained Model
 - **EMO-AffectNetModel**: A pre-trained model for emotion recognition, available under the MIT License.
   - Repository: [EMO-AffectNetModel](https://github.com/ElenaRyumina/EMO-AffectNetModel?tab=MIT-1-ov-file)
+  - Note: You need to download SAVEE file from this [link](https://drive.google.com/drive/folders/1rEO8Kwujtu-08RnuCej7k6YA0n309RyO) and weights from this [link](https://drive.google.com/drive/u/2/folders/1wELaPME_WXvtgcWQyTvO3R8xXxg4NO8s) and put it info model/models_EmoAffectnet folder. Without it model will not work.
 
 ## Installation and Usage
 
 ### Prerequisites
-- Ensure you have Python, Node.js, and npm installed on your system.
+- Ensure you have Python, Node.js, and npm installed on your system. 
+- Check for requirements 
+- Check for @mediapipe for npm. For downloading @mediapipie, use
+```
+npm install @mediapipe/face_detection
+```
+and
+```
+npm install @mediapipe/camera_utils
+```
 
 ### Steps to Run
 1. **Backend Setup**:

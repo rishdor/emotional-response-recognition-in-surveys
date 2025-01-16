@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import arrowIcon from '../images/icons8-arrow-left-96.png';
@@ -10,6 +10,25 @@ function SurveyWindow() {
   const navigate = useNavigate();
   const { survey } = location.state || {};
   const userId = localStorage.getItem('userId');
+  // camera access
+  const [cameraAllowed, setCameraAllowed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        setCameraAllowed(true);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      })
+      .catch(err => {
+        setCameraAllowed(false);
+        setErrorMessage(`No camera access or error: ${err.message}. Please turn your webcam on and then try refreshing the page.`);
+        console.error("Error when accessing the camera:", err);
+      });
+  }, []);
 
   const logout = async () => {
     try {
@@ -49,17 +68,42 @@ function SurveyWindow() {
       </nav>
       <div class='fix_nav_position'/>
       <div className="video_container">
-        <iframe
-          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-          title="working on rick roll"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        ></iframe>
+        <div style={{ textAlign: 'center' }}>
+        <h1>View from the webcam</h1>
+
+        {cameraAllowed ? (
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            style={{ width: '700px', height: 'auto', backgroundColor: '#000' }}
+          />
+          // <div>
+          //   <h1>Podgląd z serwera</h1>
+          //   <img src="http://localhost:8000/video_feed" alt="stream" />
+          // </div>
+        ) : (
+          <p style={{ color: 'red' }}>
+            {errorMessage || "The user did not consent to the use of the webcam."}
+          </p>
+        )}
+      </div>
       </div>
       <div className="go_to_questions_container">
-        <h3>go to the questions</h3>
-        <button onClick={handleStartClick} className="link" id="go_to_questions">
-          <img src={arrowIcon} alt="mail" />
-        </button>
+        {cameraAllowed ? (
+          // todo : added good alignment
+          <div style={{ textAlign: 'center' }}> 
+            <h3>Go to questions!</h3>
+            <button onClick={handleStartClick} className="link" id="go_to_questions">
+              <img src={arrowIcon} alt="mail" />
+            </button>
+          </div>
+        ) : (
+          <p style={{ color: 'red' }}>
+            {errorMessage || ""}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -68,6 +68,7 @@ class UserSurveyCompletion(Base):
     survey_id = Column(Integer, ForeignKey('surveys.survey_id', ondelete='CASCADE'), nullable=False)
     completed_at = Column(TIMESTAMP, nullable=True)
     survey_state = Column(SqlEnum(SurveyProgress, name='survey_progress'), nullable=True, default=SurveyProgress.not_started)
+    points_awarded = Column(Integer, default=0)
     
     user = relationship("User", back_populates="survey_completions")
     survey = relationship("Survey", back_populates="survey_completions")

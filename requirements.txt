@@ -25,6 +25,7 @@ tensorflow
 scikit-learn
 batch-face
 mediapipe
+tf-keras
 seaborn
 tqdm
 passlib
@@ -33,3 +34,4 @@ python-dotenv
 psycopg2
 jwt
 bcrypt
+retina-face

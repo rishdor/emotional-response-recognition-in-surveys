@@ -5,12 +5,15 @@ from .user_points import UserPoints
 from .schemas import UserCreate, UserUpdate
 from .surveys import Survey, PreferencesUserPreferences, PreferencesSurveyRequirements, UserSurveyCompletion, SurveyProgress
 from .survey_questions import Question, Answer, UserSurveyAnswer, UserAnswerCreate
+from .video import Video, SurveyVideos
+from .user_video_emotion import UserVideoEmotion
 from sqlalchemy.sql import literal
 from .reward import Reward, UserReward
 from datetime import datetime
 
 # Get user's name by ID
 def get_user(db: Session, user_id: int):
+    
     return db.query(User).filter(User.user_id == user_id).first().first_name
 
 # Delete a user by ID
@@ -169,8 +172,25 @@ def match_surveys_to_user(db: Session, user_id: int):
     db.commit()
     return {"message": "All active surveys have been added to the user."}
 
+def remove_inactive_surveys(db: Session, user_id: int):
+    users_surveys = db.query(UserSurveyCompletion.survey_id).filter(UserSurveyCompletion.user_id == user_id).all()
+    users_survey_ids = [survey.survey_id for survey in users_surveys]
+
+    inactive_surveys = db.query(Survey.survey_id).filter(Survey.survey_id.in_(users_survey_ids), Survey.is_active == False).all()
+    inactive_survey_ids = [survey.survey_id for survey in inactive_surveys]
+
+    db.query(UserSurveyCompletion).filter(
+        UserSurveyCompletion.user_id == user_id,
+        UserSurveyCompletion.survey_id.in_(inactive_survey_ids)
+    ).update({UserSurveyCompletion.survey_state: SurveyProgress.abandoned}, synchronize_session=False)
+
+    db.commit()
+
+    return {"message": "Inactive surveys have been marked as abandoned."}
+
 def get_surveys_by_user_id(db: Session, user_id: int):
     match_surveys_to_user(db, user_id)
+    remove_inactive_surveys(db, user_id)
     user_surveys = db.query(UserSurveyCompletion).filter(UserSurveyCompletion.user_id == user_id).all()
     
     surveys = []
@@ -240,11 +260,58 @@ def modify_survey_state(db: Session, user_id: int, survey_id: int, state: Survey
     completion = db.query(UserSurveyCompletion).filter_by(user_id=user_id, survey_id=survey_id).first()
     if not completion:
         return None
+
     completion.survey_state = state
+
     if state == SurveyProgress.completed:
         completion.completed_at = datetime.utcnow()
+
+         # obliczanie ile pointów dać userowi
+
+         # wszystkie videos dołączone do ankiety
+        video_ids = [
+            vid[0]
+            for vid in db.query(SurveyVideos.video_id).filter(SurveyVideos.survey_id == survey_id).all()
+        ]
+
+        # liczba punktów z ankiety
+        points_from_survey = db.query(Survey).filter(Survey.survey_id == survey_id).first().points_awarded
+
+        total_emotions = 0
+        total_video_length = 0
+
+        # zlicza emocje i długość wideo dla każdego wideo
+        for video_id in video_ids:
+            video_length = db.query(Video.length_in_sec).filter(Video.video_id == video_id).first()
+            if video_length:
+                video_length_in_sec = video_length[0]
+            else:
+                video_length_in_sec = 0
+
+            # zlicza emocje użytkownika dla tego wideo
+            number_of_emotions_in_video = db.query(UserVideoEmotion).filter(
+                UserVideoEmotion.user_id == user_id,
+                UserVideoEmotion.video_id == video_id
+            ).count()
+
+            limited_emotions = min(number_of_emotions_in_video, video_length_in_sec) # nie więcej emocji niż sekund wideo
+
+            total_emotions += limited_emotions
+            total_video_length += video_length_in_sec
+
+        # oblicza ogólne punkty
+        general_points = points_from_survey + total_emotions - total_video_length
+
+        # żeby ilość punktów nie przekraczała punktów z ankiety
+        if general_points > points_from_survey:
+            general_points = points_from_survey
+
+        print("Points awarded: ", general_points)
+        completion.points_awarded = general_points
+
     db.commit()
     return completion
+
 
 def save_user_answer(db: Session, answer: UserAnswerCreate):
     user_answer = UserSurveyAnswer(
@@ -268,3 +335,93 @@ def fetch_last_answered_question(db: Session, user_id: int, survey_id: int):
         return last_answer
     except NoResultFound:
         return None
+    
+
+# Pobiera film (Video) po jego ID
+def get_video_by_id(db: Session, video_id: int):
+    """
+    Pobiera film (Video) po jego ID.
+    """
+    video = db.query(Video).filter(Video.video_id == video_id).first()
+    return video
+
+# Connect survey, question and video
+def create_survey_video(db: Session, survey_id: int, video_id: int, question_id: int):
+    """
+    Łączy ankietę, pytanie i wideo w tabeli SurveyVideos.
+    """
+    new_survey_video = SurveyVideos(
+        survey_id=survey_id,
+        video_id=video_id,
+        question_id=question_id
+    )
+    db.add(new_survey_video)
+    db.commit()
+    db.refresh(new_survey_video)
+    return new_survey_video
+
+# Pobiera rekord z SurveyVideos po jego ID
+def get_survey_video(db: Session, survey_video_id: int):
+    """
+    Pobiera rekord z SurveyVideos po jego ID.
+    """
+    survey_video = db.query(SurveyVideos).filter(SurveyVideos.survey_video_id == survey_video_id).first()
+    return survey_video
+
+def get_videos_for_survey(db: Session, survey_id: int):
+    """
+    Zwraca wszystkie obiekty Video przypisane do danej ankiety (survey_id),
+    korzystając z relacji w tabeli SurveyVideos.
+    """
+    videos = (
+        db.query(Video)
+          .join(SurveyVideos, Video.video_id == SurveyVideos.video_id)
+          .filter(SurveyVideos.survey_id == survey_id)
+          .all()
+    )
+    return videos
+
+def get_videos_for_question(db: Session, question_id: int):
+    """
+    Zwraca wszystkie obiekty Video przypisane do konkretnego pytania (question_id).
+    """
+    videos = (
+        db.query(Video)
+          .join(SurveyVideos, Video.video_id == SurveyVideos.video_id)
+          .filter(SurveyVideos.question_id == question_id)
+          .all()
+    )
+    return videos
+
+def create_user_video_emotion(
+    db: Session,
+    user_id: int,
+    video_id: int,
+    emotion_type: str,
+    probability: float,
+    video_timestamp: datetime = None
+):
+    """
+    Zapisuje wynik analizy emocji do tabeli uservideoemotions.
+    """
+    if not video_timestamp:
+        video_timestamp = datetime.utcnow()
+
+    new_entry = UserVideoEmotion(
+        user_id=user_id,
+        video_id=video_id,
+        emotion_type=emotion_type,
+        probability=probability,
+        video_timestamp=video_timestamp
+    )
+    db.add(new_entry)
+    db.commit()
+    db.refresh(new_entry)
+    return new_entry
+
+def get_user_video_emotions(db: Session, user_id: int):
+    """
+    Pobiera wszystkie rekordy z tabeli UserVideoEmotion dla danego użytkownika.
+    """
+    emotions = db.query(UserVideoEmotion).filter(UserVideoEmotion.user_id == user_id).all()
+    return emotions
