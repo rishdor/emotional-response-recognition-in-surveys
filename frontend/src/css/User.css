@@ -12,7 +12,7 @@
   }
 
 .user_section{
-    width: 50%;
+    width: 60%;
     margin: 0 auto 5% auto;
     display: flex;
     flex-direction: column;
@@ -55,7 +55,7 @@
         }
 
         .edit_pass_checkbox:checked ~ .edit_container_password{
-            margin-top: 0;
+            margin-top: -10%;
             opacity: 1;
         }
 
@@ -171,6 +171,11 @@
             width: 40px;
             height: 40px;
         }
+
+            .close_user_changes:hover{
+                cursor: pointer;
+                background-color: var(--element_color) !important;
+            }
             .close_user_changes img{
                 width: 30px;
                 height: 30px;
