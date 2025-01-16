@@ -320,9 +320,6 @@ function SurveyQuestions() {
       </nav>
       <div className='fix_nav_position' />
 
-      <div className='stop_button_container'>
-        <Link to="/surveys" className='link'><button className='stop_button'>Stop survey</button></Link>
-      </div>
       <video
         ref={videoRef}
         style={{ display: 'none' }}
