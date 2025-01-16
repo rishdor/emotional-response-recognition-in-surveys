@@ -1,77 +1,77 @@
 :root{
-    --main_color: #EEFFFA;
-    --font_color: #000000;
-    --devide_line_color: #CEEBC8;
-    --element_color: #E5F1F0;
-    --footer_color: #7AB296;
-    --button_hover_color: #5A8A7F;
-  }
+  --main_color: #EEFFFA;
+  --font_color: #000000;
+  --devide_line_color: #CEEBC8;
+  --element_color: #E5F1F0;
+  --footer_color: #7AB296;
+  --button_hover_color: #5A8A7F;
+}
 
 .survey_info_main_cointainer{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 1% auto 0 auto;
-    background-color: none;
-    width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1% auto 0 auto;
+  background-color: none;
+  width: 40%;
 }
 
 .survey_info_main_container h2{
-    margin: 2% auto 0 auto;
+  margin: 2% auto 0 auto;
 }
 
 .survey_info_main_cointainer p{
-  text-align: justify;
+text-align: justify;
 }
 
 .survey_info_main_cointainer .question_underline{
-  margin-bottom: 4%;
+margin-bottom: 4%;
 }
 
 .surv_info_inner_div{
-  display: grid;
-  grid-template-columns: 0.25fr 1fr;
-  width: 100%;
-  align-items: top;
-  justify-content: center;
+display: grid;
+grid-template-columns: 0.25fr 1fr;
+width: 100%;
+align-items: top;
+justify-content: center;
 }
 
-  .surv_info_inner_div label{
-    margin: 0;
-    height: 20%;
-    text-align: left;
-  }
-  .surv_info_inner_div p{
-    height: 20%;
-    text-align: left;
-    margin: 0 0 3% 0;
-  }
+.surv_info_inner_div label{
+  margin: 0;
+  height: 20%;
+  text-align: left;
+}
+.surv_info_inner_div p{
+  height: 20%;
+  text-align: left;
+  margin: 0 0 3% 0;
+}
 
 .survey_info_button{
-    width: 150px;
-    height: 40px;
-    border: none;
-    background-color: var(--footer_color);
-    color: #fff;
-    border-radius: 30px;
-    margin-top: 5%;
-  }
+  width: 150px;
+  height: 40px;
+  border: none;
+  background-color: var(--footer_color);
+  color: #fff;
+  border-radius: 30px;
+  margin-top: 5%;
+}
 
-  .survey_info_button:hover{
-    background-color: var(--button_hover_color);
-  }
+.survey_info_button:hover{
+  background-color: var(--button_hover_color);
+}
 
 .bottom_image{
-  rotate: 190deg;
-  height: 500px;
-  margin-top: -17%;
-  margin-left: -50%;
-  margin-bottom: 0;
+rotate: 190deg;
+height: 500px;
+margin-top: -17%;
+margin-left: -50%;
+margin-bottom: 0;
 }
 
 @media  screen and (min-width: 1920px){
-  .bottom_image{
-    height: 600px;
-    margin-top: -10%;
-  }
+.bottom_image{
+  height: 600px;
+  margin-top: -10%;
+}
 }

@@ -1,4 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { FaceDetection } from '@mediapipe/face_detection';
+import { Camera } from '@mediapipe/camera_utils';
+
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
@@ -9,11 +12,96 @@ function SurveyQuestions() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [faceDetected, setFaceDetected] = useState(null); // face detection
   const location = useLocation();
   const navigate = useNavigate();
   const { survey } = location.state || {};
   const userId = localStorage.getItem('userId');
 
+  // camera access
+  const [cameraAllowed, setCameraAllowed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+
+    // face detection
+    const faceDetection = new FaceDetection({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}` });
+    faceDetection.setOptions({
+      model: 'short', // or full
+      minDetectionConfidence: 0.5,
+    });
+
+    const onResults = (results) => {
+      if (results.detections && results.detections.length > 0) {
+        setFaceDetected(true);
+      } else {
+        setFaceDetected(false);
+      }
+    };
+
+    faceDetection.onResults(onResults);
+
+    // camera access
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        setCameraAllowed(true);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+        const camera = new Camera(videoRef.current, {
+          onFrame: async () => {
+            // Tutaj co klatkę wysyłamy obraz do faceDetection
+            await faceDetection.send({ image: videoRef.current });
+          },
+          width: 1280,
+          height: 720,
+        });
+        camera.start();
+      })
+      .catch(err => {
+        setCameraAllowed(false);
+        setErrorMessage(`No camera access or error: ${err.message}. Please turn your webcam on and then try refreshing the page.`);
+        console.error("Error when accessing the camera:", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (faceDetected) { // Sprawdzanie, czy twarz została wykryta
+        const img = captureFrame();
+        if (img && currentQuestion?.video_id) {
+          try {
+            const video_id = currentQuestion.video_id;
+            const resp = await fetch(`http://localhost:8000/analyze_video/${userId}/${video_id}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ image: img, userId : userId, video_id : video_id }),
+            });
+            const data = await resp.json();
+            console.log("Emotion response:", data);
+
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      }
+    }, 1000); 
+    return () => clearInterval(interval);
+  }, [faceDetected]);
+  
+
+  const captureFrame = () => {
+    if (!videoRef.current) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(videoRef.current, 0, 0);
+    const base64Image = canvas.toDataURL("image/png");
+    return base64Image;
+  };
+  
   const updateSurveyState = useCallback(async (state) => {
     try {
       await fetch(`http://localhost:8000/user_survey_completion/${userId}/${survey.survey_id}`, {
@@ -27,6 +115,11 @@ function SurveyQuestions() {
       console.error("Error updating survey state:", error);
     }
   }, [userId, survey?.survey_id]);
+
+  const transformYouTubeUrl = (url) => {
+    const match = url.match(/https:\/\/www\.youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+  };
 
   // Return the fetched questions so we can use them immediately
   const fetchQuestions = async () => {
@@ -43,7 +136,23 @@ function SurveyQuestions() {
             const answersResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/answers`);
             if (answersResponse.ok) {
               const answersData = await answersResponse.json();
-              return { ...question, answers: answersData };
+
+              // pobieranie listy video
+              let videoUrl = null;
+              let video_id = null;
+              if (question.video === true) {
+                const videoResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/videos`);
+                if (videoResponse.ok) {
+                  const videoData = await videoResponse.json();
+                  if (videoData.videos.length > 0) {
+                    // videoUrl = videoData.videos[0].video_url;
+                    videoUrl = transformYouTubeUrl(videoData.videos[0].video_url);
+                    video_id = videoData.videos[0].video_id;
+                  }
+                }
+              }
+              console.log("question debug:", question.question_id, question.video, typeof question.video);
+              return { ...question, answers: answersData, video_url: videoUrl, video_id : video_id };
             } else {
               console.error("Failed to fetch answers:", answersResponse.statusText);
               return { ...question, answers: [] };
@@ -159,7 +268,7 @@ function SurveyQuestions() {
   };
 
   const handleNextQuestion = async () => {
-    if (selectedAnswer) {
+    if (currentQuestion?.video === true || selectedAnswer) {
       await saveAnswer(questions[currentQuestionIndex].question_id, selectedAnswer);
       setSelectedAnswer(null);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -169,7 +278,7 @@ function SurveyQuestions() {
   };
 
   const handleFinishSurvey = async () => {
-    if (selectedAnswer) {
+    if (currentQuestion?.video === true || selectedAnswer) {
       await saveAnswer(questions[currentQuestionIndex].question_id, selectedAnswer);
       await updateSurveyState('completed');
       navigate('/thankyou', { state: { userId } });
@@ -211,6 +320,17 @@ function SurveyQuestions() {
       </nav>
       <div className='fix_nav_position' />
 
+      <div className='stop_button_container'>
+        <Link to="/surveys" className='link'><button className='stop_button'>Stop survey</button></Link>
+      </div>
+      <video
+        ref={videoRef}
+        style={{ display: 'none' }}
+        width="640"
+        height="480"
+        playsInline
+        muted
+      />
       {currentQuestion && (
         <div className="question_container">
           <h3>Question {currentQuestionIndex + 1} / {questions.length}</h3>
@@ -248,6 +368,38 @@ function SurveyQuestions() {
                   </div>
                 ))}
               </div>
+            )}
+            {currentQuestion.video === true && currentQuestion.video_url && cameraAllowed && (
+              <div className="video_survey">
+                <h3>Watch a video while webcamera being on and earn the points!</h3>
+                <iframe
+                  title="video"
+                  width="560"
+                  height="315"
+                  src={currentQuestion.video_url}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+                {!faceDetected ? (
+                  <p style={{ color: 'red' }}>
+                    {errorMessage || "Please ensure your face is visible in the webcam to continue watching the video. Keep in mind that if your face is not detected, your chance of receiving full points decreases."}
+                  </p>
+                ) : (
+                  <p style={{ color: 'green' }}>
+                    Your face is detected. You can continue watching the video!
+                  </p>
+                )}
+              </div>
+            )}
+            {/* {!faceDetected && (
+              <p style={{ color: 'red' }}>
+                {errorMessage || "Please ensure your face is visible in the webcam to continue watching the video."}
+              </p>
+            )} */}
+            {!cameraAllowed && (
+              <p style={{ color: 'red' }}>
+                {errorMessage || "The user did not consent to the use of the webcam."}
+              </p>
             )}
           </div>
         </div>
