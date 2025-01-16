@@ -84,8 +84,6 @@ const SignIn = ({ onAuthenticationSuccess }) => {
           <p>{errorMessage}</p>
         </div>
       )}
-        <footer>
-        </footer>
       </div>
   );
 }

@@ -63,12 +63,6 @@ function Home() {
               <img src={heroPhoto} class='hero_photo' alt="woman with laptop"/>
           </div>
         </div>
-        <div class='under_hero'>
-          <h2>NO IDEA WHAT TO PUT IN HERE, WILL FIGURE IT OUT IN THE FUTURE</h2>
-          <p>???</p>
-        </div>
-        <footer>
-        </footer>
       </div>
     );
   }

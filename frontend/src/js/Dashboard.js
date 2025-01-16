@@ -257,8 +257,6 @@ const Dashboard = ({ userId }) => {
           })}
         </div>
       </div>
-
-      {/*<footer></footer>*/}
     </div>
   );
 };

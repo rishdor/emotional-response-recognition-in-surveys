@@ -372,8 +372,6 @@ function SignUp({ onAuthenticationSuccess }) {
           <button type="submit" disabled={!isFormValid}> Submit </button>
         </div>
       </form>
-      <footer>
-      </footer>
     </div>
   );
 }

@@ -198,8 +198,6 @@ function Surveys() {
           )}
         </div>
       </div>
-
-      <footer></footer>
     </div>
   );
 }

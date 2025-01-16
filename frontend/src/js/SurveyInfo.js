@@ -86,9 +86,6 @@ function SurveyInfo() {
       <div>
         <img src={bottomImage} alt='circles' class='bottom_image'/>
       </div>
-
-      <footer>
-      </footer>
     </div>
   );
 }
