@@ -6,6 +6,7 @@ from .schemas import UserCreate, UserUpdate
 from .surveys import Survey, PreferencesUserPreferences, PreferencesSurveyRequirements, UserSurveyCompletion, SurveyProgress
 from .survey_questions import Question, Answer, UserSurveyAnswer, UserAnswerCreate
 from .video import Video, SurveyVideos
+from .user_video_emotion import UserVideoEmotion
 from sqlalchemy.sql import literal
 from .reward import Reward, UserReward
 from datetime import datetime
@@ -259,11 +260,58 @@ def modify_survey_state(db: Session, user_id: int, survey_id: int, state: Survey
     completion = db.query(UserSurveyCompletion).filter_by(user_id=user_id, survey_id=survey_id).first()
     if not completion:
         return None
+
     completion.survey_state = state
+
     if state == SurveyProgress.completed:
         completion.completed_at = datetime.utcnow()
+
+         # obliczanie ile pointów dać userowi
+
+         # wszystkie videos dołączone do ankiety
+        video_ids = [
+            vid[0]
+            for vid in db.query(SurveyVideos.video_id).filter(SurveyVideos.survey_id == survey_id).all()
+        ]
+
+        # liczba punktów z ankiety
+        points_from_survey = db.query(Survey).filter(Survey.survey_id == survey_id).first().points_awarded
+
+        total_emotions = 0
+        total_video_length = 0
+
+        # zlicza emocje i długość wideo dla każdego wideo
+        for video_id in video_ids:
+            video_length = db.query(Video.length_in_sec).filter(Video.video_id == video_id).first()
+            if video_length:
+                video_length_in_sec = video_length[0]
+            else:
+                video_length_in_sec = 0
+
+            # zlicza emocje użytkownika dla tego wideo
+            number_of_emotions_in_video = db.query(UserVideoEmotion).filter(
+                UserVideoEmotion.user_id == user_id,
+                UserVideoEmotion.video_id == video_id
+            ).count()
+
+            limited_emotions = min(number_of_emotions_in_video, video_length_in_sec) # nie więcej emocji niż sekund wideo
+
+            total_emotions += limited_emotions
+            total_video_length += video_length_in_sec
+
+        # oblicza ogólne punkty
+        general_points = points_from_survey + total_emotions - total_video_length
+
+        # żeby ilość punktów nie przekraczała punktów z ankiety
+        if general_points > points_from_survey:
+            general_points = points_from_survey
+
+        print("Points awarded: ", general_points)
+        completion.points_awarded = general_points
+
     db.commit()
     return completion
+
 
 def save_user_answer(db: Session, answer: UserAnswerCreate):
     user_answer = UserSurveyAnswer(
@@ -344,3 +392,36 @@ def get_videos_for_question(db: Session, question_id: int):
           .all()
     )
     return videos
+
+def create_user_video_emotion(
+    db: Session,
+    user_id: int,
+    video_id: int,
+    emotion_type: str,
+    probability: float,
+    video_timestamp: datetime = None
+):
+    """
+    Zapisuje wynik analizy emocji do tabeli uservideoemotions.
+    """
+    if not video_timestamp:
+        video_timestamp = datetime.utcnow()
+
+    new_entry = UserVideoEmotion(
+        user_id=user_id,
+        video_id=video_id,
+        emotion_type=emotion_type,
+        probability=probability,
+        video_timestamp=video_timestamp
+    )
+    db.add(new_entry)
+    db.commit()
+    db.refresh(new_entry)
+    return new_entry
+
+def get_user_video_emotions(db: Session, user_id: int):
+    """
+    Pobiera wszystkie rekordy z tabeli UserVideoEmotion dla danego użytkownika.
+    """
+    emotions = db.query(UserVideoEmotion).filter(UserVideoEmotion.user_id == user_id).all()
+    return emotions

@@ -11,9 +11,11 @@ class Video(Base):
     video_id = Column(Integer, primary_key=True, index=True)
     video_url = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    length_in_sec = Column(Integer, nullable=False)
 
     # Relacja do łącznikowej tabeli SurveyVideos (opcjonalnie)
     surveyvideos = relationship("SurveyVideos", back_populates="video")
+    user_video_emotions = relationship("UserVideoEmotion", back_populates="video")
 
 
 # Tabela łącząca ankiety, pytania i wideo

@@ -8,6 +8,7 @@ from .functions import sequences
 from .functions import get_face_areas
 from .functions.get_models import load_weights_EE, load_weights_LSTM
 
+from datetime import datetime
 import base64
 from io import BytesIO
 from PIL import Image
@@ -77,9 +78,9 @@ def pred_single_frame(img_array) -> dict:
     start_time = time.time()
     label_model = ['Neutral', 'Happiness', 'Sadness', 'Surprise', 'Fear', 'Disgust', 'Anger']
 
-    cv2.imshow("Processed Image", img_array)
-    cv2.waitKey(0)  # Oczekuje na wciśnięcie dowolnego klawisza
-    cv2.destroyAllWindows()  # Zamknij okno
+    # cv2.imshow("Processed Image", img_array)
+    # cv2.waitKey(0)  
+    # cv2.destroyAllWindows()  
 
     # Wykrywanie twarzy za pomocą MediaPipe
     faces = detect_faces_mediapipe(img_array)
@@ -111,7 +112,7 @@ def pred_single_frame(img_array) -> dict:
     main_emotion = label_model[pred_emotion_idx]
     confidence = pred[0][pred_emotion_idx]  # Pewność predykcji dla wybranej emocji
 
-    end_time = time.time()
+    end_time = datetime.utcnow() 
 
     print(f'Predicted emotion: {main_emotion}')
     print(f'Confidence: {round(confidence*100, 2)}%')

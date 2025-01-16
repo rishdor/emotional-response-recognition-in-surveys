@@ -70,22 +70,23 @@ function SurveyQuestions() {
     const interval = setInterval(async () => {
       if (faceDetected) { // Sprawdzanie, czy twarz została wykryta
         const img = captureFrame();
-        if (img) {
+        if (img && currentQuestion?.video_id) {
           try {
-            const resp = await fetch("http://localhost:8000/analyze_video", {
+            const video_id = currentQuestion.video_id;
+            const resp = await fetch(`http://localhost:8000/analyze_video/${userId}/${video_id}`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ image: img }),
+              body: JSON.stringify({ image: img, userId : userId, video_id : video_id }),
             });
             const data = await resp.json();
             console.log("Emotion response:", data);
-            // zapisz do stanu, np. setDetectedEmotion(data.emotion)
+
           } catch (err) {
             console.error(err);
           }
         }
       }
-    }, 1000); // np. co 500 ms
+    }, 1000); 
     return () => clearInterval(interval);
   }, [faceDetected]);
   
@@ -138,6 +139,7 @@ function SurveyQuestions() {
 
               // pobieranie listy video
               let videoUrl = null;
+              let video_id = null;
               if (question.video === true) {
                 const videoResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/videos`);
                 if (videoResponse.ok) {
@@ -145,11 +147,12 @@ function SurveyQuestions() {
                   if (videoData.videos.length > 0) {
                     // videoUrl = videoData.videos[0].video_url;
                     videoUrl = transformYouTubeUrl(videoData.videos[0].video_url);
+                    video_id = videoData.videos[0].video_id;
                   }
                 }
               }
               console.log("question debug:", question.question_id, question.video, typeof question.video);
-              return { ...question, answers: answersData, video_url: videoUrl };
+              return { ...question, answers: answersData, video_url: videoUrl, video_id : video_id };
             } else {
               console.error("Failed to fetch answers:", answersResponse.statusText);
               return { ...question, answers: [] };
@@ -265,7 +268,7 @@ function SurveyQuestions() {
   };
 
   const handleNextQuestion = async () => {
-    if (selectedAnswer) {
+    if (currentQuestion?.video === true || selectedAnswer) {
       await saveAnswer(questions[currentQuestionIndex].question_id, selectedAnswer);
       setSelectedAnswer(null);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -275,7 +278,7 @@ function SurveyQuestions() {
   };
 
   const handleFinishSurvey = async () => {
-    if (selectedAnswer) {
+    if (currentQuestion?.video === true || selectedAnswer) {
       await saveAnswer(questions[currentQuestionIndex].question_id, selectedAnswer);
       await updateSurveyState('completed');
       navigate('/thankyou', { state: { userId } });

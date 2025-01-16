@@ -10,12 +10,13 @@ from database.crud import (get_user, delete_user, update_user,
                            get_surveys_by_user_id, get_rewards, redeem_reward,
                            get_questions_by_survey_id, get_answers_by_question_id,
                            fetch_last_answered_question, save_user_answer, fetch_survey_state, modify_survey_state, 
-                           get_videos_for_survey, get_videos_for_question )
+                           get_videos_for_survey, get_videos_for_question, create_user_video_emotion)
 from database.schemas import (UserCreate, UserUpdate, UserLogin, EmailCheckRequest,
                                PasswordVerificationRequest, PasswordChangeRequest)
 from database.survey_questions import SurveyStateUpdate, UserAnswerCreate
 from .services import (login_user, signup_user, verify_token, check_email_exists, 
                        verify_user_password, change_user_password)
+from datetime import datetime
 import cv2
 import base64
 from PIL import Image, UnidentifiedImageError
@@ -38,16 +39,47 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-@app.post("/analyze_video", tags=["AnalyzeVideo"])
-async def analyze_video(request: Request):
+# @app.post("/analyze_video", tags=["AnalyzeVideo"])
+# async def analyze_video(request: Request):
+#     try:
+#         data = await request.json()
+#         img_str = data["image"]
+
+#         if "base64," in img_str:
+#             img_str = img_str.split(",")[1]
+
+#         img_bytes = base64.b64decode(img_str)
+
+#         np_arr = np.frombuffer(img_bytes, np.uint8)
+#         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+#         if frame is None:
+#             return {"status": "error", "message": "Cannot decode image using OpenCV"}
+
+#         try:
+#             results = pred_single_frame(frame)
+#             return {"status": "success", "results": results}
+#         except Exception as e:
+#             print(str(e))
+#             return {"status": "error", "message": f"Error during image processing: {str(e)}"}
+
+#     except UnidentifiedImageError:
+#         return {"status": "error", "message": "Cannot identify image file"}
+#     except Exception as e:
+#         return {"status": "error", "message": str(e)}
+
+@app.post("/analyze_video/{user_id}/{video_id}", tags=["AnalyzeVideo"])
+async def analyze_video(user_id : int, video_id : int, request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
         img_str = data["image"]
 
+        user_id = data.get("userId")
+        video_id = data.get("video_id")
+
         if "base64," in img_str:
             img_str = img_str.split(",")[1]
 
-        # Dekoduj base64 do bajtów
         img_bytes = base64.b64decode(img_str)
 
         np_arr = np.frombuffer(img_bytes, np.uint8)
@@ -58,7 +90,32 @@ async def analyze_video(request: Request):
 
         try:
             results = pred_single_frame(frame)
-            return {"status": "success", "results": results}
+
+            if "error" in results:
+                return {"status": "error", "message": results["error"]}
+
+            predicted_emotion = results["predicted_emotion"]
+            confidence = results["confidence"]            
+
+            saved_entry = create_user_video_emotion(
+                db=db,
+                user_id=user_id,
+                video_id=video_id,
+                emotion_type=predicted_emotion,
+                probability=confidence,
+                video_timestamp=datetime.utcnow() 
+            )
+
+            return {
+                "status": "success",
+                "results": results,
+                "db_entry": {
+                    "user_video_emotion_id": saved_entry.user_video_emotion_id,
+                    "emotion_type": saved_entry.emotion_type,
+                    "probability": saved_entry.probability,
+                    "video_timestamp": saved_entry.video_timestamp.isoformat()
+                }
+            }
         except Exception as e:
             print(str(e))
             return {"status": "error", "message": f"Error during image processing: {str(e)}"}
@@ -67,6 +124,7 @@ async def analyze_video(request: Request):
         return {"status": "error", "message": "Cannot identify image file"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
 
 
 @app.get("/users/{user_id}", tags=["GetUsersName"])
@@ -224,7 +282,8 @@ def update_survey_state(user_id: int, survey_id: int, state: SurveyStateUpdate, 
 
 @app.post("/user_survey_answers", tags=["SaveAnswer"])
 def save_answer(answer: UserAnswerCreate, db: Session = Depends(get_db)):
-    user_answer = save_user_answer(db=db, answer=answer)
+    if answer:
+        user_answer = save_user_answer(db=db, answer=answer)
     return user_answer
 
 @app.get("/user_survey_answers/last_answered/{user_id}/{survey_id}", tags=["GetLastAnsweredQuestion"])

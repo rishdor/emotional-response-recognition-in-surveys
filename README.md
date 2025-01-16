@@ -20,6 +20,7 @@ This project is a web application designed to analyze consumer facial emotional 
 ### Pre-trained Model
 - **EMO-AffectNetModel**: A pre-trained model for emotion recognition, available under the MIT License.
   - Repository: [EMO-AffectNetModel](https://github.com/ElenaRyumina/EMO-AffectNetModel?tab=MIT-1-ov-file)
+  - Note: You need to download SAVEE file from this [link](https://drive.google.com/drive/folders/1rEO8Kwujtu-08RnuCej7k6YA0n309RyO) and weights from this [link](https://drive.google.com/drive/u/2/folders/1wELaPME_WXvtgcWQyTvO3R8xXxg4NO8s) and put it info model/models_EmoAffectnet folder. Without it model will not work.
 
 ## Installation and Usage
 

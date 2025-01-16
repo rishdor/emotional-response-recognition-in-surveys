@@ -19,7 +19,9 @@ class User(Base):
     gender = Column(String)
     created_at = Column(Date, default=func.now())
     updated_at = Column(Date, default=func.now(), onupdate=func.now())
+
     points = relationship("UserPoints", back_populates="user", uselist=False)  # One-to-one relationship with UserPoints
     survey_completions = relationship("UserSurveyCompletion", back_populates="user")  # One-to-many relationship with UserSurveyCompletion
     user_rewards = relationship("UserReward", back_populates="user")
     survey_answers = relationship("UserSurveyAnswer", back_populates="user")
+    user_video_emotions = relationship("UserVideoEmotion", back_populates="user")
