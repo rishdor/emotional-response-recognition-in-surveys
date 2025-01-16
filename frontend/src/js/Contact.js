@@ -85,7 +85,7 @@ function Contact() {
 
           <div class='formElem'>
             <label for="problem">What's your problem?</label>
-            <input type="text" name="problem" required />
+            <textarea name="problem" required />
           </div>  
 
           <div class='formElem'>
