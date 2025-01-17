@@ -68,8 +68,7 @@ function SurveyWindow() {
       </nav>
       <div class='fix_nav_position'/>
       <div className="video_container">
-        <div style={{ textAlign: 'center' }}>
-        <h1>View from the webcam</h1>
+        <h2>View from the webcam</h2>
 
         {cameraAllowed ? (
           <video
@@ -77,7 +76,6 @@ function SurveyWindow() {
             autoPlay
             playsInline
             muted
-            style={{ width: '700px', height: 'auto', backgroundColor: '#000' }}
           />
           // <div>
           //   <h1>Podgląd z serwera</h1>
@@ -88,7 +86,6 @@ function SurveyWindow() {
             {errorMessage || "The user did not consent to the use of the webcam."}
           </p>
         )}
-      </div>
       </div>
       <div className="go_to_questions_container">
         {cameraAllowed ? (
