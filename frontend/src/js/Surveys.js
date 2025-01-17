@@ -11,6 +11,7 @@ function Surveys() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const userId = queryParams.get('userId') || localStorage.getItem('userId');
+  const [isLoading, setIsLoading] = useState(true);
 
   const logout = async () => {
     try {
@@ -52,6 +53,8 @@ function Surveys() {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -102,6 +105,10 @@ function Surveys() {
 
     return `${formattedDate} (${daysLeft} days left)`;
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="Surveys">
@@ -186,10 +193,10 @@ function Surveys() {
             <p>Points</p>
           </div>
           {surveys.abandoned.length > 0 ? (
-            surveys.abandoned.map((survey, index) => (
+            surveys.abandoned.filter(survey => survey.survey_state === 'completed').map((survey, index) => (
               <div key={index} className="survey_cont_surv history">
                 <p className="sur_name">{survey.title}</p>
-                <p>{survey.survey_state === 'completed' ? 'Completed' : 'Not completed'}</p>
+                <p>Completed</p>
                 <p>{survey.points_awarded}</p>
               </div>
             ))

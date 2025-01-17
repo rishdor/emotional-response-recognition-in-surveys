@@ -7,6 +7,7 @@ import '../css/SurveyWindow.css';
 import '../css/Dashboard.css';
 import '../css/App.css';
 import logo from '../images/photos/logo_surveys3.png';
+import Youtube from 'react-youtube';
 
 function SurveyQuestions() {
   const [questions, setQuestions] = useState([]);
@@ -17,6 +18,7 @@ function SurveyQuestions() {
   const navigate = useNavigate();
   const { survey } = location.state || {};
   const userId = localStorage.getItem('userId');
+  const [hasVideoEnded, setHasVideoEnded] = useState(false);
 
   // camera access
   const [cameraAllowed, setCameraAllowed] = useState(false);
@@ -268,22 +270,27 @@ function SurveyQuestions() {
   };
 
   const handleNextQuestion = async () => {
-    if (currentQuestion?.video === true || selectedAnswer) {
+    console.log(currentQuestion.video);
+    if (currentQuestion?.video === true && !hasVideoEnded) {
+      alert("Please watch the entire video before proceeding");
+    } else if (currentQuestion?.video !== true && !selectedAnswer) {
+      alert("Please select an answer before proceeding.");
+    } else {
       await saveAnswer(questions[currentQuestionIndex].question_id, selectedAnswer);
       setSelectedAnswer(null);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      alert("Please select an answer before proceeding.");
     }
   };
 
   const handleFinishSurvey = async () => {
-    if (currentQuestion?.video === true || selectedAnswer) {
+    if (currentQuestion?.video === true && !hasVideoEnded) {
+      alert("Please watch the entire video before proceeding");
+    } else if (currentQuestion?.video !== true && !selectedAnswer) {
+      alert("Please select an answer before proceeding.");
+    } else {
       await saveAnswer(questions[currentQuestionIndex].question_id, selectedAnswer);
       await updateSurveyState('completed');
       navigate('/thankyou', { state: { userId } });
-    } else {
-      alert("Please select an answer before finishing the survey.");
     }
   };
 
@@ -297,6 +304,15 @@ function SurveyQuestions() {
     } catch (error) {
       console.error("Logout error:", error);
     }
+  };
+
+  const videoOptions = {
+    height:"315",
+    width:"560",
+  };
+
+  const onVideoEnd = () => {
+    setHasVideoEnded(true);
   };
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -369,13 +385,10 @@ function SurveyQuestions() {
             {currentQuestion.video === true && currentQuestion.video_url && cameraAllowed && (
               <div className="video_survey">
                 <h3>Watch a video while webcamera being on and earn the points!</h3>
-                <iframe
-                  title="video"
-                  width="560"
-                  height="315"
-                  src={currentQuestion.video_url}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+                <Youtube
+                  videoId={currentQuestion.video_url.split('/')[4]}
+                  opts={videoOptions}
+                  onEnd={onVideoEnd}
                 />
                 {!faceDetected ? (
                   <p style={{ color: 'red' }}>

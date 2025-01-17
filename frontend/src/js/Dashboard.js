@@ -12,6 +12,7 @@ const Dashboard = ({ userId }) => {
   const [points, setPoints] = useState(null);
   const [surveys, setSurveys] = useState({ new: [], inProgress: [] });
   const [rewards, setRewards] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [notifications] = useState([
     { message: "Complete your data!", date: "2024-12-19" },
     { message: "New survey available!", date: "2024-12-18" },
@@ -81,6 +82,8 @@ const Dashboard = ({ userId }) => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -143,6 +146,10 @@ const Dashboard = ({ userId }) => {
     const daysSinceLastRedeemed = Math.ceil((now - lastRedeemedDate) / (1000 * 60 * 60 * 24));
     return 30 - daysSinceLastRedeemed;
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="Dashboard">

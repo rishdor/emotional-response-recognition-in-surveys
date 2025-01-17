@@ -6,8 +6,10 @@ import bottomImage from '../images/photos/circles.png';
 
 function Contact() {
   const [isLogged, setIsLogged] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const checkAuthStatus = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:8000/verify", {
         method: "GET",
@@ -22,6 +24,8 @@ function Contact() {
     } catch (error) {
       console.log("Authentication error:", error);
       setIsLogged(false);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -39,6 +43,11 @@ function Contact() {
       console.error("Logout error:", error);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="Contact">
       <nav>
