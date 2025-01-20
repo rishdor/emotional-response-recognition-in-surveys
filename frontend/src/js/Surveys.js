@@ -197,7 +197,7 @@ function Surveys() {
               <div key={index} className="survey_cont_surv history">
                 <p className="sur_name">{survey.title}</p>
                 <p>Completed</p>
-                <p>{survey.points_awarded}</p>
+                <p>{survey.points_earned}</p>
               </div>
             ))
           ) : (
