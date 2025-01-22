@@ -19,6 +19,7 @@ function SurveyQuestions() {
   const { survey } = location.state || {};
   const userId = localStorage.getItem('userId');
   const [hasVideoEnded, setHasVideoEnded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // camera access
   const [cameraAllowed, setCameraAllowed] = useState(false);
@@ -167,6 +168,8 @@ function SurveyQuestions() {
       }
     } catch (error) {
       console.error("Error fetching questions:", error);
+    } finally {
+      setIsLoading(false);
     }
     return [];
   };
@@ -316,6 +319,10 @@ function SurveyQuestions() {
   };
 
   const currentQuestion = questions[currentQuestionIndex];
+
+  if (isLoading) {
+    return <div class="loading"><h1>Loading, please wait...</h1></div>;
+  }
 
   return (
     <div className="SurveyQuestions">
