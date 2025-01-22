@@ -338,7 +338,7 @@ const User = ({ userId }) => {
             </ul>
         </nav>
         <div className='fix_nav_position'/>
-      <h1>WELCOME { userData.first_name.toUpperCase() }</h1>
+      <h1>Welcome { userData.first_name }</h1>
       <div className='sidebar'>
         <ul>
             <li><h3>NAVIGATE</h3></li>
