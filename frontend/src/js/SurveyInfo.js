@@ -71,13 +71,14 @@ function SurveyInfo() {
             <p> {survey.issuer}</p>
           </div>
           <div class='surv_info_inner_div'>
-            <label><strong>Points:</strong></label>
+            <label><strong>Max points:</strong></label>
             <p> {survey.points_awarded}</p>
           </div>
           <div class='surv_info_inner_div'>
             <label><strong>Description:</strong></label>
             <p> {survey.description}</p>
           </div>
+          <p>Your data will be processed</p>
           <div class='survey_info_main_cointainer'>
               <button class='survey_info_button' onClick={handleStartSurvey}>Start survey</button>
           </div>

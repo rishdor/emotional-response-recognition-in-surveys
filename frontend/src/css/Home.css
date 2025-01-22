@@ -14,8 +14,14 @@
 .hero{
     background-color: var(--main_color);
     display: flex;
-    height: 90vh;
+    height: 96vh;
     overflow: hidden;
+}
+
+@media screen and (min-width: 1920px){
+    .hero{
+        height: 97vh;
+    }
 }
 
 .hero h1{
@@ -53,7 +59,7 @@
         width: 220px;
         text-align: center;
         align-content: center;
-        margin-top: 15%;
+        margin: 15% 0 0 30%;
     }
 
       .hero_button .link{

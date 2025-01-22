@@ -46,7 +46,7 @@ function About() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div class="loading"><h1>Loading, please wait...</h1></div>;
   }
 
   return (

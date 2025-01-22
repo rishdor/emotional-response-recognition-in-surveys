@@ -47,6 +47,10 @@ justify-content: center;
   margin: 0 0 3% 0;
 }
 
+.survey_info_main_cointainer > p{
+  color: var(--delete_color);
+}
+
 .survey_info_button{
   width: 150px;
   height: 40px;

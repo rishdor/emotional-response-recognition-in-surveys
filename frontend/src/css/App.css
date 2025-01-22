@@ -35,7 +35,7 @@
 }
 
 .fix_nav_position{
-  height: 30px;
+  height: 4vh;
   visibility: hidden;
   position: relative;
 }
@@ -56,6 +56,16 @@ nav{
   list-style-type: none;
   position: relative;
   z-index: 1;
+  height: 4vh;
+}
+
+@media screen and (min-width: 1920px){
+  .navbar{
+    height: 3vh;
+  }
+  .fix_nav_position{
+    height: 3vh;
+  }
 }
 
 .nav_side{
@@ -97,6 +107,17 @@ footer{
 footer p{
   margin-top: 3px;
   height: 30px;
+  color: #fff;
+}
+
+.loading{
+  text-align: center;
+  margin: 15% auto;
+  font-style: italic;
+  background-color: var(--edit_background_color);
+  padding: 2%;
+  border-radius: 100px 10px;
+  width: 40%;
   color: #fff;
 }
 
