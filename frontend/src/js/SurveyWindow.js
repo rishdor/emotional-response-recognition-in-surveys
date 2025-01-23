@@ -13,22 +13,42 @@ function SurveyWindow() {
   // camera access
   const [cameraAllowed, setCameraAllowed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [stream, setStream] = useState(null);
   const videoRef = useRef(null);
 
-  useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        setCameraAllowed(true);
+  const startStream = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setCameraAllowed(true);
+      setStream(mediaStream);
+
+      const setVideoStream = () => {
         if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+          videoRef.current.srcObject = mediaStream; 
+        } else {
+          console.log('Video element not available yet. Retrying...');
+          setTimeout(setVideoStream, 100); 
         }
-      })
-      .catch(err => {
-        setCameraAllowed(false);
-        setErrorMessage(`No camera access or error: ${err.message}. Please turn your webcam on and then try refreshing the page.`);
-        console.error("Error when accessing the camera:", err);
-      });
-  }, []);
+      };
+
+      setVideoStream();
+    } catch (error) {
+      console.error('Error accessing media devices:', error);
+    }
+  };
+
+  // Request media stream on component mount
+  useEffect(() => {
+    startStream();
+
+    // Cleanup the stream on component unmount
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());  // Stop all tracks
+        setStream(null);  // Clear the stream
+      }
+    };
+  }, []); 
 
   const logout = async () => {
     try {
@@ -70,7 +90,7 @@ function SurveyWindow() {
       <div className="video_container">
         <h2>View from the webcam</h2>
 
-        {cameraAllowed ? (
+        {cameraAllowed && videoRef ? (
           <video
             ref={videoRef}
             autoPlay
