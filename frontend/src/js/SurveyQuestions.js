@@ -18,15 +18,17 @@ function SurveyQuestions() {
   const navigate = useNavigate();
   const { survey } = location.state || {};
   const userId = localStorage.getItem('userId');
-  const [hasVideoEnded, setHasVideoEnded] = useState(false);
+  const [hasVideoEnded, setHasVideoEnded] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   // camera access
   const [cameraAllowed, setCameraAllowed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
   const videoRef = useRef(null);
 
   useEffect(() => {
+    // if (!videoRef.current) return;
 
     // face detection
     const faceDetection = new FaceDetection({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}` });
@@ -54,8 +56,10 @@ function SurveyQuestions() {
         }
         const camera = new Camera(videoRef.current, {
           onFrame: async () => {
+            if (videoRef.current) {
             // Tutaj co klatkę wysyłamy obraz do faceDetection
             await faceDetection.send({ image: videoRef.current });
+            }
           },
           width: 1280,
           height: 720,
@@ -93,6 +97,17 @@ function SurveyQuestions() {
     return () => clearInterval(interval);
   }, [faceDetected]);
   
+  useEffect(() => {
+    if (currentQuestion?.video === true && currentQuestion.length_in_sec > 0) {
+      setHasVideoEnded(false); // Reset state
+  
+      const timer = setTimeout(() => {
+        setHasVideoEnded(true); // Update state after the timer
+      }, currentQuestion.length_in_sec * 1000);
+  
+      return () => clearTimeout(timer); // Cleanup on unmount or when dependencies change
+    }
+  }, []);
 
   const captureFrame = () => {
     if (!videoRef.current) return;
@@ -143,6 +158,7 @@ function SurveyQuestions() {
               // pobieranie listy video
               let videoUrl = null;
               let video_id = null;
+              let length_in_sec = null;
               if (question.video === true) {
                 const videoResponse = await fetch(`http://localhost:8000/questions/${question.question_id}/videos`);
                 if (videoResponse.ok) {
@@ -151,11 +167,12 @@ function SurveyQuestions() {
                     // videoUrl = videoData.videos[0].video_url;
                     videoUrl = transformYouTubeUrl(videoData.videos[0].video_url);
                     video_id = videoData.videos[0].video_id;
+                    length_in_sec = videoData.videos[0].length_in_sec;
                   }
                 }
               }
               console.log("question debug:", question.question_id, question.video, typeof question.video);
-              return { ...question, answers: answersData, video_url: videoUrl, video_id : video_id };
+              return { ...question, answers: answersData, video_url: videoUrl, video_id : video_id, length_in_sec : length_in_sec };
             } else {
               console.error("Failed to fetch answers:", answersResponse.statusText);
               return { ...question, answers: [] };
@@ -284,6 +301,7 @@ function SurveyQuestions() {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
+  
 
   const handleFinishSurvey = async () => {
     if (currentQuestion?.video === true && !hasVideoEnded) {
@@ -296,6 +314,7 @@ function SurveyQuestions() {
       navigate('/thankyou', { state: { userId } });
     }
   };
+  
 
   const logout = async () => {
     try {
@@ -309,20 +328,23 @@ function SurveyQuestions() {
     }
   };
 
-  const videoOptions = {
-    height:"315",
-    width:"560",
-  };
 
-  const onVideoEnd = () => {
-    setHasVideoEnded(true);
+  const startVideoTimer = (length_in_sec) => {
+    if (!length_in_sec || length_in_sec <= 0) return; // Sprawdzamy, czy długość filmu jest poprawna
+    setHasVideoEnded(false);
+  
+    setTimeout(() => {
+      setHasVideoEnded(true);
+    }, length_in_sec * 1000);
   };
+  
+  
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  if (isLoading) {
-    return <div class="loading"><h1>Loading, please wait...</h1></div>;
-  }
+  // if (isLoading) {
+  //   return <div class="loading"><h1>Loading, please wait...</h1></div>;
+  // }
 
   return (
     <div className="SurveyQuestions">
@@ -392,10 +414,17 @@ function SurveyQuestions() {
             {currentQuestion.video === true && currentQuestion.video_url && cameraAllowed && (
               <div className="video_survey">
                 <h3>Watch a video while webcamera being on and earn the points!</h3>
-                <Youtube
+                {/* <Youtube
                   videoId={currentQuestion.video_url.split('/')[4]}
                   opts={videoOptions}
-                  onEnd={onVideoEnd}
+                  onEnd={onVideoEnd} */}
+                  <iframe
+                  title="video"
+                  width="560"
+                  height="315"
+                  src={currentQuestion.video_url}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
                 />
                 {!faceDetected ? (
                   <p style={{ color: 'red' }}>
