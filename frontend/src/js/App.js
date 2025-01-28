@@ -18,6 +18,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [canExpire, setCanExpire] = useState(false);
 
   const handleLoginSuccess = async () => {
     setIsLoading(true);
@@ -57,22 +58,31 @@ function App() {
           const data = await response.json();
           setIsAuthenticated(true);
           setUserId(data.user_id);
+          setCanExpire(true);
         } else {
-          setIsAuthenticated(false);
-          setUserId(null);
+          throw new Error("Unauthorized");
         }
       } catch (error) {
-        console.error("Error verifying user:", error);
         setIsAuthenticated(false);
         setUserId(null);
+        if (canExpire) {
+          alert("Your session has expired. Please log in again");
+          setCanExpire(false);
+        }
       } finally {
         setIsLoading(false)
       }
     };
 
     checkAuthStatus();
-  }, []);
 
+    const intervalId = setInterval(() => {
+      checkAuthStatus();
+    },  5 * 60 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+  
 
   const PublicRoute = ({isAuthenticated}) => {
     if (isAuthenticated) {
@@ -88,7 +98,7 @@ function App() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div class="loading"><h1>Loading, please wait...</h1></div>;
   }
 
   return (
@@ -112,6 +122,11 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
+
+          <footer>
+            <p>Ⓒ SmartSurveys</p>
+            <p>Since 2025</p>
+          </footer>
         </div>
     </Router>
   );

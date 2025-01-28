@@ -25,6 +25,7 @@ tensorflow
 scikit-learn
 batch-face
 mediapipe
+tf-keras
 seaborn
 tqdm
 passlib

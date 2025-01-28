@@ -28,7 +28,7 @@ function ThankYou() {
             <li><Link to="/about" class='link'>About</Link></li>
             <li><Link to="/contact" class='link'>Contact</Link></li>
           </div>
-          <li><img src={logo} alt='logo'/></li>
+          <li><Link to="/dashboard" class='link'><img src={logo} alt='logo'/></Link></li>
           <div class='nav_side'>
             <li><Link to="/user" class='link'>User</Link></li>
             <li><Link to="/dashboard" class='link'>Dashboard</Link></li>

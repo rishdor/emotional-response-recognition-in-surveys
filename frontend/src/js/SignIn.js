@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import '../css/App.css';
 import logo from '../images/photos/logo_surveys3.png'
+import bottomImage from '../images/photos/circles.png';
 
 const SignIn = ({ onAuthenticationSuccess }) => {
   const [email, setEmail] = useState('');
@@ -84,9 +85,10 @@ const SignIn = ({ onAuthenticationSuccess }) => {
           <p>{errorMessage}</p>
         </div>
       )}
-        <footer>
-        </footer>
+      <div>
+              <img src={bottomImage} alt='circles' class='bottom_image'/>
       </div>
+    </div>
   );
 }
 

@@ -10,17 +10,21 @@
 }
 .video_container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 2% auto 0 auto;
+  text-align: center;
+  margin: 0 auto;
 }
 
-  .video_container iframe {
-    width: 50vw;
-    height: 60vh;
+  .video_container video {
+    height: 400px;
     border: none;
     border-radius: 3px;
+  }
+
+  .video_container h2{
+    margin: 2% auto 1% auto;
   }
 
 
@@ -29,11 +33,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 0;
+    text-align: center;
+    margin: 1% auto;
+    width: 50%;
 }
 
   .go_to_questions_container h3{
-    margin: 1% auto;
+    margin: 0 auto;
+    text-align: center;
   }
 
     #go_to_questions {
@@ -42,15 +49,15 @@
       background-color: var(--button_color);
       border: none;
       border-radius: 100px;
-      height: 70px;
-      width: 70px;
-      margin: auto 5%;
+      height: 50px;
+      width: 50px;
+      margin: 5% auto;
       color: #FFFFFF;
     }
 
       #go_to_questions img {
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
         margin: auto;
         transform: rotate(180deg);
       }
@@ -59,14 +66,32 @@
         background-color: var(--button_hover_color);
       }
 
+  @media screen and (min-width: 1920px) {
+    .video_container video {
+      height: 500px;
+    }
+
+    #go_to_questions {
+      height: 70px;
+      width: 70px;
+      margin: 15% auto;
+    }
+
+    #go_to_questions img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
 
 .question_container {
   display: flex;
   flex-direction: column;
   margin: 1% auto;
   background-color: var(--element_color);
-  width: 40%;
+  width: 45%;
   border-radius: 30px;  
+  margin-top: 5%;
 }
 
   .question_container h3{
@@ -117,6 +142,10 @@
           cursor: pointer;
         }
 
+          .multiple_choice .answer label{
+            border-radius: 5px;
+          }
+
           .answer label:hover {
             background-color: var(--highlight_color);
           }
@@ -136,6 +165,14 @@
           .answer input[type="checkbox"]:checked + label {
             background-color: var(--checked_color);
           }
+
+.buttons_container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 40%;
+  margin: 0 auto;
+}
 
 .finish{
     display: flex;
@@ -168,21 +205,17 @@
         background-color: var(--button_hover_color);
       }
 
+      .buttons_container .finish{
+        height: 100% !important;
+        width: 25% !important;
+      }
 
-.stop_button_container{
-  display: flex;
-  width: 10%;
-  position: fixed;
-  margin: 30vh 0 0 10%;
-
-}
-.stop_button{
-  left: 0 !important;
-  background-color: var(--button_color);
-  border: none;
-  border-radius: 20px;
-  color: #FFFFFF;
-  height: 120px;
-  width: 120px;
-  font-size: 100%;
-}
+  .stop_button{
+    background-color: var(--button_color);
+    border: none;
+    border-radius: 10px;
+    color: #FFFFFF;
+    padding: 10%;
+    width: 100%;
+    font-size: 100%;
+  }

@@ -12,6 +12,7 @@ const Dashboard = ({ userId }) => {
   const [points, setPoints] = useState(null);
   const [surveys, setSurveys] = useState({ new: [], inProgress: [] });
   const [rewards, setRewards] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [notifications] = useState([
     { message: "Complete your data!", date: "2024-12-19" },
     { message: "New survey available!", date: "2024-12-18" },
@@ -81,6 +82,8 @@ const Dashboard = ({ userId }) => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -144,6 +147,10 @@ const Dashboard = ({ userId }) => {
     return 30 - daysSinceLastRedeemed;
   };
 
+  if (isLoading) {
+    return <div class="loading"><h1>Loading, please wait...</h1></div>;
+  }
+
   return (
     <div className="Dashboard">
       <nav>
@@ -153,7 +160,7 @@ const Dashboard = ({ userId }) => {
             <li><Link to="/about" className='link'>About</Link></li>
             <li><Link to="/contact" className='link'>Contact</Link></li>
           </div>
-          <li><img src={logo} alt='Logo'/></li>
+          <li><Link to="/dashboard" class='link'><img src={logo} alt='logo'/></Link></li>
           <div className='nav_side'>
             <li><Link to="/user" className='link'>User</Link></li>
             <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
@@ -165,14 +172,14 @@ const Dashboard = ({ userId }) => {
       <h1>Welcome {user}</h1> 
       <div className='sidebar'>
         <ul>
-            <li><h3>Navigate</h3></li>
+            <li><h3>NAVIGATE</h3></li>
             <li><a href="#surveys">Surveys</a></li>
             <li><a href="#awards">Awards</a></li>
-            <li><a href="#messages">Messages</a></li>
+            {/*<li><a href="#messages">Messages</a></li>*/}
         </ul>
       </div>
 
-      <div className="section">
+      {/* <div className="section">
         <h2 className="section_name" id="messages">Notifications</h2>
         <hr className="devide_line" />
         <div className="all_messages">
@@ -188,7 +195,7 @@ const Dashboard = ({ userId }) => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       <div className="section">
         <h2 className="section_name" id="surveys">Surveys</h2>
@@ -200,7 +207,7 @@ const Dashboard = ({ userId }) => {
               surveys.new.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
                   <p>{survey.title}</p>
-                  <p>{formatDateWithRemainingDays(survey.deadline)}</p>
+                  <p class="dash_deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
                 </div>
               ))
             ) : (
@@ -213,7 +220,7 @@ const Dashboard = ({ userId }) => {
               surveys.inProgress.map((survey, index) => (
                 <div key={index} className="survey_block" onClick={() => handleSurveyClick(survey)}>
                   <p>{survey.title}</p>
-                  <p>{formatDateWithRemainingDays(survey.deadline)}</p>
+                  <p class="dash_deadline">{formatDateWithRemainingDays(survey.deadline)}</p>
                 </div>
               ))
             ) : (
@@ -247,7 +254,7 @@ const Dashboard = ({ userId }) => {
                   <p>{reward.reward_description}</p>
                   <input 
                     type="submit" 
-                    value={canRedeem ? "Redeem Now" : points < reward.points_required ? "Not Enough Points" : `Available in ${daysLeft} days`} 
+                    value={canRedeem ? "Redeem Now" : points < reward.points_required ? "Not Enough Points" : `Next in ${daysLeft} days`} 
                     onClick={() => handleRedeem(reward)} 
                     disabled={!canRedeem}
                   />
@@ -257,8 +264,6 @@ const Dashboard = ({ userId }) => {
           })}
         </div>
       </div>
-
-      <footer></footer>
     </div>
   );
 };

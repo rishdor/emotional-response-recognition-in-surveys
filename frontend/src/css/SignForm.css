@@ -33,13 +33,14 @@
     background-color: #FFFFFF;
 }
 
-.formElem input{
+.formElem input, .formElem textarea{
     width: 65%;
     padding: 1%;
     border-radius: 10px;
     border: 2px solid var(--button_hover_color);
     height: 50%;
     background-color: #FFFFFF;
+    font-size: 14px;
 }
 
 .formElem input[type='checkbox']{

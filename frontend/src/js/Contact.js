@@ -2,11 +2,14 @@ import { React, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/App.css';
 import logo from '../images/photos/logo_surveys3.png'
+import bottomImage from '../images/photos/circles.png';
 
 function Contact() {
   const [isLogged, setIsLogged] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const checkAuthStatus = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:8000/verify", {
         method: "GET",
@@ -21,6 +24,8 @@ function Contact() {
     } catch (error) {
       console.log("Authentication error:", error);
       setIsLogged(false);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -38,6 +43,11 @@ function Contact() {
       console.error("Logout error:", error);
     }
   };
+
+  if (isLoading) {
+    return <div class="loading"><h1>Loading, please wait...</h1></div>;
+  }
+
   return (
     <div className="Contact">
       <nav>
@@ -59,7 +69,7 @@ function Contact() {
           <li><Link to="/" class='link'><img src={logo} alt='logo'/></Link></li>
           )}
           {isLogged &&(
-          <li><img src={logo} alt='logo'/></li>
+          <li><Link to="/dashboard" class='link'><img src={logo} alt='logo'/></Link></li>
           )}
           <div class='nav_side'>
             {isLogged &&(
@@ -75,8 +85,26 @@ function Contact() {
         </ul>
       </nav>
       <div class='fix_nav_position'/>
-      <h2>Contact Page</h2>
-      <p>This is the contact page.</p>
+      <h1>Have a problem? Contact us!</h1>
+      <form class='signForm'>
+          <div class='formElem'>
+            <label for="email">Type in your e-mail:</label>
+            <input type="email" name="email" required />
+          </div>
+
+          <div class='formElem'>
+            <label for="problem">What's your problem?</label>
+            <textarea name="problem" required />
+          </div>  
+
+          <div class='formElem'>
+            <button type="submit">Send</button>
+          </div>
+        </form> 
+
+      <div>
+        <img src={bottomImage} alt='circles' class='bottom_image'/>
+      </div>
     </div>
   );
 }

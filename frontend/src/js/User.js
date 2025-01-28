@@ -22,6 +22,14 @@ const User = ({ userId }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     let debounceTimeout;
+
+    const [isCheckedData, setIsCheckedData] = useState(false);
+    const [isCheckedPass, setIsCheckedPass] = useState(false);
+    const uncheckCheckboxes = () => {
+      console.log('uncheckCheckboxes');
+      setIsCheckedData(false); // Uncheck the checkbox for editing personal data
+      setIsCheckedPass(false); // Uncheck the checkbox for changing password
+    };
     
     const logout = async () => {
         try {
@@ -309,7 +317,7 @@ const User = ({ userId }) => {
       }
       
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div class="loading"><h1>Loading, please wait...</h1></div>;
   }
 
   return (
@@ -321,7 +329,7 @@ const User = ({ userId }) => {
                 <li><Link to="/about" className='link'>About</Link></li>
                 <li><Link to="/contact" className='link'>Contact</Link></li>
               </div>
-              <li><img src={logo} alt='logo'/></li>
+              <li><Link to="/dashboard" class='link'><img src={logo} alt='logo'/></Link></li>
               <div className='nav_side'>
                 <li><Link to="/user" className='link'>User</Link></li>
                 <li><Link to="/dashboard" className='link'>Dashboard</Link></li>
@@ -330,7 +338,7 @@ const User = ({ userId }) => {
             </ul>
         </nav>
         <div className='fix_nav_position'/>
-      <h1>WELCOME { userData.first_name.toUpperCase() }</h1>
+      <h1>Welcome { userData.first_name }</h1>
       <div className='sidebar'>
         <ul>
             <li><h3>NAVIGATE</h3></li>
@@ -344,7 +352,7 @@ const User = ({ userId }) => {
         <div className='above_line'>
             <h2 className='section_name' id='personal_data'>Personal Data</h2>
             <div className='edit_icon'>  {/*EDIT ICON */}
-                <input type='checkbox' id='edit_icon_checkbox' className='edit_icon_checkbox'/>
+                <input type='checkbox' id='edit_icon_checkbox' className='edit_icon_checkbox' checked={isCheckedData} onChange={(e) => setIsCheckedData(e.target.checked)}/>
                 <label htmlFor='edit_icon_checkbox' className='edit_icon_label'>
                     <img src={editIcon} alt='edit' className='edit_icon_img'/>
                 </label>
@@ -352,6 +360,9 @@ const User = ({ userId }) => {
                 <div className='edit_container'>
                     <form className='edit_data' onSubmit={handleUpdate}> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
                         <h2 className='edit_personal_data'>Edit Personal Data</h2>
+                        <div class='close_user_changes_container'>
+                            <button class='close_user_changes' onClick={uncheckCheckboxes}><img src={closeIcon} alt='X'/></button>
+                        </div>
                         <div className='all_user_data'>
                             <div className='data'>
                                 <label htmlFor='first_name'>Name:</label>
@@ -431,7 +442,7 @@ const User = ({ userId }) => {
                                 {errors.gender && <span style={{ color: 'red', fontSize: 12 }}>{errors.gender}</span>}
                             </div>
                         </div>
-                        <input type='submit' value='Save Changes'></input>  {/* has to uncheck the checkbox edit_icon_checkbox from line 25*/}
+                        <input type='submit' value='Save changes' onClick={uncheckCheckboxes}/>  {/* has to uncheck the checkbox edit_icon_checkbox from line 25*/}
                     </form>  
                 </div>  
             </div>
@@ -486,12 +497,15 @@ const User = ({ userId }) => {
             <div className='all_data'>
             <p className='change_pass_info'>Do this at least twice a year to keep your data safe.</p>
                 <div className='delete_account'>
-                    <input type='checkbox' id='edit_pass_checkbox' className='edit_pass_checkbox'/>
-                    <label htmlFor='edit_pass_checkbox' className='change_pass_label'>Change Password</label>
+                    <input type='checkbox' id='edit_pass_chechbox' className='edit_pass_checkbox' checked={isCheckedPass} onChange={(e) => setIsCheckedPass(e.target.checked)}/>
+                    <label htmlFor='edit_pass_chechbox' className='change_pass_label'>Change password</label>
                     {/* EDIT WINDOW */}
-                    <form className='edit_container_password' onSubmit={handlePasswordChange}>
-                        <div className='edit_data'> {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                    <div className='edit_container_password'>  {/* HIDE THIS DIV BY DEFAULT, SHOW WHEN EDIT ICON CLICKED */}
+                        <form className='edit_data' onSubmit={handlePasswordChange}>
                             <h2 className='edit_personal_data'>Change Password</h2>
+                            <div class='close_user_changes_container'>
+                                <button class='close_user_changes' onClick={uncheckCheckboxes}><img src={closeIcon} alt='X'/></button>
+                            </div>
                             <div className='all_data'>
                                 <div className='data'>
                                     <label htmlFor='oldPassword'>Old Password:</label>
@@ -518,11 +532,11 @@ const User = ({ userId }) => {
                                     onChange={handleInputChange}/>
                                 </div>
                             </div>
-                            <input type='submit' value='Save Changes'></input> {/* has to uncheck the checkbox edit_pass_checkbox from line 132*/}
+                            <input type='submit' value='Save changes' onClick={uncheckCheckboxes}/> {/* has to uncheck the checkbox edit_pass_chechbox from line 132*/}
                             {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                             {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-                        </div>  
-                    </form>  
+                        </form>  
+                    </div>  
                 </div>
             </div>
         </div>

@@ -42,14 +42,8 @@ function Home() {
               </div>
 
               <div class='hero_elem'>
-                <div class='arrow_top'>
-                  <img src={arrowIcon} alt="arrow"/>
-                </div>
                 <div class='hero_button'>
                   <Link to="/signUp" class='link'>Start today!</Link>
-                </div>
-                <div class='arrow_bottom'>
-                  <img src={arrowIcon} alt="arrow"/>
                 </div>
               </div>
               
@@ -63,12 +57,6 @@ function Home() {
               <img src={heroPhoto} class='hero_photo' alt="woman with laptop"/>
           </div>
         </div>
-        <div class='under_hero'>
-          <h2>NO IDEA WHAT TO PUT IN HERE, WILL FIGURE IT OUT IN THE FUTURE</h2>
-          <p>???</p>
-        </div>
-        <footer>
-        </footer>
       </div>
     );
   }
